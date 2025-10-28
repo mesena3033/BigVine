@@ -47,7 +47,7 @@ public class PlayerController : MonoBehaviour
 
         if (onGround && goJump)
         {
-            rbody.AddForce(Vector2.up * JumpPw, ForceMode2D.Impulse);
+            rbody.AddForce(Vector2.up * JumpPw, ForceMode2D.Impulse);//transformÇ≈í≤êÆ
             goJump = false;
         }
     }

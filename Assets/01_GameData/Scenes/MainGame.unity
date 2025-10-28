@@ -1000,7 +1000,7 @@ GameObject:
   - component: {fileID: 646429092}
   - component: {fileID: 646429091}
   - component: {fileID: 646429090}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: ElevatedPlatform
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1450,7 +1450,7 @@ Rigidbody2D:
   m_Mass: 1
   m_LinearDamping: 0
   m_AngularDamping: 0.05
-  m_GravityScale: 2
+  m_GravityScale: 10
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
@@ -1547,8 +1547,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: be8d4ac74a9dbdb439fc567f1d5bf297, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerController
-  Speed: 3
-  JumpPw: 9
+  Speed: 10
+  JumpPw: 40
   groundLayer:
     serializedVersion: 2
     m_Bits: 64
