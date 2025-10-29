@@ -18,5 +18,4 @@ public class MagicClickTrigger : MonoBehaviour
             vineObject.SetActive(true);
         }
     }
-
 }
