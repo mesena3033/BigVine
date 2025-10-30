@@ -131,6 +131,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Enemy
       objectReference: {fileID: 0}
+    - target: {fileID: 2934664223194136939, guid: 6078074794f5afa41a7c6b367ea928d7, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
     - target: {fileID: 7745381287124182355, guid: 6078074794f5afa41a7c6b367ea928d7, type: 3}
       propertyPath: m_LocalPosition.x
       value: 11.288642
@@ -401,7 +405,7 @@ Transform:
   m_GameObject: {fileID: 239515026}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.30382, y: -0.1828, z: -125950}
+  m_LocalPosition: {x: 0.30382, y: -0.1828, z: -127960}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -722,7 +726,7 @@ Transform:
   m_GameObject: {fileID: 349818066}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.30382, y: -0.1828, z: -125950}
+  m_LocalPosition: {x: 0.30382, y: -0.1828, z: -127960}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1472,6 +1476,7 @@ GameObject:
   - component: {fileID: 1011870575}
   - component: {fileID: 1011870576}
   - component: {fileID: 1011870577}
+  - component: {fileID: 1011870578}
   m_Layer: 7
   m_Name: SamplePlayer
   m_TagString: Player
@@ -1648,6 +1653,19 @@ MonoBehaviour:
   bulletPrefab: {fileID: 1773498709948148356, guid: 29028aac0d9d80d47af87acbd1c25ebc, type: 3}
   bulletSpeed: 10
   mainCamera: {fileID: 239515028}
+--- !u!114 &1011870578
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1011870571}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ebebd8cfdc706b0409c3d3b28114cefc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerBounce
+  bounceForce: 20
 --- !u!1 &1243082169
 GameObject:
   m_ObjectHideFlags: 0
@@ -2527,6 +2545,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: EnemyFlyer
       objectReference: {fileID: 0}
+    - target: {fileID: 7938550720777875335, guid: 31e6ee04f1956be41bffeb8c571c1292, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -2673,6 +2695,10 @@ PrefabInstance:
     - target: {fileID: 7870674661645649428, guid: d1d38658794302645943cd909418c845, type: 3}
       propertyPath: m_Name
       value: EnemyShooter
+      objectReference: {fileID: 0}
+    - target: {fileID: 7870674661645649428, guid: d1d38658794302645943cd909418c845, type: 3}
+      propertyPath: m_Layer
+      value: 9
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
