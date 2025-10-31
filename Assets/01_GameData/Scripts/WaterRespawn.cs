@@ -19,6 +19,17 @@ public class WaterRespawn : MonoBehaviour
     {
         yield return new WaitForSeconds(delayBeforeRespawn);
 
+        PlayerHP hp = player.GetComponent<PlayerHP>();
+        if (hp != null)
+        {
+            hp.NowHP = hp.MaxHP; 
+            var updateUIMethod = player.GetComponent<PlayerHP>();
+            if (updateUIMethod != null)
+            {
+                player.GetComponent<PlayerHP>().HealFull();
+            }
+        }
         player.transform.position = respawnPoint.position;
+
     }
 }
