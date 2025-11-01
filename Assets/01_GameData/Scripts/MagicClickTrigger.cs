@@ -2,25 +2,27 @@ using UnityEngine;
 
 public class MagicClickTrigger : MonoBehaviour
 {
-    [SerializeField] private GameObject vineObject;
-    private bool hasTriggered = false;
+    [SerializeField] private GameObject vineObject1;
+    [SerializeField] private GameObject vineObject2;
 
-    private void Start()
-    {
-        if (vineObject != null)
-        {
-            vineObject.SetActive(false); // 最初は非表示
-        }
-    }
+    private int triggerCount = 0;
 
     private void OnMouseDown()
     {
-        if (hasTriggered) return;
+        triggerCount++;
 
-        if (vineObject != null)
+        if (triggerCount == 1 && vineObject1 != null)
         {
-            vineObject.SetActive(true);
-            hasTriggered = true;
+            vineObject1.SetActive(true);
+        }
+        else if (triggerCount == 2 && vineObject2 != null)
+        {
+            // 1個目のツタの下に表示（位置調整）
+            Vector3 basePos = vineObject1.transform.position;
+            vineObject2.transform.position = basePos + new Vector3(0, -1.5f, 0); // 下に1.5fずらす
+            vineObject2.SetActive(true);
         }
     }
+
+
 }

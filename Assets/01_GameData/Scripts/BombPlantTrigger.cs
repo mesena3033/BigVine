@@ -29,7 +29,7 @@ public class BombPlantTrigger : MonoBehaviour
             Rigidbody2D rb = fruitObject.GetComponent<Rigidbody2D>();
             if (rb != null)
             {
-                Vector2 launchDirection = new Vector2(1f, 0.8f).normalized;
+                Vector2 launchDirection = new Vector2(0.8f, 1f).normalized;
                 rb.AddForce(launchDirection * fruitLaunchForce);
                 rb.gravityScale = 0f;
 
