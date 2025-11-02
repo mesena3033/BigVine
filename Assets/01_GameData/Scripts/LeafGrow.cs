@@ -3,13 +3,16 @@ using UnityEngine;
 public class LeafGrow : MonoBehaviour
 {
     [SerializeField] private Transform leafVisual;
+    [SerializeField] private Vector3 midScale = new Vector3(4f, 0.8f, 1f); 
     [SerializeField] private Vector3 grownScale = new Vector3(5f, 1f, 1f);
 
-    private bool hasGrown = false;
+
+
+    private int growthStage = 0;
 
     private void Update()
     {
-        if (hasGrown) return;
+        if (growthStage >= 2) return;
 
         if (Input.GetMouseButtonDown(0))
         {
@@ -23,13 +26,21 @@ public class LeafGrow : MonoBehaviour
                     break;
                 }
             }
-
         }
     }
+
     private void Grow()
     {
-        hasGrown = true;
-        leafVisual.localScale = grownScale;
-    }
+        growthStage++;
 
+        if (growthStage == 1)
+        {
+            leafVisual.localScale = midScale;
+        }
+        else if (growthStage == 2)
+        {
+            leafVisual.localScale = grownScale;
+        }
+    }
 }
+
