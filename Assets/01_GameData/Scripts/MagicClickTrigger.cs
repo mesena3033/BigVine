@@ -17,9 +17,8 @@ public class MagicClickTrigger : MonoBehaviour
         }
         else if (triggerCount == 2 && vineObject2 != null)
         {
-            // 1個目のツタの下に表示（位置調整）
             Vector3 basePos = vineObject1.transform.position;
-            vineObject2.transform.position = basePos + new Vector3(0, -1.5f, 0); // 下に1.5fずらす
+            vineObject2.transform.position = basePos + new Vector3(0, -6.5f, 0);
             vineObject2.SetActive(true);
         }
     }
