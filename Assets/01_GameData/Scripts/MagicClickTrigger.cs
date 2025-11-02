@@ -20,6 +20,15 @@ public class MagicClickTrigger : MonoBehaviour
             Vector3 basePos = vineObject1.transform.position;
             vineObject2.transform.position = basePos + new Vector3(0, -6.5f, 0);
             vineObject2.SetActive(true);
+
+            Transform leaf1 = vineObject2.transform.Find("Leaf");
+            Transform leaf2 = vineObject2.transform.Find("Leaf1");
+            Transform leaf3 = vineObject2.transform.Find("Leaf2");
+
+            if (leaf1 != null) leaf1.gameObject.SetActive(true);
+            if (leaf2 != null) leaf2.gameObject.SetActive(true);
+            if (leaf3 != null) leaf3.gameObject.SetActive(true);
+
         }
     }
 
