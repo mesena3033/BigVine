@@ -347,7 +347,7 @@ Transform:
   m_GameObject: {fileID: 239515026}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.30382, y: -0.1828, z: -323690}
+  m_LocalPosition: {x: 0.30382, y: -0.1828, z: -326740}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -771,7 +771,7 @@ Transform:
   m_GameObject: {fileID: 349818066}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.30382, y: -0.1828, z: -323690}
+  m_LocalPosition: {x: 0.30382, y: -0.1828, z: -326740}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2015,6 +2015,8 @@ MonoBehaviour:
   groundLayer:
     serializedVersion: 2
     m_Bits: 64
+  normalMat: {fileID: 6200000, guid: fa87e81c3b7f64a46bc16812a5edc5ef, type: 2}
+  noFrictionMat: {fileID: 6200000, guid: d5ea279103a960a4d87cdccc6e02389f, type: 2}
 --- !u!70 &1011870576
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
@@ -2097,7 +2099,7 @@ MonoBehaviour:
   InvincibleTime: 2
   HeartPrefab: {fileID: 4748280390838558472, guid: f4500920542762440bc165447baa0c00, type: 3}
   HeartParent: {fileID: 781012576}
-  RespawnPoint: {fileID: 460353183}
+  RespawnPoint: {fileID: 1313424944}
 --- !u!1 &1279194109
 GameObject:
   m_ObjectHideFlags: 0
