@@ -1,30 +1,29 @@
 using UnityEngine;
+using Unity.Cinemachine;
 
 public class LeafGrow : MonoBehaviour
 {
     [SerializeField] private Transform leafVisual;
     [SerializeField] private Vector3 midScale = new Vector3(4f, 0.8f, 1f); 
     [SerializeField] private Vector3 grownScale = new Vector3(5f, 1f, 1f);
-
-
+    [SerializeField] private float detectionRadius = 1.5f;
 
     private int growthStage = 0;
+
+    private GameObject lastBullet = null;
 
     private void Update()
     {
         if (growthStage >= 2) return;
 
-        if (Input.GetMouseButtonDown(0))
+        Collider2D[] hits = Physics2D.OverlapCircleAll(transform.position, detectionRadius);
+        foreach (var hit in hits)
         {
-            Vector2 mouseWorldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            RaycastHit2D[] hits = Physics2D.RaycastAll(mouseWorldPos, Vector2.zero);
-            foreach (var hit in hits)
+            if (hit.CompareTag("MagicBullet") && hit.gameObject != lastBullet)
             {
-                if (hit.collider != null && hit.collider.gameObject == this.gameObject)
-                {
-                    Grow();
-                    break;
-                }
+                lastBullet = hit.gameObject;
+                Grow();
+                break;
             }
         }
     }

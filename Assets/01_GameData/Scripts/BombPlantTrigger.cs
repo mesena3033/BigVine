@@ -1,4 +1,5 @@
 using UnityEngine;
+using Unity.Cinemachine;
 
 public class BombPlantTrigger : MonoBehaviour
 {
@@ -17,22 +18,24 @@ public class BombPlantTrigger : MonoBehaviour
         }
     }
 
-    private void OnMouseDown()
+    private void OnTriggerEnter2D(Collider2D other)
     {
         if (hasTriggered) return;
-        hasTriggered = true;
 
-        // é¿ÇèoåªÇ≥ÇπÇƒîÚÇŒÇ∑
-        if (fruitObject != null)
+        if (other.gameObject.CompareTag("MagicBullet"))
         {
-            fruitObject.SetActive(true);
-            Rigidbody2D rb = fruitObject.GetComponent<Rigidbody2D>();
-            if (rb != null)
-            {
-                Vector2 launchDirection = new Vector2(0.8f, 1f).normalized;
-                rb.AddForce(launchDirection * fruitLaunchForce);
-                rb.gravityScale = 0f;
+            hasTriggered = true;
 
+            if (fruitObject != null)
+            {
+                fruitObject.SetActive(true);
+                Rigidbody2D rb = fruitObject.GetComponent<Rigidbody2D>();
+                if (rb != null)
+                {
+                    Vector2 launchDirection = new Vector2(0.8f, 1f).normalized;
+                    rb.AddForce(launchDirection * fruitLaunchForce);
+                    rb.gravityScale = 0f;
+                }
             }
         }
     }

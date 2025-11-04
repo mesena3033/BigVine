@@ -6,6 +6,7 @@ TagManager:
   tags:
   - BreakableWall
   - Vine
+  - MagicBullet
   layers:
   - Default
   - TransparentFX
