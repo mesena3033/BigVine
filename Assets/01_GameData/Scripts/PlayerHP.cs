@@ -1,7 +1,6 @@
-using UnityEngine;
-using UnityEngine.UI;
-using System.Collections.Generic;
 using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
 
 public class PlayerHP : MonoBehaviour
 {
@@ -11,8 +10,8 @@ public class PlayerHP : MonoBehaviour
     private bool isInvincible = false;
 
     [Header("UI Settings")]
-    public GameObject HeartPrefab; 
-    public Transform HeartParent; 
+    public GameObject HeartPrefab;
+    public Transform HeartParent;
 
     private List<GameObject> hearts = new List<GameObject>();
 
@@ -52,7 +51,7 @@ public class PlayerHP : MonoBehaviour
         SpriteRenderer sr = GetComponent<SpriteRenderer>();
         float elapsed = 0f;
 
-        while (elapsed < InvincibleTime) 
+        while (elapsed < InvincibleTime)
         {
             sr.enabled = false;
             yield return new WaitForSeconds(0.2f);
@@ -63,7 +62,7 @@ public class PlayerHP : MonoBehaviour
             elapsed += 0.4f;
         }
 
-        sr.enabled = true; 
+        sr.enabled = true;
         isInvincible = false;
     }
 

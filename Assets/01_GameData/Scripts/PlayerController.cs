@@ -81,7 +81,10 @@ public class PlayerController : MonoBehaviour
             }
         }
     }
-
+    /// <summary>
+    /// ‚±‚ê‚ÍXML‚Å‚·
+    /// </summary>
+    /// <param name="collision"></param>
     void OnCollisionExit2D(Collision2D collision)
     {
         col.sharedMaterial = normalMat;
