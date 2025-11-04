@@ -22,6 +22,12 @@ public class PlayerAction : MonoBehaviour
 
     //ジャンプ可能なLayer
     [SerializeField] private LayerMask _groundLayer;
+
+    // 通常時に使用する物理マテリアル
+    [SerializeField] PhysicsMaterial2D normalMat;
+
+    // 壁に接触したときに使用する摩擦なしの物理マテリアル
+    [SerializeField] PhysicsMaterial2D noFrictionMat;
     // ---------------------------- Field
 
     // 入力を受け取るための変数
@@ -34,6 +40,7 @@ public class PlayerAction : MonoBehaviour
     // その他、処理に必要な変数
     private Transform _tr = null;
     private Rigidbody2D _rb = null;
+    private Collider2D _col = null;
 
     private bool _goJump = false;
 
@@ -43,6 +50,7 @@ public class PlayerAction : MonoBehaviour
         // 入力アクションの初期化
         _act = new DemoAction();
         _demoAct = _act.Player;
+        _col = new Collider2D();
     }
 
     private void Start()
@@ -50,6 +58,7 @@ public class PlayerAction : MonoBehaviour
         // コンポーネントの取得
         _tr = transform;
         _rb = GetComponent<Rigidbody2D>();
+        _col = GetComponent<Collider2D>();
     }
 
     private void FixedUpdate()
@@ -71,6 +80,39 @@ public class PlayerAction : MonoBehaviour
         // 入力アクションの無効化とイベント解除
         ChangeAct(State.Disable);
         _act?.Disable();
+    }
+
+    /// <summary>
+    /// 他のオブジェクトと接触している間の処理。
+    /// 接触面の角度に応じて物理マテリアルを切り替える
+    /// </summary>
+    /// <param name="collision">接触しているオブジェクトの情報</param>
+    void OnCollisionStay2D(Collision2D collision)
+    {
+        foreach (var contact in collision.contacts)
+        {
+            if (Vector2.Angle(contact.normal, Vector2.up) < 30f)
+            {
+                _col.sharedMaterial = normalMat;
+                return;
+            }
+            else if (Mathf.Abs(Vector2.Angle(contact.normal, Vector2.left)) < 30f ||
+                     Mathf.Abs(Vector2.Angle(contact.normal, Vector2.right)) < 30f)
+            {
+                _col.sharedMaterial = noFrictionMat;
+                return;
+            }
+        }
+    }
+
+    /// <summary>
+    /// 接触が終了したときの処理。
+    /// 物理マテリアルを通常状態に戻す
+    /// </summary>
+    /// <param name="collision">接触が終了したオブジェクトの情報</param>
+    void OnCollisionExit2D(Collision2D collision)
+    {
+        _col.sharedMaterial = normalMat;
     }
 
     // ---------------------------- PrivateMethod
