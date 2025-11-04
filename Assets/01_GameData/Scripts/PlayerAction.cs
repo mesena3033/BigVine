@@ -28,6 +28,11 @@ public class PlayerAction : MonoBehaviour
 
     // 壁に接触したときに使用する摩擦なしの物理マテリアル
     [SerializeField] PhysicsMaterial2D noFrictionMat;
+
+    [SerializeField] Sprite rightSprite; // 右向き画像
+
+    [SerializeField] Sprite leftSprite;  // 左向き画像
+
     // ---------------------------- Field
 
     // 入力を受け取るための変数
@@ -41,6 +46,8 @@ public class PlayerAction : MonoBehaviour
     private Transform _tr = null;
     private Rigidbody2D _rb = null;
     private Collider2D _col = null;
+    private SpriteRenderer _sr = null;
+
 
     private bool _goJump = false;
 
@@ -59,6 +66,21 @@ public class PlayerAction : MonoBehaviour
         _tr = transform;
         _rb = GetComponent<Rigidbody2D>();
         _col = GetComponent<Collider2D>();
+        _sr = GetComponentInChildren<SpriteRenderer>();
+
+    }
+    private void Update()
+    {
+        float axisH = Input.GetAxisRaw("Horizontal");
+
+        if (axisH > 0)
+        {
+            _sr.sprite = rightSprite;
+        }
+        else if (axisH < 0)
+        {
+            _sr.sprite = leftSprite;
+        }
     }
 
     private void FixedUpdate()

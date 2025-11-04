@@ -12,6 +12,7 @@ public class PlayerHP : MonoBehaviour
     [Header("UI Settings")]
     public GameObject HeartPrefab;
     public Transform HeartParent;
+    public SpriteRenderer sr;
 
     private List<GameObject> hearts = new List<GameObject>();
 
@@ -19,6 +20,7 @@ public class PlayerHP : MonoBehaviour
 
     void Start()
     {
+        sr = GetComponentInChildren<SpriteRenderer>();
         NowHP = MaxHP;
 
         for (int i = 0; i < MaxHP; i++)
@@ -48,7 +50,6 @@ public class PlayerHP : MonoBehaviour
     {
         isInvincible = true;
 
-        SpriteRenderer sr = GetComponent<SpriteRenderer>();
         float elapsed = 0f;
 
         while (elapsed < InvincibleTime)
