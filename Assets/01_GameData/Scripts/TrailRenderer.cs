@@ -6,7 +6,7 @@ public class TrailRenderer : MonoBehaviour
     void Start()
     {
         // TrailRenderer ‚ğ’Ç‰Á
-        TrailRenderer trail = gameObject.AddComponent<TrailRenderer>();
+        UnityEngine.TrailRenderer trail = gameObject.AddComponent<UnityEngine.TrailRenderer>();
 
         // c‚éŠÔi0.3•b‚­‚ç‚¢‚Å’Z‚ßj
         trail.time = 0.3f;
