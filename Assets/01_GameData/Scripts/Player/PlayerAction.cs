@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using System.Collections.Generic;
 
 public class PlayerAction : MonoBehaviour
 {
@@ -14,8 +15,9 @@ public class PlayerAction : MonoBehaviour
     // PlayerInputコンポーネントの参照
     [SerializeField] private PlayerInput _input;
 
-    // 移動速度
+    // 移動速度,加速度
     [SerializeField] private float _moveSpeed;
+    [SerializeField] private float acceleration = 10f;
 
     //ジャンプ力
     [SerializeField] private float _jumpPower = 90f;
@@ -28,10 +30,6 @@ public class PlayerAction : MonoBehaviour
 
     // 壁に接触したときに使用する摩擦なしの物理マテリアル
     [SerializeField] PhysicsMaterial2D noFrictionMat;
-
-    [SerializeField] Sprite rightSprite; // 右向き画像
-
-    [SerializeField] Sprite leftSprite;  // 左向き画像
 
     // 弾発射関連 
     [SerializeField] private GameObject bulletPrefab;
@@ -56,14 +54,15 @@ public class PlayerAction : MonoBehaviour
     private Transform _tr = null;
     private Rigidbody2D _rb = null;
     private Collider2D _col = null;
-    private SpriteRenderer _sr = null;
 
 
     private bool _goJump = false;
 
+    private bool _lastFacingRight = true;
+
     // 照準・弾管理用
-    private Vector2 _lookInput = Vector2.zero;  
-    private GameObject _currentBullet = null;
+    private Vector2 _lookInput = Vector2.zero;
+    private List<GameObject> _bullets = new List<GameObject>();
 
     // ---------------------------- UnityMessage
     private void Awake()
@@ -80,21 +79,10 @@ public class PlayerAction : MonoBehaviour
         _tr = transform;
         _rb = GetComponent<Rigidbody2D>();
         _col = GetComponent<Collider2D>();
-        _sr = GetComponentInChildren<SpriteRenderer>();
 
     }
     private void Update()
     {
-        // --- 左右入力でスプライト切り替え ---
-        if (_dir.x > 0)
-        {
-            _sr.sprite = rightSprite;
-        }
-        else if (_dir.x < 0)
-        {
-            _sr.sprite = leftSprite;
-        }
-
         // --- 右スティックで照準カーソルを制御 ---
         if (_lookInput.sqrMagnitude > 0.01f)
         {
@@ -233,6 +221,10 @@ public class PlayerAction : MonoBehaviour
     {
         // 入力値を保存
         _dir = context.ReadValue<Vector2>();
+        // 入力方向があるときに最後の向きを保存
+        if (_dir.x > 0) _lastFacingRight = true;
+        else if (_dir.x < 0) _lastFacingRight = false;
+
         var which = _dir.x > 0;
         switch (context.phase)
         {
@@ -248,7 +240,8 @@ public class PlayerAction : MonoBehaviour
                     break;
 
             case InputActionPhase.Canceled:
-                if(which)
+                // Idle時は最後の向きに応じて待機モーション
+                if (_lastFacingRight)
                 {
                     animator.SetTrigger("IdleRight");
                 }
@@ -256,7 +249,8 @@ public class PlayerAction : MonoBehaviour
                 {
                     animator.SetTrigger("IdleLeft");
                 }
-                    break;
+
+                break;
         }
     }
 
@@ -266,7 +260,13 @@ public class PlayerAction : MonoBehaviour
     private void Move()
     {
         // 保存された入力値に基づいて移動処理を実装
-        _rb.linearVelocity = new Vector2(_dir.x * _moveSpeed, _rb.linearVelocity.y);
+        float targetX = _dir.x * _moveSpeed;
+
+        // 現在速度を徐々に目標速度へ近づける
+        float newX = Mathf.Lerp(_rb.linearVelocity.x, targetX, Time.fixedDeltaTime * acceleration);
+
+        _rb.linearVelocity = new Vector2(newX, _rb.linearVelocity.y);
+
     }
 
     /// <summary>
@@ -285,26 +285,29 @@ public class PlayerAction : MonoBehaviour
     /// 着火
     /// </summary>
     private void Fire()
-    {
-        if (_currentBullet == null)
+    {// 3発未満なら撃てる
+        if (_bullets.Count < 3)
         {
-            _currentBullet = Instantiate(bulletPrefab, firePoint.position, Quaternion.identity);
-            Rigidbody2D rb = _currentBullet.GetComponent<Rigidbody2D>();
+            GameObject bullet = Instantiate(bulletPrefab, firePoint.position, Quaternion.identity);
+            Rigidbody2D rb = bullet.GetComponent<Rigidbody2D>();
 
             Vector2 direction = (aimCursor.position - firePoint.position).normalized;
             rb.linearVelocity = direction * bulletSpeed;
 
-            Destroy(_currentBullet, 3f);
-            StartCoroutine(ResetBulletAfterDelay(3f));
+            _bullets.Add(bullet); // リストに追加
+
+            Destroy(bullet, 1.5f);
+            StartCoroutine(RemoveBulletAfterDelay(bullet, 1.5f));
         }
 
     }
-    //弾リセット用のコルーチン
-    private System.Collections.IEnumerator ResetBulletAfterDelay(float delay)
+    // 弾リストから削除するコルーチン
+    private System.Collections.IEnumerator RemoveBulletAfterDelay(GameObject bullet, float delay)
     {
         yield return new WaitForSeconds(delay);
-        _currentBullet = null;
+        _bullets.Remove(bullet);
     }
+
 
     private void OnJump(InputAction.CallbackContext context)
     {
