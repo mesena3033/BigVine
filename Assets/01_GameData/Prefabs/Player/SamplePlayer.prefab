@@ -87,7 +87,7 @@ SpriteRenderer:
   m_Size: {x: 0.963528, y: 2.0991666}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!1 &6905193025528546659
@@ -106,6 +106,7 @@ GameObject:
   - component: {fileID: 4681149086163433459}
   - component: {fileID: 95727929688216807}
   - component: {fileID: 3939048263590554709}
+  - component: {fileID: 3290019656100336504}
   m_Layer: 7
   m_Name: SamplePlayer
   m_TagString: Player
@@ -292,3 +293,25 @@ MonoBehaviour:
   noFrictionMat: {fileID: 6200000, guid: d5ea279103a960a4d87cdccc6e02389f, type: 2}
   rightSprite: {fileID: -8113783093734641585, guid: 30ffab9b6b85c7945b1b6c924fff76bc, type: 3}
   leftSprite: {fileID: -5115033139810506342, guid: 57a553dd3e6479d44902d893bfab71e4, type: 3}
+--- !u!95 &3290019656100336504
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6905193025528546659}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 0}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
