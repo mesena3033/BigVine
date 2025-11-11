@@ -33,6 +33,16 @@ public class PlayerAction : MonoBehaviour
 
     [SerializeField] Sprite leftSprite;  // 左向き画像
 
+    // 弾発射関連 
+    [SerializeField] private GameObject bulletPrefab;
+    [SerializeField] private float bulletSpeed = 10f; 
+    [SerializeField] private Transform firePoint; 
+    [SerializeField] private Transform aimCursor;
+    [SerializeField] private float aimRadius = 6f;
+
+    //アニメーター
+    [SerializeField] private Animator animator; 
+
     // ---------------------------- Field
 
     // 入力を受け取るための変数
@@ -50,6 +60,10 @@ public class PlayerAction : MonoBehaviour
 
 
     private bool _goJump = false;
+
+    // 照準・弾管理用
+    private Vector2 _lookInput = Vector2.zero;  
+    private GameObject _currentBullet = null;
 
     // ---------------------------- UnityMessage
     private void Awake()
@@ -71,16 +85,34 @@ public class PlayerAction : MonoBehaviour
     }
     private void Update()
     {
-        float axisH = Input.GetAxisRaw("Horizontal");
-
-        if (axisH > 0)
+        // --- 左右入力でスプライト切り替え ---
+        if (_dir.x > 0)
         {
             _sr.sprite = rightSprite;
         }
-        else if (axisH < 0)
+        else if (_dir.x < 0)
         {
             _sr.sprite = leftSprite;
         }
+
+        // --- 右スティックで照準カーソルを制御 ---
+        if (_lookInput.sqrMagnitude > 0.01f)
+        {
+            // 入力がある時だけカーソルを表示
+            if (!aimCursor.gameObject.activeSelf)
+                aimCursor.gameObject.SetActive(true);
+
+            Vector3 aimDir = new Vector3(_lookInput.x, _lookInput.y, 0).normalized;
+            aimCursor.position = transform.position + aimDir * aimRadius;
+            // キャラの回転は行わず、スプライト切り替えだけで対応
+        }
+        else
+        {
+            // 入力がない時はカーソルを非表示
+            if (aimCursor.gameObject.activeSelf)
+                aimCursor.gameObject.SetActive(false);
+        }
+
     }
 
     private void FixedUpdate()
@@ -160,6 +192,7 @@ public class PlayerAction : MonoBehaviour
         Set(_demoAct.Move, OnMove);
         Set(_demoAct.Fire, OnFire);
         Set(_demoAct.Jump, OnJump);
+        Set(_demoAct.Look, OnLook);
 
 
         // 引数によって処理を分岐
@@ -200,6 +233,31 @@ public class PlayerAction : MonoBehaviour
     {
         // 入力値を保存
         _dir = context.ReadValue<Vector2>();
+        var which = _dir.x > 0;
+        switch (context.phase)
+        {
+            case InputActionPhase.Started:
+                if(which)
+                {
+                    animator.SetTrigger("RunRight");
+                }
+                else
+                {
+                    animator.SetTrigger("RunLeft");
+                }
+                    break;
+
+            case InputActionPhase.Canceled:
+                if(which)
+                {
+                    animator.SetTrigger("IdleRight");
+                }
+                else
+                {
+                    animator.SetTrigger("IdleLeft");
+                }
+                    break;
+        }
     }
 
     /// <summary>
@@ -228,7 +286,24 @@ public class PlayerAction : MonoBehaviour
     /// </summary>
     private void Fire()
     {
-        Debug.Log("Fire!");
+        if (_currentBullet == null)
+        {
+            _currentBullet = Instantiate(bulletPrefab, firePoint.position, Quaternion.identity);
+            Rigidbody2D rb = _currentBullet.GetComponent<Rigidbody2D>();
+
+            Vector2 direction = (aimCursor.position - firePoint.position).normalized;
+            rb.linearVelocity = direction * bulletSpeed;
+
+            Destroy(_currentBullet, 3f);
+            StartCoroutine(ResetBulletAfterDelay(3f));
+        }
+
+    }
+    //弾リセット用のコルーチン
+    private System.Collections.IEnumerator ResetBulletAfterDelay(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        _currentBullet = null;
     }
 
     private void OnJump(InputAction.CallbackContext context)
@@ -256,6 +331,10 @@ public class PlayerAction : MonoBehaviour
             0.5f,
             _groundLayer
         );
+    }
+    private void OnLook(InputAction.CallbackContext context)
+    {
+        _lookInput = context.ReadValue<Vector2>();
     }
 
 }
