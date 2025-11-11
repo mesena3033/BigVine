@@ -79,12 +79,12 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: -8113783093734641585, guid: 30ffab9b6b85c7945b1b6c924fff76bc, type: 3}
+  m_Sprite: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 0.963528, y: 2.0991666}
+  m_Size: {x: 0.16, y: 0.16}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 0
@@ -101,7 +101,6 @@ GameObject:
   - component: {fileID: 9157812855108623181}
   - component: {fileID: 2288333568160850119}
   - component: {fileID: 8671366022134392033}
-  - component: {fileID: 5106880508208997897}
   - component: {fileID: 413173903906774595}
   - component: {fileID: 4681149086163433459}
   - component: {fileID: 95727929688216807}
@@ -194,21 +193,6 @@ CapsuleCollider2D:
   m_Offset: {x: 0, y: 0}
   m_Size: {x: 1, y: 2}
   m_Direction: 0
---- !u!114 &5106880508208997897
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6905193025528546659}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 72bd50b4ade85f141a119f2cbffb8ac4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::MagicBullet
-  bulletPrefab: {fileID: 1773498709948148356, guid: 29028aac0d9d80d47af87acbd1c25ebc, type: 3}
-  bulletSpeed: 6
-  mainCamera: {fileID: 0}
 --- !u!114 &413173903906774595
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -268,7 +252,7 @@ MonoBehaviour:
   m_ActionEvents: []
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
-  m_DefaultActionMap: 
+  m_DefaultActionMap: Player
   m_SplitScreenIndex: -1
   m_Camera: {fileID: 0}
 --- !u!114 &3939048263590554709
@@ -291,8 +275,13 @@ MonoBehaviour:
     m_Bits: 64
   normalMat: {fileID: 6200000, guid: fa87e81c3b7f64a46bc16812a5edc5ef, type: 2}
   noFrictionMat: {fileID: 6200000, guid: d5ea279103a960a4d87cdccc6e02389f, type: 2}
-  rightSprite: {fileID: -8113783093734641585, guid: 30ffab9b6b85c7945b1b6c924fff76bc, type: 3}
-  leftSprite: {fileID: -5115033139810506342, guid: 57a553dd3e6479d44902d893bfab71e4, type: 3}
+  rightSprite: {fileID: -4913181235674070907, guid: 09170b8cd6e87fd4f9db770b14d47ca8, type: 3}
+  leftSprite: {fileID: -2288321985390385863, guid: 09170b8cd6e87fd4f9db770b14d47ca8, type: 3}
+  bulletPrefab: {fileID: 1773498709948148356, guid: 29028aac0d9d80d47af87acbd1c25ebc, type: 3}
+  bulletSpeed: 30
+  firePoint: {fileID: 9157812855108623181}
+  aimCursor: {fileID: 0}
+  aimRadius: 3
 --- !u!95 &3290019656100336504
 Animator:
   serializedVersion: 7
