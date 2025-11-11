@@ -2,6 +2,7 @@ using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 
 public class PlayerAction : MonoBehaviour
 {
@@ -17,7 +18,6 @@ public class PlayerAction : MonoBehaviour
 
     // 移動速度,加速度
     [SerializeField] private float _moveSpeed;
-    [SerializeField] private float acceleration = 10f;
 
     //ジャンプ力
     [SerializeField] private float _jumpPower = 90f;
@@ -259,14 +259,7 @@ public class PlayerAction : MonoBehaviour
     /// </summary>
     private void Move()
     {
-        // 保存された入力値に基づいて移動処理を実装
-        float targetX = _dir.x * _moveSpeed;
-
-        // 現在速度を徐々に目標速度へ近づける
-        float newX = Mathf.Lerp(_rb.linearVelocity.x, targetX, Time.fixedDeltaTime * acceleration);
-
-        _rb.linearVelocity = new Vector2(newX, _rb.linearVelocity.y);
-
+        _rb.linearVelocity = new Vector2(_dir.x * _moveSpeed, _rb.linearVelocity.y);
     }
 
     /// <summary>
@@ -285,27 +278,24 @@ public class PlayerAction : MonoBehaviour
     /// 着火
     /// </summary>
     private void Fire()
-    {// 3発未満なら撃てる
+    {
         if (_bullets.Count < 3)
         {
-            GameObject bullet = Instantiate(bulletPrefab, firePoint.position, Quaternion.identity);
-            Rigidbody2D rb = bullet.GetComponent<Rigidbody2D>();
+            GameObject bulletObj = Instantiate(bulletPrefab, firePoint.position, Quaternion.identity);
+            Rigidbody2D rb = bulletObj.GetComponent<Rigidbody2D>();
 
             Vector2 direction = (aimCursor.position - firePoint.position).normalized;
             rb.linearVelocity = direction * bulletSpeed;
 
-            _bullets.Add(bullet); // リストに追加
+            _bullets.Add(bulletObj);
 
-            Destroy(bullet, 1.5f);
-            StartCoroutine(RemoveBulletAfterDelay(bullet, 1.5f));
+            // ★Bulletスクリプトを取得してリストから削除する処理を登録
+            Bullet bullet = bulletObj.GetComponent<Bullet>();
+            if (bullet != null)
+            {
+                bullet.OnDestroyed += b => _bullets.Remove(bulletObj);
+            }
         }
-
-    }
-    // 弾リストから削除するコルーチン
-    private System.Collections.IEnumerator RemoveBulletAfterDelay(GameObject bullet, float delay)
-    {
-        yield return new WaitForSeconds(delay);
-        _bullets.Remove(bullet);
     }
 
 
