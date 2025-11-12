@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
+
 
 public class PlayerHP : MonoBehaviour
 {
@@ -81,7 +83,7 @@ public class PlayerHP : MonoBehaviour
         {
             Debug.LogWarning("ReSpawnPoint ‚ªİ’è‚³‚ê‚Ä‚¢‚Ü‚¹‚ñI");
         }
-
+        SceneManager.LoadScene("GameOver");
     }
 
     private void UpdateUI()
