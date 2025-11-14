@@ -3,14 +3,22 @@ using Unity.Cinemachine;
 
 public class LeafGrow : MonoBehaviour
 {
-    [SerializeField] private Transform leafVisual;
-    [SerializeField] private Vector3 midScale = new Vector3(4f, 0.8f, 1f); 
-    [SerializeField] private Vector3 grownScale = new Vector3(5f, 1f, 1f);
+    [SerializeField] private GameObject leaf1Normal;
+    [SerializeField] private GameObject leaf1Grown;
+    [SerializeField] private GameObject leaf2Normal;
+    [SerializeField] private GameObject leaf2Grown;
     [SerializeField] private float detectionRadius = 1.5f;
 
     private int growthStage = 0;
-
     private GameObject lastBullet = null;
+
+    private void Start()
+    {
+        leaf1Normal.SetActive(true);
+        leaf1Grown.SetActive(false);
+        leaf2Normal.SetActive(true);
+        leaf2Grown.SetActive(false);
+    }
 
     private void Update()
     {
@@ -34,11 +42,13 @@ public class LeafGrow : MonoBehaviour
 
         if (growthStage == 1)
         {
-            leafVisual.localScale = midScale;
+            leaf1Normal.SetActive(false);
+            leaf1Grown.SetActive(true);
         }
         else if (growthStage == 2)
         {
-            leafVisual.localScale = grownScale;
+            leaf2Normal.SetActive(false);
+            leaf2Grown.SetActive(true);
         }
     }
 }
