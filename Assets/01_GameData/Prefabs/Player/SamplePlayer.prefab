@@ -282,6 +282,7 @@ MonoBehaviour:
   aimCursor: {fileID: 0}
   aimRadius: 10
   animator: {fileID: 3290019656100336504}
+  pet: {fileID: 4954870788384327361}
 --- !u!95 &3290019656100336504
 Animator:
   serializedVersion: 7
@@ -351,12 +352,12 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 1
-  m_Sprite: {fileID: -4913181235674070907, guid: 09170b8cd6e87fd4f9db770b14d47ca8, type: 3}
+  m_Sprite: {fileID: 4723107735738678597, guid: 56a592967cd402846b25a9433b81275e, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 3.84, y: 5.38}
+  m_Size: {x: 0.91, y: 1.97}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1

@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using UnityEngine.SceneManagement;
 
 public class WaterRespawn : MonoBehaviour
 {
@@ -14,22 +15,20 @@ public class WaterRespawn : MonoBehaviour
         }
 ;
     }
-
     private IEnumerator RespawnAfterDelay(GameObject player)
     {
         yield return new WaitForSeconds(delayBeforeRespawn);
 
+        // HPリセット処理はそのまま
         PlayerHP hp = player.GetComponent<PlayerHP>();
         if (hp != null)
         {
-            hp.NowHP = hp.MaxHP; 
-            var updateUIMethod = player.GetComponent<PlayerHP>();
-            if (updateUIMethod != null)
-            {
-                player.GetComponent<PlayerHP>().HealFull();
-            }
+            hp.NowHP = hp.MaxHP;
+            hp.HealFull(); // UI更新も兼ねているならこれで十分
         }
-        player.transform.position = respawnPoint.position;
 
+        // ここでシーン遷移
+        SceneManager.LoadScene("GameOver");
     }
+
 }
