@@ -10,14 +10,14 @@ GameObject:
   m_Component:
   - component: {fileID: 1837690422234659611}
   - component: {fileID: 3662673093296001099}
-  - component: {fileID: 1636813498029316466}
+  - component: {fileID: 118769727189240988}
   m_Layer: 0
   m_Name: Pet
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1837690422234659611
 Transform:
   m_ObjectHideFlags: 0
@@ -27,7 +27,7 @@ Transform:
   m_GameObject: {fileID: 8499387950804001117}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.05386, y: -1.30218, z: 0}
+  m_LocalPosition: {x: -19, y: 0, z: 0}
   m_LocalScale: {x: 0.5, y: 0.5, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -79,9 +79,9 @@ SpriteRenderer:
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
-  m_Sprite: {fileID: -2413806693520163455, guid: a86470a33a6bf42c4b3595704624658b, type: 3}
-  m_Color: {r: 0.5566038, g: 0.052509785, b: 0.052509785, a: 1}
+  m_SortingOrder: 1
+  m_Sprite: {fileID: -5940781818166149764, guid: a373b8fb7fcd6c4439be67a0f5a3abcd, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -91,7 +91,7 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &1636813498029316466
+--- !u!114 &118769727189240988
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -103,8 +103,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d521de7ffef88b841897a889651f7735, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Pet
-  player: {fileID: 0}
-  offset: {x: 2, y: 1}
-  smoothTime: 0.2
-  floatAmplitude: 0.01
-  floatFrequency: 1.5
+  player: {fileID: 9157812855108623181, guid: 9941096420b54834e9aad5b3835bb769, type: 3}
+  offset: {x: 1, y: 0.1}
+  smoothTime: 0.05

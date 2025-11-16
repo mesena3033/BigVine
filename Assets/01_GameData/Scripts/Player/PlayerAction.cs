@@ -39,7 +39,11 @@ public class PlayerAction : MonoBehaviour
     [SerializeField] private float aimRadius = 6f;
 
     //アニメーター
-    [SerializeField] private Animator animator; 
+    [SerializeField] private Animator animator;
+
+    // ペットの参照
+    [SerializeField] private Transform pet;
+
 
     // ---------------------------- Field
 
@@ -54,9 +58,11 @@ public class PlayerAction : MonoBehaviour
     private Transform _tr = null;
     private Rigidbody2D _rb = null;
     private Collider2D _col = null;
-
+    private SpriteRenderer _sr = null;
 
     private bool _goJump = false;
+
+    private bool _wasGrounded = false;
 
     private bool _lastFacingRight = true;
 
@@ -79,7 +85,7 @@ public class PlayerAction : MonoBehaviour
         _tr = transform;
         _rb = GetComponent<Rigidbody2D>();
         _col = GetComponent<Collider2D>();
-
+        _sr = GetComponent<SpriteRenderer>();
     }
     private void Update()
     {
@@ -219,37 +225,23 @@ public class PlayerAction : MonoBehaviour
     /// <param name="context">コンテキスト</param>
     private void OnMove(InputAction.CallbackContext context)
     {
-        // 入力値を保存
         _dir = context.ReadValue<Vector2>();
+
         // 入力方向があるときに最後の向きを保存
         if (_dir.x > 0) _lastFacingRight = true;
         else if (_dir.x < 0) _lastFacingRight = false;
 
-        var which = _dir.x > 0;
+        // SpriteRendererで反転
+        _sr.flipX = !_lastFacingRight;
+
         switch (context.phase)
         {
             case InputActionPhase.Started:
-                if(which)
-                {
-                    animator.SetTrigger("RunRight");
-                }
-                else
-                {
-                    animator.SetTrigger("RunLeft");
-                }
-                    break;
+                animator.SetTrigger("Run");
+                break;
 
             case InputActionPhase.Canceled:
-                // Idle時は最後の向きに応じて待機モーション
-                if (_lastFacingRight)
-                {
-                    animator.SetTrigger("IdleRight");
-                }
-                else
-                {
-                    animator.SetTrigger("IdleLeft");
-                }
-
+                animator.SetTrigger("Idle");
                 break;
         }
     }
@@ -281,15 +273,18 @@ public class PlayerAction : MonoBehaviour
     {
         if (_bullets.Count < 3)
         {
-            GameObject bulletObj = Instantiate(bulletPrefab, firePoint.position, Quaternion.identity);
+            // ペットの座標＋上方向オフセット
+            Vector3 spawnPos = pet.position + Vector3.up * 1f;
+
+            GameObject bulletObj = Instantiate(bulletPrefab, spawnPos, Quaternion.identity);
             Rigidbody2D rb = bulletObj.GetComponent<Rigidbody2D>();
 
-            Vector2 direction = (aimCursor.position - firePoint.position).normalized;
+            // 照準カーソル方向へ発射
+            Vector2 direction = (aimCursor.position - spawnPos).normalized;
             rb.linearVelocity = direction * bulletSpeed;
 
             _bullets.Add(bulletObj);
 
-            // ★Bulletスクリプトを取得してリストから削除する処理を登録
             Bullet bullet = bulletObj.GetComponent<Bullet>();
             if (bullet != null)
             {
@@ -297,13 +292,13 @@ public class PlayerAction : MonoBehaviour
             }
         }
     }
-
-
     private void OnJump(InputAction.CallbackContext context)
     {
         if (context.performed)
         {
             _goJump = true;
+
+            animator.SetTrigger("Jump");
         }
     }
     private void Jump()
@@ -313,6 +308,23 @@ public class PlayerAction : MonoBehaviour
             _rb.AddForce(Vector2.up * _jumpPower, ForceMode2D.Impulse);
             _goJump = false;
         }
+
+        // 接地状態の変化を検知
+        bool groundedNow = IsGrounded();
+        if (groundedNow && !_wasGrounded)
+        {
+            // 今回新しく着地した瞬間だけ Idle/Run を発火
+            if (_dir.x != 0)
+            {
+                animator.SetTrigger("Run");
+            }
+            else
+            {
+                animator.SetTrigger("Idle");
+            }
+        }
+
+        _wasGrounded = groundedNow;
     }
 
     private bool IsGrounded()
