@@ -1,0 +1,83 @@
+using UnityEngine;
+using System.Collections.Generic;
+
+public class GroundEnemy : MonoBehaviour
+{
+    [Header("移動関係")]
+
+    //  移動の可否
+    [SerializeField] private bool MoveBool;
+
+    //  左右方向
+    [SerializeField] private string MoveHori;
+
+    //  移動スピード
+    [SerializeField] private float MoveHoriSpeed;
+
+    [Header("消えるライン")]
+
+    //  これ以下／以上で消す
+    [SerializeField] private float DestroyXMin;
+    [SerializeField] private float DestroyXMax;
+
+    private Rigidbody2D Rb2d;
+    private float DefaultGravityScale;
+    
+    //  方向
+    private int dir;
+
+    //  接地判定
+    //  タグ"Ground"との接触
+    private HashSet<Collider2D> GroundContact = new HashSet<Collider2D>();
+
+    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    void Start()
+    {
+        Rb2d = GetComponent<Rigidbody2D>();
+
+        //  方向代入
+        if (MoveHori == "左")
+        {
+            dir = -1;
+        }
+        else if (MoveHori == "右")
+        {
+            dir = 1;
+        }
+        else
+            //  デフォは左
+            { dir = -1; }
+
+        DefaultGravityScale = Rb2d.gravityScale;
+    }
+
+    //  一定間隔で呼び出されるUpdate
+    //  RigidBodyはこちらのほうがよい
+    private void FixedUpdate()
+    {
+        //  接地判定より、地面についているとき重力無効化
+        Rb2d.gravityScale = (GroundContact.Count == 0) ? DefaultGravityScale : 0f;
+
+        if(MoveBool != true)
+        {
+            return;
+        }
+
+        //  横移動の制御
+        Vector2 delta = Vector2.right * dir * MoveHoriSpeed * Time.deltaTime;
+        Rb2d.MovePosition(Rb2d.position + delta);
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        //  範囲外に出たら消す
+        float py = transform.position.y;
+        if (py < DestroyXMin || py > DestroyXMax)
+        {
+            Destroy(gameObject);
+        }
+    }
+
+    //  壁の衝突で向き反転はちょっとむずかった
+}

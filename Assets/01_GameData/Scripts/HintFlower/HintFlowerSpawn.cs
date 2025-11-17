@@ -31,6 +31,7 @@ public class HintFlowerSpawn : MonoBehaviour
         //Debug.Log("Player.x :" + PlayerPosition.x + " Player.y :" + PlayerPosition.y);
 
         //  前提プレイヤーの方が低い座標
+        //  プレイヤーが花-10までいったら現れる
         if (FlowerPosition.x - 10 <= PlayerPosition.x)
         {
             Instantiate(HintFlower, new Vector3(FlowerPosition.x, FlowerPosition.y, 0), Quaternion.identity);
