@@ -2,30 +2,29 @@ using UnityEngine;
 
 public class EnemyBullet : MonoBehaviour
 {
-    [Header("弾の速度（単位：m/s）")]
-    public float speed = 10f;
+    //  弾の移動スピード
+    [SerializeField] private float BulletSpeed;
 
-    [Header("弾の寿命（秒）")]
-    public float lifeTime = 5f;
+    //  弾が何秒残るか
+    [Tooltip("弾が残る秒数")]
+    [SerializeField] private float LifeTime;
 
+    // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        // 一定時間後に自動で削除
-        Destroy(gameObject, lifeTime);
+        //  一定時間で消える
+        Destroy(gameObject, LifeTime);
     }
 
+    // Update is called once per frame
     void Update()
     {
-        // 弾を前方（ローカルZ軸）に移動
-        transform.Translate(Vector3.left * speed * Time.deltaTime);
+        //  左(前)に移動する
+        this.transform.Translate(BulletSpeed * Time.deltaTime, 0, 0);
     }
-
-   
-    void OnTriggerEnter(Collider other)
+    void OnTriggerEnter2D(Collider2D other)
     {
-        // 例：プレイヤーや壁に当たったら消える
+        // 他のオブジェクトに当たったら消える
         Destroy(gameObject);
     }
-    
 }
-

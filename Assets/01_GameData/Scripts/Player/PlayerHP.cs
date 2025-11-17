@@ -20,8 +20,16 @@ public class PlayerHP : MonoBehaviour
 
     public Transform RespawnPoint;
 
+    //  レイヤーID(Player, Enemy)
+    private int PlayerLayer;
+    private int EnemyLayer;
+
     void Start()
     {
+        //  レイヤーID取得
+        PlayerLayer = gameObject.layer;
+        EnemyLayer = LayerMask.NameToLayer("Enemy");
+
         sr = GetComponentInChildren<SpriteRenderer>();
         NowHP = MaxHP;
 
@@ -52,6 +60,12 @@ public class PlayerHP : MonoBehaviour
     {
         isInvincible = true;
 
+        // ダメージ後に一定時間、Enemy / EnemyBullet との衝突を無効化して「すり抜け」仕様にする
+        if (PlayerLayer >= 0)
+        {
+            if (EnemyLayer >= 0) Physics2D.IgnoreLayerCollision(PlayerLayer, EnemyLayer, true);
+        }
+
         float elapsed = 0f;
 
         while (elapsed < InvincibleTime)
@@ -67,6 +81,12 @@ public class PlayerHP : MonoBehaviour
 
         sr.enabled = true;
         isInvincible = false;
+
+        // 一定時間経過後、衝突を元に戻す
+        if (PlayerLayer >= 0)
+        {
+            if (EnemyLayer >= 0) Physics2D.IgnoreLayerCollision(PlayerLayer, EnemyLayer, false);
+        }
     }
 
     private void Die()
@@ -98,18 +118,18 @@ public class PlayerHP : MonoBehaviour
         NowHP = MaxHP;
         UpdateUI();
     }
-    void OnCollisionEnter2D(Collision2D collision)
+    void OnCollisionStay2D(Collision2D collision)
     {
         if (collision.gameObject.layer == LayerMask.NameToLayer("Enemy"))
         {
-            foreach (ContactPoint2D point in collision.contacts)
-            {
-                if (point.normal.y > 0.5f)
-                {
-                    Debug.Log("Enemy stomped!");
-                    return;
-                }
-            }
+            //foreach (ContactPoint2D point in collision.contacts)
+            //{
+            //    if (point.normal.y > 0.5f)
+            //    {
+            //        Debug.Log("Enemy stomped!");
+            //        return;
+            //    }
+            //}
             TakeDamage(1);
         }
     }

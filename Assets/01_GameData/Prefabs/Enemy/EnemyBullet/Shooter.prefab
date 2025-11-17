@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &5091180600807507050
+--- !u!1 &4303982035079769981
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,46 +8,44 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 4313386659914348889}
-  - component: {fileID: -870318787002632398}
+  - component: {fileID: 2396674019651862827}
+  - component: {fileID: -742228897292578475}
   m_Layer: 0
-  m_Name: HintFlowerSpawnPoint
+  m_Name: Shooter
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!224 &4313386659914348889
-RectTransform:
+--- !u!4 &2396674019651862827
+Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5091180600807507050}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_GameObject: {fileID: 4303982035079769981}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 100, y: 100}
-  m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &-870318787002632398
+--- !u!114 &-742228897292578475
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5091180600807507050}
+  m_GameObject: {fileID: 4303982035079769981}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9ed7423ce9178cb49bf6d54df4753a37, type: 3}
+  m_Script: {fileID: 11500000, guid: eeb1343a23b9cd4479d01de8d371595c, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::HintFlowerTalk
-  HintFlower: {fileID: 0}
-  HintFlowerSpawnPoint: {fileID: 5091180600807507050}
-  Player: {fileID: 6905193025528546659, guid: 9941096420b54834e9aad5b3835bb769, type: 3}
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyBulletManager
+  Bullet: {fileID: 4468406488658083318, guid: cdb1b94d486fb69429b8d4891d502905, type: 3}
+  BulletInterval: 5
+  ShootingControll: "\u4F4E"
+  VerMove: "\u4E0A\u4E0B"
+  HoriMove: "\u5DE6"
