@@ -262,13 +262,14 @@ MonoBehaviour:
     m_Bits: 64
   normalMat: {fileID: 6200000, guid: fa87e81c3b7f64a46bc16812a5edc5ef, type: 2}
   noFrictionMat: {fileID: 6200000, guid: d5ea279103a960a4d87cdccc6e02389f, type: 2}
-  bulletPrefab: {fileID: 1773498709948148356, guid: 29028aac0d9d80d47af87acbd1c25ebc, type: 3}
-  bulletSpeed: 20
-  firePoint: {fileID: 9157812855108623181}
-  aimCursor: {fileID: 0}
-  aimRadius: 10
-  animator: {fileID: 3290019656100336504}
-  pet: {fileID: 4954870788384327361}
+  _bulletPrefab: {fileID: 1773498709948148356, guid: 29028aac0d9d80d47af87acbd1c25ebc, type: 3}
+  _bulletSpeed: 10
+  _firePoint: {fileID: 9157812855108623181}
+  _aimCursor: {fileID: 0}
+  _aimRadius: 6
+  _animator: {fileID: 3290019656100336504}
+  _pet: {fileID: 1837690422234659611, guid: c36d6f26165bac34792c97d783b9c95f, type: 3}
+  _audioSource: {fileID: 0}
 --- !u!95 &3290019656100336504
 Animator:
   serializedVersion: 7

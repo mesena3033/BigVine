@@ -128,13 +128,17 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 3939048263590554709, guid: 9941096420b54834e9aad5b3835bb769, type: 3}
-      propertyPath: pet
-      value: 
-      objectReference: {fileID: 1973833580}
-    - target: {fileID: 3939048263590554709, guid: 9941096420b54834e9aad5b3835bb769, type: 3}
-      propertyPath: aimCursor
+      propertyPath: _aimCursor
       value: 
       objectReference: {fileID: 997694415}
+    - target: {fileID: 3939048263590554709, guid: 9941096420b54834e9aad5b3835bb769, type: 3}
+      propertyPath: _firePoint
+      value: 
+      objectReference: {fileID: 997694415}
+    - target: {fileID: 3939048263590554709, guid: 9941096420b54834e9aad5b3835bb769, type: 3}
+      propertyPath: _audioSource
+      value: 
+      objectReference: {fileID: 1255163802}
     - target: {fileID: 4681149086163433459, guid: 9941096420b54834e9aad5b3835bb769, type: 3}
       propertyPath: HeartParent
       value: 
@@ -689,7 +693,7 @@ Transform:
   m_GameObject: {fileID: 239515026}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -20, y: 7, z: -809840}
+  m_LocalPosition: {x: -20, y: 7, z: -817990}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1122,7 +1126,7 @@ Transform:
   m_GameObject: {fileID: 349818066}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -20, y: 7, z: -809840}
+  m_LocalPosition: {x: -20, y: 7, z: -817990}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -4578,11 +4582,6 @@ PrefabInstance:
 Transform:
   m_CorrespondingSourceObject: {fileID: 5537857352322356688, guid: 8d93296b86632c94da506fc0341823b8, type: 3}
   m_PrefabInstance: {fileID: 1344175963}
-  m_PrefabAsset: {fileID: 0}
---- !u!4 &1973833580 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 1837690422234659611, guid: c36d6f26165bac34792c97d783b9c95f, type: 3}
-  m_PrefabInstance: {fileID: 668205594985953239}
   m_PrefabAsset: {fileID: 0}
 --- !u!4 &2005032087 stripped
 Transform:
