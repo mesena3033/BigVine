@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using System.Collections.Generic;
 using Unity.VisualScripting;
+using UnityEngine.Audio;
 
 public class PlayerAction : MonoBehaviour
 {
@@ -32,17 +33,15 @@ public class PlayerAction : MonoBehaviour
     [SerializeField] PhysicsMaterial2D noFrictionMat;
 
     // 弾発射関連 
-    [SerializeField] private GameObject bulletPrefab;
-    [SerializeField] private float bulletSpeed = 10f; 
-    [SerializeField] private Transform firePoint; 
-    [SerializeField] private Transform aimCursor;
-    [SerializeField] private float aimRadius = 6f;
+    [SerializeField] private GameObject _bulletPrefab;
+    [SerializeField] private float _bulletSpeed = 10f; 
+    [SerializeField] private Transform _aimCursor;
+    [SerializeField] private float _aimRadius = 6f;
 
     //アニメーター
-    [SerializeField] private Animator animator;
+    [SerializeField] private Animator _animator;
 
-    // ペットの参照
-    [SerializeField] private Transform pet;
+    [SerializeField] private AudioSource _audioSource;
 
 
     // ---------------------------- Field
@@ -93,18 +92,18 @@ public class PlayerAction : MonoBehaviour
         if (_lookInput.sqrMagnitude > 0.01f)
         {
             // 入力がある時だけカーソルを表示
-            if (!aimCursor.gameObject.activeSelf)
-                aimCursor.gameObject.SetActive(true);
+            if (!_aimCursor.gameObject.activeSelf)
+                _aimCursor.gameObject.SetActive(true);
 
             Vector3 aimDir = new Vector3(_lookInput.x, _lookInput.y, 0).normalized;
-            aimCursor.position = transform.position + aimDir * aimRadius;
+            _aimCursor.position = transform.position + aimDir * _aimRadius;
             // キャラの回転は行わず、スプライト切り替えだけで対応
         }
         else
         {
             // 入力がない時はカーソルを非表示
-            if (aimCursor.gameObject.activeSelf)
-                aimCursor.gameObject.SetActive(false);
+            if (_aimCursor.gameObject.activeSelf)
+                _aimCursor.gameObject.SetActive(false);
         }
 
     }
@@ -187,7 +186,8 @@ public class PlayerAction : MonoBehaviour
         Set(_demoAct.Fire, OnFire);
         Set(_demoAct.Jump, OnJump);
         Set(_demoAct.Look, OnLook);
-
+        Set(_demoAct.ToggleBGM, OnToggleBGM);
+        Set(_demoAct.ExitGame, OnExitGame);
 
         // 引数によって処理を分岐
         void Set(InputAction input, Action<InputAction.CallbackContext> act)
@@ -237,11 +237,11 @@ public class PlayerAction : MonoBehaviour
         switch (context.phase)
         {
             case InputActionPhase.Started:
-                animator.SetTrigger("Run");
+                _animator.SetTrigger("Run");
                 break;
 
             case InputActionPhase.Canceled:
-                animator.SetTrigger("Idle");
+                _animator.SetTrigger("Idle");
                 break;
         }
     }
@@ -273,15 +273,15 @@ public class PlayerAction : MonoBehaviour
     {
         if (_bullets.Count < 3)
         {
-            // ペットの座標＋上方向オフセット
-            Vector3 spawnPos = pet.position + Vector3.up * 1f;
+            // プレイヤー自身の位置から発射
+            Vector3 spawnPos = _tr.position + Vector3.up * 1f;
 
-            GameObject bulletObj = Instantiate(bulletPrefab, spawnPos, Quaternion.identity);
+            GameObject bulletObj = Instantiate(_bulletPrefab, spawnPos, Quaternion.identity);
             Rigidbody2D rb = bulletObj.GetComponent<Rigidbody2D>();
 
             // 照準カーソル方向へ発射
-            Vector2 direction = (aimCursor.position - spawnPos).normalized;
-            rb.linearVelocity = direction * bulletSpeed;
+            Vector2 direction = (_aimCursor.position - spawnPos).normalized;
+            rb.linearVelocity = direction * _bulletSpeed;
 
             _bullets.Add(bulletObj);
 
@@ -298,7 +298,7 @@ public class PlayerAction : MonoBehaviour
         {
             _goJump = true;
 
-            animator.SetTrigger("Jump");
+            _animator.SetTrigger("Jump");
         }
     }
     private void Jump()
@@ -316,11 +316,11 @@ public class PlayerAction : MonoBehaviour
             // 今回新しく着地した瞬間だけ Idle/Run を発火
             if (_dir.x != 0)
             {
-                animator.SetTrigger("Run");
+                _animator.SetTrigger("Run");
             }
             else
             {
-                animator.SetTrigger("Idle");
+                _animator.SetTrigger("Idle");
             }
         }
 
@@ -340,6 +340,34 @@ public class PlayerAction : MonoBehaviour
     private void OnLook(InputAction.CallbackContext context)
     {
         _lookInput = context.ReadValue<Vector2>();
+    }
+    private void OnToggleBGM(InputAction.CallbackContext context)
+    {
+        if (context.performed)
+        {
+            if (_audioSource.isPlaying)
+            {
+                _audioSource.Stop();
+            }
+            else
+            {
+                _audioSource.Play();
+            }
+        }
+    }
+    private void OnExitGame(InputAction.CallbackContext context)
+    {
+        if (context.performed)
+        {
+            Debug.Log("Exit Game triggered");
+
+            // エディタ上では停止、ビルド後はアプリ終了
+#if UNITY_EDITOR
+            UnityEditor.EditorApplication.isPlaying = false;
+#else
+        Application.Quit();
+#endif
+        }
     }
 
 }
