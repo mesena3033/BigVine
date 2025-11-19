@@ -4,7 +4,7 @@ using UnityEngine.SceneManagement;
 
 public class ThornRespawn : MonoBehaviour
 {
-    [SerializeField] private Transform respawnPoint;
+
     [SerializeField] private float delayBeforeRespawn = 0.001f;
 
     private void OnTriggerEnter2D(Collider2D other)

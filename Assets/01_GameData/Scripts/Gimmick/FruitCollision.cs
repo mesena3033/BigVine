@@ -6,8 +6,8 @@ public class FruitCollision : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("BreakableWall"))
         {
-            Destroy(collision.gameObject); 
-            Destroy(this.gameObject);      
+            Destroy(collision.gameObject);
         }
+
     }
 }
