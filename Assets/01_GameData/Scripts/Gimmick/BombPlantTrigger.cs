@@ -1,49 +1,43 @@
 using UnityEngine;
 
-
-
-public class BombPlantTrigger : MonoBehaviour
+public class FlowerBombTrigger : MonoBehaviour
 {
-    [SerializeField] private Transform sproutVisual;
+    [SerializeField] private GameObject budObject;
+    [SerializeField] private GameObject flowerObject;
     [SerializeField] private GameObject fruitObject;
-    [SerializeField] private Vector3 grownScale = new Vector3(1.5f, 1.5f, 1f);
-    [SerializeField] private float fruitLaunchForce = 300f;
     [SerializeField] private float detectionRadius = 5f;
+    [SerializeField] private float fruitLaunchForce = 300f;
     [SerializeField] private LayerMask enemyLayer;
 
-    private bool hasTriggered = false;
+    private bool isFlowerActive = false;
+    private bool hasLaunchedFruit = false;
 
     private void Start()
     {
-        if (fruitObject != null)
-        {
-            fruitObject.SetActive(false);
-        }
+        if (flowerObject != null) flowerObject.SetActive(false);
+        if (fruitObject != null) fruitObject.SetActive(false);
     }
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (hasTriggered) return;
+        if (isFlowerActive) return;
+        if (!other.CompareTag("MagicBullet")) return;
 
-        if (other.CompareTag("MagicBullet"))
+        isFlowerActive = true;
+
+        if (budObject != null) budObject.SetActive(false);
+        if (flowerObject != null) flowerObject.SetActive(true);
+    }
+
+    private void Update()
+    {
+        if (!isFlowerActive || hasLaunchedFruit) return;
+
+        Transform target = FindNearestEnemy();
+        if (target != null)
         {
-            hasTriggered = true;
-
-            Transform target = FindNearestEnemy();
-            Vector2 launchDirection = target != null
-                ? (target.position - fruitObject.transform.position).normalized
-                : Vector2.down;
-
-            if (fruitObject != null)
-            {
-                fruitObject.SetActive(true);
-                Rigidbody2D rb = fruitObject.GetComponent<Rigidbody2D>();
-                if (rb != null)
-                {
-                    rb.gravityScale = 0f;
-                    rb.AddForce(launchDirection * fruitLaunchForce);
-                }
-            }
+            LaunchFruitAt(target);
+            hasLaunchedFruit = true;
         }
     }
 
@@ -66,9 +60,35 @@ public class BombPlantTrigger : MonoBehaviour
         return closest;
     }
 
+    private void LaunchFruitAt(Transform target)
+    {
+        if (fruitObject == null || target == null)
+        {
+            Debug.Log("Fruit or target is null");
+            return;
+        }
+
+        fruitObject.SetActive(true);
+        fruitObject.transform.position = transform.position;
+
+        Rigidbody2D rb = fruitObject.GetComponent<Rigidbody2D>();
+        if (rb != null)
+        {
+            rb.gravityScale = 0f;
+            Vector2 direction = (target.position - transform.position).normalized;
+            Debug.Log("Launching fruit toward: " + target.name + " with direction: " + direction);
+            rb.AddForce(direction * fruitLaunchForce);
+        }
+        else
+        {
+            Debug.Log("No Rigidbody2D found on fruitObject");
+        }
+
+    }
+
     private void OnDrawGizmosSelected()
     {
-        Gizmos.color = Color.red;
+        Gizmos.color = Color.yellow;
         Gizmos.DrawWireSphere(transform.position, detectionRadius);
     }
 }

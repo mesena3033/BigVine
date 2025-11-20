@@ -1,8 +1,8 @@
 using UnityEngine;
 
-public class PlantDecayTrigger : MonoBehaviour
+public class RockReleaseTrigger : MonoBehaviour
 {
-    [SerializeField] private GameObject witheredSupport; // ŒÍ‚ê‚éŽx‚¦
+    [SerializeField] private Rigidbody2D rockBody; // Šâ‚Ì Rigidbody2D
     private bool hasTriggered = false;
 
     private void OnTriggerEnter2D(Collider2D other)
@@ -12,10 +12,10 @@ public class PlantDecayTrigger : MonoBehaviour
 
         hasTriggered = true;
 
-        if (witheredSupport != null)
+        if (rockBody != null)
         {
-            Destroy(witheredSupport); // Žx‚¦‚ð‰ó‚·
+            rockBody.bodyType = RigidbodyType2D.Dynamic; // Šâ‚ð“®‚©‚·
         }
     }
-
 }
+

@@ -1,23 +1,60 @@
 using UnityEngine;
 
-public class LeafRotationReset : MonoBehaviour
+public class LeafMagicTrigger : MonoBehaviour
 {
-    [SerializeField] private Transform leaf1;
-    [SerializeField] private Transform leaf2;
-    [SerializeField] private string enemyLayerName = "Enemy";
+    [SerializeField] private GameObject budObject;       // 芽（最初に見えてる）
+    [SerializeField] private Transform leaf1;            // 葉1
+    [SerializeField] private Transform leaf2;            // 葉2
+    [SerializeField] private float detectionRadius = 3f; // 敵を探す範囲
+    [SerializeField] private LayerMask enemyLayer;       // 敵レイヤー
+
+    private bool hasTriggered = false;
+
+    private void Start()
+    {
+        // 最初は葉っぱを非表示にしておく
+        if (leaf1 != null) leaf1.gameObject.SetActive(false);
+        if (leaf2 != null) leaf2.gameObject.SetActive(false);
+    }
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.gameObject.layer == LayerMask.NameToLayer(enemyLayerName))
+        if (hasTriggered) return;
+        if (!other.CompareTag("MagicBullet")) return;
+
+        hasTriggered = true;
+
+        // 芽を消す
+        if (budObject != null) Destroy(budObject);
+
+        // 葉っぱを表示して回転リセット
+        if (leaf1 != null)
         {
-            ResetRotation();
+            leaf1.gameObject.SetActive(true);
+            leaf1.rotation = Quaternion.identity;
+        }
+        if (leaf2 != null)
+        {
+            leaf2.gameObject.SetActive(true);
+            leaf2.rotation = Quaternion.identity;
+        }
+
+        // 敵を消す
+        DestroyEnemiesInRange();
+    }
+
+    private void DestroyEnemiesInRange()
+    {
+        Collider2D[] hits = Physics2D.OverlapCircleAll(transform.position, detectionRadius, enemyLayer);
+        foreach (var hit in hits)
+        {
+            Destroy(hit.gameObject);
         }
     }
 
-    private void ResetRotation()
+    private void OnDrawGizmosSelected()
     {
-        if (leaf1 != null) leaf1.rotation = Quaternion.Euler(0f, 0f, 0f);
-        if (leaf2 != null) leaf2.rotation = Quaternion.Euler(0f, 0f, 0f);
+        Gizmos.color = Color.magenta;
+        Gizmos.DrawWireSphere(transform.position, detectionRadius);
     }
 }
-
