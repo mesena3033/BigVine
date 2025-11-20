@@ -4,7 +4,6 @@ using UnityEngine.SceneManagement;
 
 public class WaterRespawn : MonoBehaviour
 {
-    [SerializeField] private Transform respawnPoint;
     [SerializeField] private float delayBeforeRespawn = 2.5f;
 
     private void OnTriggerEnter2D(Collider2D other)

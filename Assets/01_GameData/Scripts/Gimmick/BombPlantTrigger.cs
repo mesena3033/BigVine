@@ -1,5 +1,6 @@
 using UnityEngine;
-using Unity.Cinemachine;
+
+
 
 public class BombPlantTrigger : MonoBehaviour
 {
@@ -7,6 +8,8 @@ public class BombPlantTrigger : MonoBehaviour
     [SerializeField] private GameObject fruitObject;
     [SerializeField] private Vector3 grownScale = new Vector3(1.5f, 1.5f, 1f);
     [SerializeField] private float fruitLaunchForce = 300f;
+    [SerializeField] private float detectionRadius = 5f;
+    [SerializeField] private LayerMask enemyLayer;
 
     private bool hasTriggered = false;
 
@@ -22,9 +25,14 @@ public class BombPlantTrigger : MonoBehaviour
     {
         if (hasTriggered) return;
 
-        if (other.gameObject.CompareTag("MagicBullet"))
+        if (other.CompareTag("MagicBullet"))
         {
             hasTriggered = true;
+
+            Transform target = FindNearestEnemy();
+            Vector2 launchDirection = target != null
+                ? (target.position - fruitObject.transform.position).normalized
+                : Vector2.down;
 
             if (fruitObject != null)
             {
@@ -32,11 +40,35 @@ public class BombPlantTrigger : MonoBehaviour
                 Rigidbody2D rb = fruitObject.GetComponent<Rigidbody2D>();
                 if (rb != null)
                 {
-                    Vector2 launchDirection = new Vector2(1f, 0.6f).normalized;
-                    rb.AddForce(launchDirection * fruitLaunchForce);
                     rb.gravityScale = 0f;
+                    rb.AddForce(launchDirection * fruitLaunchForce);
                 }
             }
         }
+    }
+
+    private Transform FindNearestEnemy()
+    {
+        Collider2D[] hits = Physics2D.OverlapCircleAll(transform.position, detectionRadius, enemyLayer);
+        Transform closest = null;
+        float minDist = Mathf.Infinity;
+
+        foreach (var hit in hits)
+        {
+            float dist = Vector2.Distance(transform.position, hit.transform.position);
+            if (dist < minDist)
+            {
+                minDist = dist;
+                closest = hit.transform;
+            }
+        }
+
+        return closest;
+    }
+
+    private void OnDrawGizmosSelected()
+    {
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(transform.position, detectionRadius);
     }
 }
