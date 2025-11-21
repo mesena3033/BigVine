@@ -1024,7 +1024,7 @@ Transform:
   m_GameObject: {fileID: 239515026}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -20, y: 7, z: -1371850}
+  m_LocalPosition: {x: -20, y: 7, z: -1385500}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1787,7 +1787,7 @@ Transform:
   m_GameObject: {fileID: 349818066}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -20, y: 7, z: -1371850}
+  m_LocalPosition: {x: -20, y: 7, z: -1385500}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -7463,6 +7463,14 @@ PrefabInstance:
     - target: {fileID: 6837067389927797331, guid: b8c5d00a69a0e28478a8596bc2f0011d, type: 3}
       propertyPath: m_Name
       value: BombPlant
+      objectReference: {fileID: 0}
+    - target: {fileID: 7292523453435445056, guid: b8c5d00a69a0e28478a8596bc2f0011d, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 3.6
+      objectReference: {fileID: 0}
+    - target: {fileID: 7292523453435445056, guid: b8c5d00a69a0e28478a8596bc2f0011d, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -34
       objectReference: {fileID: 0}
     - target: {fileID: 7353068167663174316, guid: b8c5d00a69a0e28478a8596bc2f0011d, type: 3}
       propertyPath: m_LocalScale.y
