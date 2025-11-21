@@ -949,6 +949,7 @@ GameObject:
   - component: {fileID: 239515027}
   - component: {fileID: 239515030}
   - component: {fileID: 239515031}
+  - component: {fileID: 239515032}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -1024,7 +1025,7 @@ Transform:
   m_GameObject: {fileID: 239515026}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -20, y: 7, z: -1385500}
+  m_LocalPosition: {x: -20, y: 7, z: -1390680}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1107,6 +1108,22 @@ MonoBehaviour:
       m_PostInfinity: 2
       m_RotationOrder: 4
   CustomBlends: {fileID: 0}
+--- !u!114 &239515032
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 239515026}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ae084a7eebaac864c83b21de666eebe1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CameraFollowDummy
+  player: {fileID: 159957716}
+  fixedY: 7
+  startOffset: 5
+  fixedZ: -10
 --- !u!1001 &303594637
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1787,7 +1804,7 @@ Transform:
   m_GameObject: {fileID: 349818066}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -20, y: 7, z: -1385500}
+  m_LocalPosition: {x: -20, y: 7, z: -1390680}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -4423,14 +4440,13 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1279194110}
-  - component: {fileID: 1279194111}
   m_Layer: 0
   m_Name: CameraFollowDummy
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1279194110
 Transform:
   m_ObjectHideFlags: 0
@@ -4446,20 +4462,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 239515029}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1279194111
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1279194109}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ae084a7eebaac864c83b21de666eebe1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::CameraFollowDummy
-  player: {fileID: 159957716}
-  fixedY: 7
 --- !u!1 &1324297501
 GameObject:
   m_ObjectHideFlags: 0
