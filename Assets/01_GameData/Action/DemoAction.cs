@@ -413,7 +413,7 @@ public partial class @DemoAction: IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""de0da657-32d3-4a88-9352-1fe880d01f4f"",
-                    ""path"": ""<Gamepad>/buttonSouth"",
+                    ""path"": ""<Gamepad>/buttonEast"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": "";Gamepad"",
