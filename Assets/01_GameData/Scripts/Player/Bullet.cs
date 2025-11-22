@@ -2,13 +2,6 @@ using UnityEngine;
 
 public class Bullet : MonoBehaviour
 {
-    public System.Action<Bullet> OnDestroyed;
-
-    void OnDestroy()
-    {
-        OnDestroyed?.Invoke(this);
-    }
-
     void Update()
     {
         Camera cam = Camera.main;
@@ -22,5 +15,4 @@ public class Bullet : MonoBehaviour
             Destroy(gameObject);
         }
     }
-
 }

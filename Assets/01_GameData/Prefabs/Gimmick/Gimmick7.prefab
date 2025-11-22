@@ -434,6 +434,7 @@ GameObject:
   m_Component:
   - component: {fileID: 803690097591011784}
   - component: {fileID: 4663281096809544822}
+  - component: {fileID: 1046115010909823836}
   m_Layer: 0
   m_Name: dummyCllider
   m_TagString: Untagged
@@ -502,3 +503,17 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
+--- !u!114 &1046115010909823836
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9040794520771184258}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b10bed8133e74df458e6ceb1202257b5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BulletAbsorber
+  _slowDownFactor: 0.3
+  _destroyDelay: 1
