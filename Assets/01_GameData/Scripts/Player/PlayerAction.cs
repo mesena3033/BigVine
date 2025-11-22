@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine.Audio;
@@ -38,6 +39,9 @@ public class PlayerAction : MonoBehaviour
     [SerializeField] private Transform _aimCursor;
     [SerializeField] private float _aimRadius = 6f;
 
+    [SerializeField] private float _shotDelay = 0.5f;   // 発射までの遅延
+    [SerializeField] private float _shotCooldown = 1.0f;// 次の弾までのクールタイム
+
     //アニメーター
     [SerializeField] private Animator _animator;
 
@@ -67,7 +71,8 @@ public class PlayerAction : MonoBehaviour
 
     // 照準・弾管理用
     private Vector2 _lookInput = Vector2.zero;
-    private List<GameObject> _bullets = new List<GameObject>();
+
+    private bool _isShootingProcess = false; // 発射シーケンス中（遅延～クールタイム中）かどうか
 
     // ---------------------------- UnityMessage
     private void Awake()
@@ -88,24 +93,26 @@ public class PlayerAction : MonoBehaviour
     }
     private void Update()
     {
-        // --- 右スティックで照準カーソルを制御 ---
-        if (_lookInput.sqrMagnitude > 0.01f)
+        // 仕様変更：プレイヤーが静止している(_dirの入力がない)時のみ表示
+
+        bool isMoving = _dir.sqrMagnitude > 0.01f; // 移動入力があるかどうか
+        bool hasLookInput = _lookInput.sqrMagnitude > 0.01f; // 照準入力があるかどうか
+
+        // 「移動していない」かつ「照準入力がある」場合のみカーソル有効
+        if (!isMoving && hasLookInput)
         {
-            // 入力がある時だけカーソルを表示
             if (!_aimCursor.gameObject.activeSelf)
                 _aimCursor.gameObject.SetActive(true);
 
             Vector3 aimDir = new Vector3(_lookInput.x, _lookInput.y, 0).normalized;
             _aimCursor.position = transform.position + aimDir * _aimRadius;
-            // キャラの回転は行わず、スプライト切り替えだけで対応
         }
         else
         {
-            // 入力がない時はカーソルを非表示
+            // 移動中、または入力なしの場合は非表示
             if (_aimCursor.gameObject.activeSelf)
                 _aimCursor.gameObject.SetActive(false);
         }
-
     }
 
     private void FixedUpdate()
@@ -262,35 +269,48 @@ public class PlayerAction : MonoBehaviour
     {
         if (context.performed)
         {
-            Fire();
+            // 条件：静止中かつ照準が出ている(_aimCursorがアクティブ) かつ 発射プロセス中でない
+            if (_aimCursor.gameObject.activeSelf && !_isShootingProcess)
+            {
+                // コルーチンを開始して遅延射撃を行う
+                StartCoroutine(FireRoutine());
+            }
         }
     }
+    private IEnumerator FireRoutine()
+    {
+        // 処理中フラグを立てる（これで連射を防ぐ）
+        _isShootingProcess = true;
 
+        // 1. 発射前の待機（0.5秒）
+        yield return new WaitForSeconds(_shotDelay);
+
+        // 待機中に移動してしまった場合などはキャンセルするならここでチェックを入れる
+        // 今回は「発射したら」という仕様なのでそのまま発射処理へ
+
+        Fire(); // 実際の弾生成処理
+
+        // 2. 次の弾発射までのクールタイム（1.0秒）
+        yield return new WaitForSeconds(_shotCooldown);
+
+        // クールタイム終了、再発射可能に
+        _isShootingProcess = false;
+    }
     /// <summary>
     /// 着火
     /// </summary>
     private void Fire()
     {
-        if (_bullets.Count < 3)
-        {
-            // プレイヤー自身の位置から発射
-            Vector3 spawnPos = _tr.position + Vector3.up * 1f;
+        // プレイヤー自身の位置から発射
+        Vector3 spawnPos = _tr.position + Vector3.up * 1f;
 
-            GameObject bulletObj = Instantiate(_bulletPrefab, spawnPos, Quaternion.identity);
-            Rigidbody2D rb = bulletObj.GetComponent<Rigidbody2D>();
+        GameObject bulletObj = Instantiate(_bulletPrefab, spawnPos, Quaternion.identity);
+        Rigidbody2D rb = bulletObj.GetComponent<Rigidbody2D>();
 
-            // 照準カーソル方向へ発射
-            Vector2 direction = (_aimCursor.position - spawnPos).normalized;
-            rb.linearVelocity = direction * _bulletSpeed;
-
-            _bullets.Add(bulletObj);
-
-            Bullet bullet = bulletObj.GetComponent<Bullet>();
-            if (bullet != null)
-            {
-                bullet.OnDestroyed += b => _bullets.Remove(bulletObj);
-            }
-        }
+        // 照準カーソル方向へ発射
+        // ※待機時間の0.5秒の間にカーソル位置が変わっていた場合、現在のカーソル位置に向かって飛びます
+        Vector2 direction = (_aimCursor.position - spawnPos).normalized;
+        rb.linearVelocity = direction * _bulletSpeed;
     }
     private void OnJump(InputAction.CallbackContext context)
     {
