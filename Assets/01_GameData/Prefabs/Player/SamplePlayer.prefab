@@ -256,7 +256,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerAction
   _input: {fileID: 95727929688216807}
   _moveSpeed: 12
-  _jumpPower: 35
+  _jumpPower: 30
   _groundLayer:
     serializedVersion: 2
     m_Bits: 64
@@ -264,11 +264,11 @@ MonoBehaviour:
   noFrictionMat: {fileID: 6200000, guid: d5ea279103a960a4d87cdccc6e02389f, type: 2}
   _bulletPrefab: {fileID: 1773498709948148356, guid: 29028aac0d9d80d47af87acbd1c25ebc, type: 3}
   _bulletSpeed: 10
-  _firePoint: {fileID: 9157812855108623181}
   _aimCursor: {fileID: 0}
   _aimRadius: 6
+  _shotDelay: 0.5
+  _shotCooldown: 1
   _animator: {fileID: 3290019656100336504}
-  _pet: {fileID: 1837690422234659611, guid: c36d6f26165bac34792c97d783b9c95f, type: 3}
   _audioSource: {fileID: 0}
 --- !u!95 &3290019656100336504
 Animator:
