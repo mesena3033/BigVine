@@ -266,8 +266,8 @@ MonoBehaviour:
   _bulletSpeed: 10
   _aimCursor: {fileID: 0}
   _aimRadius: 6
-  _shotDelay: 0.5
-  _shotCooldown: 1
+  _shotDelay: 0.3
+  _shotCooldown: 0.5
   _animator: {fileID: 3290019656100336504}
   _audioSource: {fileID: 0}
 --- !u!95 &3290019656100336504
