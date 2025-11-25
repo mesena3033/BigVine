@@ -2,11 +2,11 @@ using UnityEngine;
 
 public class FallingPlatform : MonoBehaviour
 {
-    [SerializeField] private float fallDelay = 0.5f;
     [SerializeField] private float destroyDelay = 2f;
-    [SerializeField] private Rigidbody2D rb;
 
     private bool hasTriggered = false;
+    private Rigidbody2D rb;
+
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
@@ -15,22 +15,37 @@ public class FallingPlatform : MonoBehaviour
         if (collision.gameObject.CompareTag("Player") || collision.gameObject.layer == LayerMask.NameToLayer("Player"))
         {
             hasTriggered = true;
-            Invoke(nameof(Fall), fallDelay);
+            Fall();
         }
     }
 
     private void Fall()
     {
-        if (rb == null) rb = GetComponent<Rigidbody2D>();
-        rb.bodyType = RigidbodyType2D.Dynamic;
-        rb.gravityScale = 2f;
-        Invoke(nameof(DestroyPlatform), destroyDelay);
+        rb = GetComponent<Rigidbody2D>();
+        rb.bodyType = RigidbodyType2D.Kinematic;
+        StartCoroutine(SmoothFall());
     }
+
+
 
     private void DestroyPlatform()
     {
         Destroy(gameObject);
     }
 
+    private System.Collections.IEnumerator SmoothFall()
+    {
+        float speed = 5f;
+        float time = 0f;
+
+        while (time < destroyDelay)
+        {
+            transform.position += Vector3.down * speed * Time.deltaTime;
+            time += Time.deltaTime;
+            yield return null;
+        }
+
+        DestroyPlatform();
+    }
 
 }

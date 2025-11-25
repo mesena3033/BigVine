@@ -2,17 +2,18 @@ using UnityEngine;
 
 public class LeafMagicTrigger : MonoBehaviour
 {
-    [SerializeField] private GameObject budObject;       // 芽（最初に見えてる）
-    [SerializeField] private Transform leaf1;            // 葉1
-    [SerializeField] private Transform leaf2;            // 葉2
-    [SerializeField] private float detectionRadius = 3f; // 敵を探す範囲
-    [SerializeField] private LayerMask enemyLayer;       // 敵レイヤー
+    [SerializeField] private GameObject budObject;
+    [SerializeField] private Transform leaf1;
+    [SerializeField] private Transform leaf2;
+
+    [SerializeField] private float detectionRadius = 3f;
+    [SerializeField] private LayerMask enemyLayer;
 
     private bool hasTriggered = false;
+    private bool hasClosed = false;   // ★葉っぱを閉じたかどうか
 
     private void Start()
     {
-        // 最初は葉っぱを非表示にしておく
         if (leaf1 != null) leaf1.gameObject.SetActive(false);
         if (leaf2 != null) leaf2.gameObject.SetActive(false);
     }
@@ -24,28 +25,39 @@ public class LeafMagicTrigger : MonoBehaviour
 
         hasTriggered = true;
 
-        // 芽を消す
         if (budObject != null) Destroy(budObject);
 
-        // 葉っぱを表示して回転リセット
-        if (leaf1 != null)
-        {
-            leaf1.gameObject.SetActive(true);
-            leaf1.rotation = Quaternion.identity;
-        }
-        if (leaf2 != null)
-        {
-            leaf2.gameObject.SetActive(true);
-            leaf2.rotation = Quaternion.identity;
-        }
-
-        // 敵を消す
-        DestroyEnemiesInRange();
+        if (leaf1 != null) leaf1.gameObject.SetActive(true);
+        if (leaf2 != null) leaf2.gameObject.SetActive(true);
     }
 
-    private void DestroyEnemiesInRange()
+    private void Update()
     {
+        if (!hasTriggered || hasClosed) return;
+
+        // 敵を探す
         Collider2D[] hits = Physics2D.OverlapCircleAll(transform.position, detectionRadius, enemyLayer);
+        if (hits.Length > 0)
+        {
+            CloseLeaves();  // ★敵を見つけたら閉じる
+            DestroyEnemies(hits);
+            hasClosed = true;
+        }
+    }
+
+    private void CloseLeaves()
+    {
+        // ★葉っぱを縦にする（rotation）
+        leaf1.rotation = Quaternion.Euler(0, 0, 0);
+        leaf2.rotation = Quaternion.Euler(0, 0, 0);
+
+        // ★葉っぱをオブジェクト中央へ寄せる（position）
+        leaf1.position = transform.position;
+        leaf2.position = transform.position;
+    }
+
+    private void DestroyEnemies(Collider2D[] hits)
+    {
         foreach (var hit in hits)
         {
             Destroy(hit.gameObject);
