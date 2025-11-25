@@ -39,8 +39,8 @@ public class PlayerAction : MonoBehaviour
     [SerializeField] private Transform _aimCursor;
     [SerializeField] private float _aimRadius = 6f;
 
-    [SerializeField] private float _shotDelay = 0.5f;   // 発射までの遅延
-    [SerializeField] private float _shotCooldown = 1.0f;// 次の弾までのクールタイム
+    [SerializeField] private float _shotDelay = 0.3f;   // 発射までの遅延
+    [SerializeField] private float _shotCooldown = 0.5f;// 次の弾までのクールタイム
 
     //アニメーター
     [SerializeField] private Animator _animator;
@@ -73,6 +73,7 @@ public class PlayerAction : MonoBehaviour
     private Vector2 _lookInput = Vector2.zero;
 
     private bool _isShootingProcess = false; // 発射シーケンス中（遅延～クールタイム中）かどうか
+    private bool _isCasting = false;//魔法詠唱中
 
     // ---------------------------- UnityMessage
     private void Awake()
@@ -234,12 +235,15 @@ public class PlayerAction : MonoBehaviour
     {
         _dir = context.ReadValue<Vector2>();
 
-        // 入力方向があるときに最後の向きを保存
-        if (_dir.x > 0) _lastFacingRight = true;
-        else if (_dir.x < 0) _lastFacingRight = false;
+        if (!_isCasting)
+        {
+            // 入力方向があるときに最後の向きを保存
+            if (_dir.x > 0) _lastFacingRight = true;
+            else if (_dir.x < 0) _lastFacingRight = false;
 
-        // SpriteRendererで反転
-        _sr.flipX = !_lastFacingRight;
+            // SpriteRendererで反転
+            _sr.flipX = !_lastFacingRight;
+        }
 
         switch (context.phase)
         {
@@ -258,6 +262,12 @@ public class PlayerAction : MonoBehaviour
     /// </summary>
     private void Move()
     {
+        if (_isCasting)
+        {
+            // 空中なら落下はしたいのでY軸の速度は維持し、X軸だけ0にする
+            _rb.linearVelocity = new Vector2(0f, _rb.linearVelocity.y);
+            return;
+        }
         _rb.linearVelocity = new Vector2(_dir.x * _moveSpeed, _rb.linearVelocity.y);
     }
 
@@ -272,6 +282,10 @@ public class PlayerAction : MonoBehaviour
             // 条件：静止中かつ照準が出ている(_aimCursorがアクティブ) かつ 発射プロセス中でない
             if (_aimCursor.gameObject.activeSelf && !_isShootingProcess)
             {
+                _animator.SetTrigger("Magic");
+
+                FaceToCursor();
+
                 // コルーチンを開始して遅延射撃を行う
                 StartCoroutine(FireRoutine());
             }
@@ -282,6 +296,8 @@ public class PlayerAction : MonoBehaviour
         // 処理中フラグを立てる（これで連射を防ぐ）
         _isShootingProcess = true;
 
+        _isCasting = true;
+
         // 1. 発射前の待機（0.5秒）
         yield return new WaitForSeconds(_shotDelay);
 
@@ -290,12 +306,33 @@ public class PlayerAction : MonoBehaviour
 
         Fire(); // 実際の弾生成処理
 
+        _isCasting = false;
+
         // 2. 次の弾発射までのクールタイム（1.0秒）
         yield return new WaitForSeconds(_shotCooldown);
 
         // クールタイム終了、再発射可能に
         _isShootingProcess = false;
     }
+
+    private void FaceToCursor()
+    {
+        // プレイヤーからカーソルへのベクトル
+        float xDiff = _aimCursor.position.x - transform.position.x;
+
+        // Xがプラスなら右(0~90, -90~0)、マイナスなら左(90~180, -180~-90)にある
+        if (xDiff > 0)
+        {
+            _lastFacingRight = true;
+            _sr.flipX = false; // 右向き（通常）
+        }
+        else if (xDiff < 0)
+        {
+            _lastFacingRight = false;
+            _sr.flipX = true; // 左向き（反転）
+        }
+    }
+
     /// <summary>
     /// 着火
     /// </summary>
