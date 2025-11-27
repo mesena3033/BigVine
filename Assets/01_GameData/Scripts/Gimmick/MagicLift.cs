@@ -1,78 +1,58 @@
 using UnityEngine;
 
-public class MagicLiftTrigger : MonoBehaviour
+public class MagicLift : MonoBehaviour
 {
-    [SerializeField] private Transform[] targetObjects; // 動かす対象（床・壁・見た目）
-    [SerializeField] private Transform player;          // プレイヤーを指定
-    [SerializeField] private float liftAmount = 3f;     // 上に動かす距離
-    [SerializeField] private float duration = 5f;       // 戻るまでの時間
+    [SerializeField] private Rigidbody2D platformRB;
+    [SerializeField] private float liftAmount = 3f;
+    [SerializeField] private float stayTime = 2f;
+    [SerializeField] private float upSpeed = 20f;     // ★上昇スピード
+    [SerializeField] private float downSpeed = 14f;   // ★下降スピード
 
-    private Vector3[] originalPositions;
-    private bool isLifted = false;
     public bool playerOnPlatform = false;
+
+    private Vector3 originalPos;
+    private Vector3 liftedPos;
+    private bool isMoving = false;
 
     private void Start()
     {
-        originalPositions = new Vector3[targetObjects.Length];
-        for (int i = 0; i < targetObjects.Length; i++)
-        {
-            originalPositions[i] = targetObjects[i].position;
-        }
+        originalPos = platformRB.position;
+        liftedPos = originalPos + Vector3.up * liftAmount;
     }
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        // 魔法弾が「床以外のこのトリガー」に当たったら床を動かす
-        if (!isLifted && other.CompareTag("MagicBullet"))
-        {
-            isLifted = true;
+        if (isMoving) return;
+        if (!other.CompareTag("MagicBullet")) return;
 
-            // 床・壁・見た目を持ち上げる
-            for (int i = 0; i < targetObjects.Length; i++)
-            {
-                targetObjects[i].position = originalPositions[i] + Vector3.up * liftAmount;
-            }
-
-            // プレイヤーが床に乗っているときだけ持ち上げる
-            if (playerOnPlatform && player != null)
-            {
-                player.position += Vector3.up * liftAmount;
-            }
-
-            Invoke(nameof(ReturnToOriginal), duration);
-        }
+        StopAllCoroutines();
+        StartCoroutine(LiftThenReturn());
     }
 
-    private void ReturnToOriginal()
+    private System.Collections.IEnumerator LiftThenReturn()
     {
-        for (int i = 0; i < targetObjects.Length; i++)
-        {
-            targetObjects[i].position = originalPositions[i];
-        }
+        isMoving = true;
 
-        if (playerOnPlatform && player != null)
+        // ★ 上向きにスムーズに移動（吹き飛び防止）
+        while (Vector3.Distance(platformRB.position, liftedPos) > 0.01f)
         {
-            player.position -= Vector3.up * liftAmount;
+            Vector3 target = Vector3.MoveTowards(platformRB.position, liftedPos, upSpeed * Time.deltaTime);
+            platformRB.MovePosition(target);
+            yield return null;
         }
+        platformRB.MovePosition(liftedPos);
 
-        isLifted = false;
-    }
+        yield return new WaitForSeconds(stayTime);
 
-    // プレイヤーが床に乗ったとき
-    private void OnCollisionEnter2D(Collision2D collision)
-    {
-        if (collision.gameObject.CompareTag("Player"))
+        // ★ 下向きにスムーズに戻る
+        while (Vector3.Distance(platformRB.position, originalPos) > 0.01f)
         {
-            playerOnPlatform = true;
+            Vector3 target = Vector3.MoveTowards(platformRB.position, originalPos, downSpeed * Time.deltaTime);
+            platformRB.MovePosition(target);
+            yield return null;
         }
-    }
+        platformRB.MovePosition(originalPos);
 
-    // プレイヤーが床から離れたとき
-    private void OnCollisionExit2D(Collision2D collision)
-    {
-        if (collision.gameObject.CompareTag("Player"))
-        {
-            playerOnPlatform = false;
-        }
+        isMoving = false;
     }
 }
