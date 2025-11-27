@@ -2,21 +2,28 @@ using UnityEngine;
 
 public class PlatformPlayerCheck : MonoBehaviour
 {
-    [SerializeField] private MagicLiftTrigger liftTrigger;
+    [SerializeField] private MagicLift liftTrigger;
+    private int insideCount = 0;
 
-    private void OnCollisionEnter2D(Collision2D collision)
+    private void OnTriggerEnter2D(Collider2D other)
     {
-        if (collision.gameObject.CompareTag("Player"))
+        if (other.CompareTag("Player"))
         {
+            insideCount++;
             liftTrigger.playerOnPlatform = true;
         }
     }
 
-    private void OnCollisionExit2D(Collision2D collision)
+    private void OnTriggerExit2D(Collider2D other)
     {
-        if (collision.gameObject.CompareTag("Player"))
+        if (other.CompareTag("Player"))
         {
-            liftTrigger.playerOnPlatform = false;
+            insideCount--;
+            if (insideCount <= 0)
+            {
+                insideCount = 0;
+                liftTrigger.playerOnPlatform = false;
+            }
         }
     }
 }
