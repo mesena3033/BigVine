@@ -100,6 +100,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3656700031083955205}
   - component: {fileID: 6880078412270342316}
+  - component: {fileID: 4183722369513705781}
   - component: {fileID: 1648334964070309048}
   - component: {fileID: 441984054770924308}
   m_Layer: 9
@@ -152,6 +153,25 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 4
+--- !u!114 &4183722369513705781
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 697293215758887499}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f23e95f27ed66f949ad051e05b049e99, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SkyEnemy
+  MoveBool: 0
+  MoveHori: "\u5DE6"
+  MoveHoriSpeed: 2
+  RoundTrip: 0
+  RoundTripWidth: 0
+  DestroyXMin: -20
+  DestroyXMax: 20
 --- !u!114 &1648334964070309048
 MonoBehaviour:
   m_ObjectHideFlags: 0
