@@ -145,7 +145,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9157812855108623181, guid: 9941096420b54834e9aad5b3835bb769, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: 157.29
       objectReference: {fileID: 0}
     - target: {fileID: 9157812855108623181, guid: 9941096420b54834e9aad5b3835bb769, type: 3}
       propertyPath: m_LocalPosition.y
@@ -898,7 +898,7 @@ Transform:
   m_GameObject: {fileID: 239515026}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -20, y: 7, z: -1836050}
+  m_LocalPosition: {x: -20, y: 7, z: -1838860}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1634,7 +1634,7 @@ Transform:
   m_GameObject: {fileID: 349818066}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -20, y: 7, z: -1836050}
+  m_LocalPosition: {x: -20, y: 7, z: -1838860}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -5650,6 +5650,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: FollorEnemy
       objectReference: {fileID: 0}
+    - target: {fileID: 1648334964070309048, guid: e477f3c64b0f44945afcd22092e309e7, type: 3}
+      propertyPath: player
+      value: 
+      objectReference: {fileID: 159957716}
     - target: {fileID: 3656700031083955205, guid: e477f3c64b0f44945afcd22092e309e7, type: 3}
       propertyPath: m_LocalPosition.x
       value: 187
