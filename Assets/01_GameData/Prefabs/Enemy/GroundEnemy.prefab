@@ -213,5 +213,5 @@ MonoBehaviour:
   MoveBool: 1
   MoveHori: "\u5DE6"
   MoveHoriSpeed: 2
-  DestroyXMin: -20
-  DestroyXMax: 20
+  DestroyYMin: -20
+  DestroyYMax: 20
