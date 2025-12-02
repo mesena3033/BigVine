@@ -1,5 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
+using Unity.Cinemachine;
+using UnityEngine.InputSystem.Controls;
 
 public class GroundEnemy : MonoBehaviour
 {
@@ -17,8 +19,8 @@ public class GroundEnemy : MonoBehaviour
     [Header("消えるライン")]
 
     //  これ以下／以上で消す
-    [SerializeField] private float DestroyXMin;
-    [SerializeField] private float DestroyXMax;
+    [SerializeField] private float DestroyYMin;
+    [SerializeField] private float DestroyYMax;
 
     private Rigidbody2D Rb2d;
     private float DefaultGravityScale;
@@ -73,11 +75,45 @@ public class GroundEnemy : MonoBehaviour
     {
         //  範囲外に出たら消す
         float py = transform.position.y;
-        if (py < DestroyXMin || py > DestroyXMax)
+        if (py < DestroyYMin || py > DestroyYMax)
         {
             Destroy(gameObject);
         }
     }
 
-    //  壁の衝突で向き反転はちょっとむずかった
+    private void OnCollisionEnter2D(Collision2D other)
+    {
+        //接地判定の肯定
+        if (other.gameObject.layer == LayerMask.NameToLayer("Ground"))
+        {
+            GroundContact.Add(other.collider);
+        }
+
+        //  Groundに衝突時移動方向を反転する
+        if (other.gameObject.layer == LayerMask.NameToLayer("Ground"))
+        {
+            dir *= -1;  //  方向を反転
+
+            transform.localScale = new Vector2(-dir, 1);
+
+            //SpriteRenderer sr = GetComponent<SpriteRenderer>();
+
+            ////  スプライトの反転
+            //if (sr != null)
+            //{
+            //    sr.flipX = (dir < 0);
+            //    // dirが負なら左向き、正なら右向きにする
+            //}
+        }
+    }
+
+    private void OnCollisionExit2D(Collision2D other)
+    {
+        //  接地判定の否定
+        if (other.gameObject.layer == LayerMask.NameToLayer("Ground"))
+        {
+            GroundContact.Remove(other.collider);
+        }
+    }
+
 }
