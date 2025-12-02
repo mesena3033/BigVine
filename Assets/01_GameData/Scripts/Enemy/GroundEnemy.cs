@@ -40,11 +40,11 @@ public class GroundEnemy : MonoBehaviour
         //  方向代入
         if (MoveHori == "左")
         {
-            dir = -1;
+            dir = 1;
         }
         else if (MoveHori == "右")
         {
-            dir = 1;
+            dir = -1;
         }
         else
             //  デフォは左
@@ -60,14 +60,17 @@ public class GroundEnemy : MonoBehaviour
         //  接地判定より、地面についているとき重力無効化
         Rb2d.gravityScale = (GroundContact.Count == 0) ? DefaultGravityScale : 0f;
 
-        if(MoveBool != true)
+        if (MoveBool != true)
         {
             return;
         }
 
-        //  横移動の制御
-        Vector2 delta = Vector2.right * dir * MoveHoriSpeed * Time.deltaTime;
-        Rb2d.MovePosition(Rb2d.position + delta);
+        //  接地時のみ横移動の制御
+        if(GroundContact.Count > 0)
+        {
+            Vector2 delta = Vector2.right * dir * MoveHoriSpeed * Time.deltaTime;
+            Rb2d.MovePosition(Rb2d.position + delta);
+        }
     }
 
     // Update is called once per frame
