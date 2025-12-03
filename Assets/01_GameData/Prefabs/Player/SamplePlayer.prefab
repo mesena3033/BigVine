@@ -212,6 +212,7 @@ MonoBehaviour:
   HeartParent: {fileID: 0}
   sr: {fileID: 5359122016125845740}
   RespawnPoint: {fileID: 0}
+  KnockbackForce: 50
 --- !u!114 &95727929688216807
 MonoBehaviour:
   m_ObjectHideFlags: 0
