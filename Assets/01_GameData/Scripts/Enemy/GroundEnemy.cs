@@ -40,6 +40,7 @@ public class GroundEnemy : MonoBehaviour
         //  •ûŒü‘ã“ü
         if (MoveHori == "¶")
         {
+            //  Ground‚Å”½“]‚·‚é‚½‚ß‹t‚É‚·‚é
             dir = 1;
         }
         else if (MoveHori == "‰E")
@@ -93,20 +94,12 @@ public class GroundEnemy : MonoBehaviour
         }
 
         //  Ground‚ÉÕ“ËˆÚ“®•ûŒü‚ğ”½“]‚·‚é
-        if (other.gameObject.layer == LayerMask.NameToLayer("Ground"))
+        if ((other.gameObject.layer == LayerMask.NameToLayer("Ground")) ||
+            (other.gameObject.layer == LayerMask.NameToLayer("Enemy")))
         {
             dir *= -1;  //  •ûŒü‚ğ”½“]
 
             transform.localScale = new Vector2(-dir, 1);
-
-            //SpriteRenderer sr = GetComponent<SpriteRenderer>();
-
-            ////  ƒXƒvƒ‰ƒCƒg‚Ì”½“]
-            //if (sr != null)
-            //{
-            //    sr.flipX = (dir < 0);
-            //    // dir‚ª•‰‚È‚ç¶Œü‚«A³‚È‚ç‰EŒü‚«‚É‚·‚é
-            //}
         }
     }
 
