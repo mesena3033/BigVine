@@ -24,8 +24,15 @@ public class PlayerHP : MonoBehaviour
     private int PlayerLayer;
     private int EnemyLayer;
 
+    // 物理演算用
+    [Header("Physics Settings")]
+    public float KnockbackForce = 10f; // ノックバックの強さ
+    private Rigidbody2D rb;
+
     void Start()
     {
+        rb = GetComponent<Rigidbody2D>();
+
         //  レイヤーID取得
         PlayerLayer = gameObject.layer;
         EnemyLayer = LayerMask.NameToLayer("Enemy");
@@ -120,16 +127,19 @@ public class PlayerHP : MonoBehaviour
     }
     void OnCollisionStay2D(Collision2D collision)
     {
+        // 既に無敵時間中なら処理しない
+        if (isInvincible) return;
+
         if (collision.gameObject.layer == LayerMask.NameToLayer("Enemy"))
         {
-            //foreach (ContactPoint2D point in collision.contacts)
-            //{
-            //    if (point.normal.y > 0.5f)
-            //    {
-            //        Debug.Log("Enemy stomped!");
-            //        return;
-            //    }
-            //}
+            // ノックバック処理
+            Vector2 direction = (transform.position - collision.transform.position).normalized;
+            Vector2 knockbackDir = (direction + Vector2.up * 0.5f).normalized;
+
+            rb.linearVelocity = Vector2.zero;
+
+            rb.AddForce(knockbackDir * KnockbackForce, ForceMode2D.Impulse);
+
             TakeDamage(1);
         }
     }
