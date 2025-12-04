@@ -10,15 +10,18 @@ public class MagicLift : MonoBehaviour
 
     public bool playerOnPlatform = false;
 
-    private Vector3 originalPos;
-    private Vector3 liftedPos;
+    private Vector2 originalPos;
+    private Vector2 liftedPos;
+
     private bool isMoving = false;
 
     private void Start()
     {
         originalPos = platformRB.position;
-        liftedPos = originalPos + Vector3.up * liftAmount;
+        liftedPos = originalPos + Vector2.up * liftAmount;
     }
+
+
 
     private void OnTriggerEnter2D(Collider2D other)
     {
@@ -33,10 +36,9 @@ public class MagicLift : MonoBehaviour
     {
         isMoving = true;
 
-        // ★ 上向きにスムーズに移動（吹き飛び防止）
-        while (Vector3.Distance(platformRB.position, liftedPos) > 0.01f)
+        while (Vector2.Distance(platformRB.position, liftedPos) > 0.01f)
         {
-            Vector3 target = Vector3.MoveTowards(platformRB.position, liftedPos, upSpeed * Time.deltaTime);
+            Vector2 target = Vector2.MoveTowards(platformRB.position, liftedPos, upSpeed * Time.deltaTime);
             platformRB.MovePosition(target);
             yield return null;
         }
@@ -44,10 +46,9 @@ public class MagicLift : MonoBehaviour
 
         yield return new WaitForSeconds(stayTime);
 
-        // ★ 下向きにスムーズに戻る
-        while (Vector3.Distance(platformRB.position, originalPos) > 0.01f)
+        while (Vector2.Distance(platformRB.position, originalPos) > 0.01f)
         {
-            Vector3 target = Vector3.MoveTowards(platformRB.position, originalPos, downSpeed * Time.deltaTime);
+            Vector2 target = Vector2.MoveTowards(platformRB.position, originalPos, downSpeed * Time.deltaTime);
             platformRB.MovePosition(target);
             yield return null;
         }
@@ -55,4 +56,5 @@ public class MagicLift : MonoBehaviour
 
         isMoving = false;
     }
+
 }
