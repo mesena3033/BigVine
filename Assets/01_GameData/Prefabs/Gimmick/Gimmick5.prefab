@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 8016014899059116399}
   - component: {fileID: 8865730165671890003}
   - component: {fileID: 8370868540784676941}
-  m_Layer: 12
+  m_Layer: 11
   m_Name: Gimmick5a
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -189,7 +189,7 @@ GameObject:
   - component: {fileID: 4137398297863190339}
   - component: {fileID: 2779396016259816981}
   - component: {fileID: 6238345090357640824}
-  m_Layer: 12
+  m_Layer: 11
   m_Name: dummyCollider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -281,7 +281,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3726612168714346845}
   - component: {fileID: 2164480478225622035}
-  m_Layer: 12
+  m_Layer: 11
   m_Name: Gimmick5
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -435,7 +435,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1150030106610054914}
   - component: {fileID: 5924388891334990748}
-  m_Layer: 12
+  m_Layer: 11
   m_Name: Gimmick5-1
   m_TagString: Untagged
   m_Icon: {fileID: 0}

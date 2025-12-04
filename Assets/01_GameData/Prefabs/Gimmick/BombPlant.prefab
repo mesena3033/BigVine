@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1261881367038968420}
   - component: {fileID: 1366247262952303261}
-  m_Layer: 12
+  m_Layer: 11
   m_Name: Gimmick3Image_highlight_0
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -256,7 +256,7 @@ GameObject:
   - component: {fileID: 7292523453435445056}
   - component: {fileID: 4020252336368259581}
   - component: {fileID: 2486264988287020994}
-  m_Layer: 12
+  m_Layer: 11
   m_Name: dummyCollider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -349,7 +349,7 @@ GameObject:
   - component: {fileID: 7353068167663174316}
   - component: {fileID: 5787671284288598337}
   - component: {fileID: 6679958494256143683}
-  m_Layer: 12
+  m_Layer: 11
   m_Name: BombPlantTriggerArea
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -436,7 +436,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2707266809862191764}
-  m_Layer: 12
+  m_Layer: 11
   m_Name: BombPlant
   m_TagString: Untagged
   m_Icon: {fileID: 0}
