@@ -1,52 +1,77 @@
 using UnityEngine;
+using System.Collections;
 
 public class GrowthPointGimmick : MonoBehaviour
 {
-    // ギミックの種類
     public enum GimmickType { Turret, IvyShield, FallingRock }
     public GimmickType type;
 
+    [Header("共通設定")]
     public int damageAmount = 1;
 
-    // 魔法が当たって成長した時に呼ばれる想定
+    [Header("ツタシールド (IvyShield) 用設定")]
+    [SerializeField] private GameObject shieldObject; // 子オブジェクトのシールド(IvyShield)
+    [SerializeField] private float shieldDuration = 3.0f; // シールド展開時間
+
+    [Header("砲台 (Turret) 用設定")]
+    [SerializeField] private GameObject bulletPrefab;
+    [SerializeField] private Transform firePoint;
+    [SerializeField] private float fireForce = 15f;
+    [SerializeField] private float cooldown = 1.0f;
+    private bool isCooldown = false;
+
+    // --- 魔法が当たった時の処理 ---
     public void OnMagicHit()
     {
-        // 成長アニメーションや有効化処理
-        Debug.Log("成長点が活性化しました");
+        if (isCooldown) return;
 
-        if (type == GimmickType.Turret)
+        Debug.Log("成長点活性化: " + type);
+
+        switch (type)
         {
-            // 砲台なら即座に弾を発射してボスを狙う処理などを呼ぶ
-            // ここでは簡易的に「ボスを探してダメージ」とします
-            AttackBoss();
+            case GimmickType.Turret:
+                StartCoroutine(FireTurret());
+                break;
+
+            case GimmickType.IvyShield:
+                StartCoroutine(ActivateShield());
+                break;
+
+            case GimmickType.FallingRock:
+                // 落石処理
+                break;
         }
     }
 
-    // 物理的な衝突（ツタシールドにボスが突っ込んできた時など）
-    private void OnCollisionEnter2D(Collision2D collision)
+    // --- ツタシールド展開コルーチン ---
+    private IEnumerator ActivateShield()
     {
-        // ボスとぶつかったら
-        if (collision.gameObject.TryGetComponent<BossController>(out BossController boss))
+        isCooldown = true;
+
+        if (shieldObject != null)
         {
-            // ツタシールドの場合のみ、接触でダメージ
-            if (type == GimmickType.IvyShield)
-            {
-                boss.TakeDamage(damageAmount);
-                Debug.Log("ツタシールドでカウンター成功！");
-                // 必要ならここでシールドを壊す
-                Destroy(gameObject);
-            }
+            shieldObject.SetActive(true); // シールド出現
+
+            yield return new WaitForSeconds(shieldDuration); // 一定時間待機
+
+            shieldObject.SetActive(false); // シールド消滅
         }
+        else
+        {
+            Debug.LogWarning("Shield Objectが設定されていません！");
+            yield return new WaitForSeconds(1.0f);
+        }
+
+        isCooldown = false;
     }
 
-    // 砲台などが遠隔で攻撃する場合の処理
-    void AttackBoss()
+    // --- 砲台処理 (前回と同じ) ---
+    private IEnumerator FireTurret()
     {
-        // シーン上のボスを探してダメージを与える（簡易実装）
-        BossController boss = FindFirstObjectByType<BossController>();
-        if (boss != null)
-        {
-            boss.TakeDamage(damageAmount);
-        }
+        isCooldown = true;
+        yield return new WaitForSeconds(cooldown);
+        isCooldown = false;
     }
+
+    // --- ボス突進へのカウンター判定 ---
 }

@@ -150,5 +150,17 @@ public class PlayerHP : MonoBehaviour
             TakeDamage(1);
             Destroy(other.gameObject);
         }
+        // ツタの先端など、Trigger判定のEnemyの場合 (被弾のみ)
+        else if (other.gameObject.layer == LayerMask.NameToLayer("Enemy"))
+        {
+            // ノックバック処理
+            Vector2 direction = (transform.position - other.transform.position).normalized;
+            Vector2 knockbackDir = (direction + Vector2.up * 0.5f).normalized;
+
+            rb.linearVelocity = Vector2.zero; 
+            rb.AddForce(knockbackDir * KnockbackForce, ForceMode2D.Impulse);
+
+            TakeDamage(1);
+        }
     }
 }

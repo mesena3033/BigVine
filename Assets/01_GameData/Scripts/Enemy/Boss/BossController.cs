@@ -1,131 +1,233 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 using System.Collections;
 
 public class BossController : MonoBehaviour
 {
-    [Header("ƒXƒe[ƒ^ƒX")]
+    [Header("ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹")]
     [SerializeField] private int maxHp = 10;
     private int currentHp;
 
-    [Header("UŒ‚İ’è: “Ëi")]
-    public float chargeSpeed = 10f;      // •b‘¬
-    public float chargeDuration = 1.5f;  // ‘±ŠÔ
+    [Header("æ”»æ’ƒè¨­å®š: å…±é€š")]
+    [SerializeField] private Transform firePoint; // å¼¾ã®ç™ºå°„ä½ç½®
 
-    [Header("ƒXƒe[ƒW”ÍˆÍ§ŒÀ")]
-    public float minX = -8.0f; // ‰æ–Ê¶’[‚ÌXÀ•W
-    public float maxX = 8.0f;  // ‰æ–Ê‰E’[‚ÌXÀ•W
+    [Header("æ”»æ’ƒè¨­å®š: çªé€² (25%)")]
+    public float chargeSpeed = 10f;
+    public float chargeDuration = 1.5f;
+    public float returnSpeed = 5f;
 
-    [Header("QÆ")]
-    [SerializeField] private Rigidbody2D rb; // “–‚½‚è”»’è—p
-    [SerializeField] private SpriteRenderer[] bodyPartsRenderers; // F‚ğ•Ï‚¦‚éƒp[ƒcˆê——
+    [Header("æ”»æ’ƒè¨­å®š: ãƒ„ã‚¿ (40%)")]
+    [SerializeField] private GameObject vinePrefab;
+    [SerializeField] private float vineWarningTime = 1.0f;
+
+    [Header("æ”»æ’ƒè¨­å®š: æº¶è§£æ¶² (35%)")]
+    [SerializeField] private GameObject acidBulletPrefab; // å¼¾ã®ãƒ—ãƒ¬ãƒãƒ–
+    [SerializeField] private float throwForce = 10f;      // æŠ•ã’ã‚‹å¼·ã•
+    [SerializeField] private float throwInterval = 0.5f;  // é€£å°„é–“éš”
+
+    [Header("ã‚¹ãƒ†ãƒ¼ã‚¸ç¯„å›²åˆ¶é™")]
+    public float minX = -16.0f;
+    public float maxX = 16.0f;
+    public float maxY = 12.0f;
+    public float minY = -4.0f;
+
+    [Header("å‚ç…§")]
+    [SerializeField] private Rigidbody2D rb;
+    [SerializeField] private SpriteRenderer[] bodyPartsRenderers;
 
     private Transform playerTransform;
     private bool isDead = false;
+    private Vector3 initialPosition;
 
     void Start()
     {
         currentHp = maxHp;
+        initialPosition = transform.position;
 
-        // ƒvƒŒƒCƒ„[æ“¾
         GameObject player = GameObject.FindGameObjectWithTag("Player");
         if (player != null) playerTransform = player.transform;
 
-        // s“®ƒ‹[ƒvŠJn
+        // firePointãŒè¨­å®šã•ã‚Œã¦ã„ãªã‘ã‚Œã°è‡ªåˆ†ã®ä½ç½®ã«ã™ã‚‹
+        if (firePoint == null) firePoint = transform;
+
         StartCoroutine(BossBehaviorLoop());
     }
 
-    // --- AIvlƒ‹[ƒ`ƒ“ ---
     IEnumerator BossBehaviorLoop()
     {
         while (!isDead)
         {
-            // 1. ‘Ò‹@
+            // å¾…æ©Ÿ
             yield return new WaitForSeconds(2.0f);
-
             if (isDead) break;
 
-            // ƒvƒŒƒCƒ„[‚ª‚¢‚ê‚ÎUŒ‚ŠJn
             if (playerTransform != null)
             {
-                yield return StartCoroutine(ChargeAttack());
+                float roll = Random.Range(0f, 100f);
+
+                // ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®æ–¹ã‚’å‘ã
+                FacePlayer();
+
+                if (roll < 25f) // 0 ï½ 25 (25%) -> çªé€²
+                {
+                    yield return StartCoroutine(ChargeAttack());
+                }
+                else if (roll < 65f) // 25 ï½ 65 (40%) -> ãƒ„ã‚¿
+                {
+                    // ãƒ„ã‚¿ã®ä¸­ã§ã•ã‚‰ã«ç¸¦æ¨ªã‚’ãƒ©ãƒ³ãƒ€ãƒ åˆ†å² (50:50)
+                    if (Random.value > 0.5f)
+                        yield return StartCoroutine(VineAttackHorizontal());
+                    else
+                        yield return StartCoroutine(VineAttackVertical());
+                }
+                else // 65 ï½ 100 (35%) -> æº¶è§£æ¶²
+                {
+                    yield return StartCoroutine(AcidSpitAttack());
+                }
             }
             else
             {
-                // ƒvƒŒƒCƒ„[ÄŒŸõi€–SŒã‚ÌƒŠƒgƒ‰ƒC‚È‚Ç‚ğ‘z’èj
                 GameObject player = GameObject.FindGameObjectWithTag("Player");
                 if (player) playerTransform = player.transform;
             }
         }
     }
 
-    // --- UŒ‚ƒAƒNƒVƒ‡ƒ“: “Ëi ---
+    // --- æ”»æ’ƒ: çªé€² ---
     IEnumerator ChargeAttack()
     {
-        // 1. •ûŒüŒˆ’è
-        float directionSign = Mathf.Sign(playerTransform.position.x - transform.position.x); // ‰E:1, ¶:-1
-
-        // 2. Œ©‚½–Ú‚ÌŒü‚«‚ğ‡‚í‚¹‚é
-        // ¦‰EŒü‚«‚Ì‰æ‘œ‚ªƒfƒtƒHƒ‹ƒg‚È‚ç (directionSign < 0) ‚Å”½“]
-        // ¦¶Œü‚«‚Ì‰æ‘œ‚ªƒfƒtƒHƒ‹ƒg‚È‚ç (directionSign > 0) ‚Å”½“]
-        bool shouldFlip = (directionSign < 0);
-        foreach (var sr in bodyPartsRenderers)
-        {
-            if (sr != null) sr.flipX = shouldFlip;
-        }
-
-        // 3. —\”õ“®ìi0.5•b—­‚ßj
-        Debug.Log("ƒ{ƒXF“Ëi\‚¦");
+        Debug.Log("ãƒœã‚¹ï¼šçªé€²æ§‹ãˆ");
         yield return new WaitForSeconds(0.5f);
 
-        // 4. ˆÚ“®ˆ— (TransformˆÚ“®)
-        Debug.Log("ƒ{ƒXF“ËiŠJn");
-        float timer = 0f;
+        Debug.Log("ãƒœã‚¹ï¼šçªé€²é–‹å§‹");
+        float directionSign = transform.localScale.x > 0 ? -1 : 1; 
+        // ç°¡æ˜“çš„ã«ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼æ–¹å‘ã¸çªé€²ã™ã‚‹ãŸã‚ã«å†è¨ˆç®—
+        float moveDir = Mathf.Sign(playerTransform.position.x - transform.position.x);
 
+        float timer = 0f;
         while (timer < chargeDuration)
         {
             if (isDead) break;
-
-            // ˆÚ“®—ÊŒvZ
-            float moveAmount = directionSign * chargeSpeed * Time.deltaTime;
-            float newX = transform.position.x + moveAmount;
-
-            // ‰æ–ÊŠO‚Éo‚È‚¢‚æ‚¤§ŒÀ (Clamp)
-            newX = Mathf.Clamp(newX, minX, maxX);
-
-            // À•WXV
+            float moveAmount = moveDir * chargeSpeed * Time.deltaTime;
+            float newX = Mathf.Clamp(transform.position.x + moveAmount, minX, maxX);
             transform.position = new Vector3(newX, transform.position.y, transform.position.z);
 
             timer += Time.deltaTime;
-            yield return null; // 1ƒtƒŒ[ƒ€‘Ò‚Â
+            yield return null;
         }
 
-        // 5. UŒ‚Œã‚Ìd’¼
-        Debug.Log("ƒ{ƒXF“ËiI—¹");
         yield return new WaitForSeconds(1.0f);
+
+        // æˆ»ã‚‹å‡¦ç†
+        Debug.Log("ãƒœã‚¹ï¼šå®šä½ç½®ã¸å¸°é‚„");
+        // æˆ»ã‚‹æ–¹å‘ã‚’å‘ã
+        FlipBody(Mathf.Sign(initialPosition.x - transform.position.x) < 0);
+
+        while (Vector3.Distance(transform.position, initialPosition) > 0.1f)
+        {
+            if (isDead) break;
+            transform.position = Vector3.MoveTowards(transform.position, initialPosition, returnSpeed * Time.deltaTime);
+            yield return null;
+        }
+        transform.position = initialPosition;
+        FacePlayer();
     }
 
-    // --- ƒ_ƒ[ƒWE€–Sˆ— ---
+    // --- æ”»æ’ƒ: æ¨ªãƒ„ã‚¿ ---
+    IEnumerator VineAttackHorizontal()
+    {
+        Debug.Log("ãƒœã‚¹ï¼šæ¨ªãƒ„ã‚¿æ”»æ’ƒ");
+        bool isLeftStart = (Random.value > 0.5f);
+        float spawnX = isLeftStart ? minX : maxX;
+        float spawnY = Mathf.Clamp(playerTransform.position.y, minY + 1.0f, maxY - 1.0f);
+
+        Vector3 spawnPos = new Vector3(spawnX, spawnY, 0);
+        float zAngle = isLeftStart ? 0f : 180f;
+
+        SpawnVine(spawnPos, zAngle, Mathf.Abs(maxX - minX));
+        yield return new WaitForSeconds(vineWarningTime + 0.5f);
+    }
+
+    // --- æ”»æ’ƒ: ç¸¦ãƒ„ã‚¿ ---
+    IEnumerator VineAttackVertical()
+    {
+        Debug.Log("ãƒœã‚¹ï¼šç¸¦ãƒ„ã‚¿æ”»æ’ƒ");
+        float spawnX = Mathf.Clamp(playerTransform.position.x, minX + 1.0f, maxX - 1.0f);
+        Vector3 spawnPos = new Vector3(spawnX, maxY, 0);
+        float zAngle = -90f;
+        float length = Mathf.Abs(maxY - minY);
+
+        SpawnVine(spawnPos, zAngle, length);
+        yield return new WaitForSeconds(vineWarningTime + 0.5f);
+    }
+
+    // --- æº¶è§£æ¶²æ”»æ’ƒ (æŠ•æ“²) ---
+    IEnumerator AcidSpitAttack()
+    {
+        Debug.Log("ãƒœã‚¹ï¼šæº¶è§£æ¶²æ”»æ’ƒ");
+
+        // 3ç™ºæ’ƒã¤
+        for (int i = 0; i < 3; i++)
+        {
+            if (isDead) break;
+
+            // å¼¾ç”Ÿæˆ
+            GameObject bullet = Instantiate(acidBulletPrefab, firePoint.position, Quaternion.identity);
+            Rigidbody2D bulletRb = bullet.GetComponent<Rigidbody2D>();
+
+            if (bulletRb != null && playerTransform != null)
+            {
+                // ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã¸ã®æ–¹å‘è¨ˆç®—
+                Vector2 direction = (playerTransform.position - firePoint.position);
+
+                Vector2 throwDir = direction.normalized + Vector2.up * 0.5f; // æ–œã‚45åº¦ãã‚‰ã„ä¸Š
+
+                bulletRb.linearVelocity = throwDir.normalized * throwForce;
+            }
+
+            // æ¬¡ã®å¼¾ã¾ã§ã®å¾…æ©Ÿ
+            yield return new WaitForSeconds(throwInterval);
+        }
+
+        yield return new WaitForSeconds(1.0f); // æ’ƒã¡çµ‚ã‚ã‚Šã®ç¡¬ç›´
+    }
+
+
+    // --- å…±é€šå‡¦ç† ---
+    void SpawnVine(Vector3 pos, float angle, float length)
+    {
+        GameObject vineObj = Instantiate(vinePrefab, pos, Quaternion.Euler(0, 0, angle));
+        BossVine vineScript = vineObj.GetComponent<BossVine>();
+        if (vineScript != null) vineScript.StartAttack(length, vineWarningTime);
+    }
+
+    void FacePlayer()
+    {
+        if (playerTransform == null) return;
+        float direction = playerTransform.position.x - transform.position.x;
+        FlipBody(direction < 0);
+    }
+
+    void FlipBody(bool flipX)
+    {
+        foreach (var sr in bodyPartsRenderers)
+        {
+            if (sr != null) sr.flipX = flipX;
+        }
+    }
+
+    // --- ãƒ€ãƒ¡ãƒ¼ã‚¸ãƒ»æ­»äº¡ ---
     public void TakeDamage(int damage)
     {
         if (isDead) return;
-
         currentHp -= damage;
-        Debug.Log($"ƒ{ƒXHP: {currentHp}");
-
-        // ”í’eƒGƒtƒFƒNƒg
         StartCoroutine(FlashDamageEffect());
-
-        if (currentHp <= 0)
-        {
-            Die();
-        }
+        if (currentHp <= 0) Die();
     }
 
     IEnumerator FlashDamageEffect()
     {
         Color originalColor = Color.white;
-        Color damageColor = new Color(0.5f, 0f, 0.5f, 1f); // ‡F
-
+        Color damageColor = new Color(0.5f, 0f, 0.5f, 1f);
         foreach (var sr in bodyPartsRenderers) if (sr != null) sr.color = damageColor;
         yield return new WaitForSeconds(0.1f);
         foreach (var sr in bodyPartsRenderers) if (sr != null) sr.color = originalColor;
@@ -134,8 +236,7 @@ public class BossController : MonoBehaviour
     void Die()
     {
         isDead = true;
-        Debug.Log("ƒ{ƒXŒ‚”jI");
-        // ‚±‚±‚É”š”­ƒGƒtƒFƒNƒg¶¬‚È‚Ç‚ğ’Ç‰Á
+        Debug.Log("ãƒœã‚¹æ’ƒç ´ï¼");
         Destroy(gameObject, 0.5f);
     }
 }
