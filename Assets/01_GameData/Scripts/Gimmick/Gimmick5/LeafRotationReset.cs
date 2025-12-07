@@ -3,19 +3,19 @@ using UnityEngine;
 public class LeafMagicTrigger : MonoBehaviour
 {
     [SerializeField] private GameObject budObject;
-    [SerializeField] private Transform leaf1;
-    [SerializeField] private Transform leaf2;
+    [SerializeField] private GameObject leafOpenImage;   // ★閉じる前の画像
+    [SerializeField] private GameObject leafClosedImage; // ★閉じた後の画像
 
     [SerializeField] private float detectionRadius = 3f;
     [SerializeField] private LayerMask enemyLayer;
 
     private bool hasTriggered = false;
-    private bool hasClosed = false;   // ★葉っぱを閉じたかどうか
+    private bool hasClosed = false;
 
     private void Start()
     {
-        if (leaf1 != null) leaf1.gameObject.SetActive(false);
-        if (leaf2 != null) leaf2.gameObject.SetActive(false);
+        if (leafOpenImage != null) leafOpenImage.SetActive(false);
+        if (leafClosedImage != null) leafClosedImage.SetActive(false);
     }
 
     private void OnTriggerEnter2D(Collider2D other)
@@ -27,19 +27,18 @@ public class LeafMagicTrigger : MonoBehaviour
 
         if (budObject != null) Destroy(budObject);
 
-        if (leaf1 != null) leaf1.gameObject.SetActive(true);
-        if (leaf2 != null) leaf2.gameObject.SetActive(true);
+        // 魔法が当たったら「閉じる前の画像」を表示
+        if (leafOpenImage != null) leafOpenImage.SetActive(true);
     }
 
     private void Update()
     {
         if (!hasTriggered || hasClosed) return;
 
-        // 敵を探す
         Collider2D[] hits = Physics2D.OverlapCircleAll(transform.position, detectionRadius, enemyLayer);
         if (hits.Length > 0)
         {
-            CloseLeaves();  // ★敵を見つけたら閉じる
+            CloseLeaves();       // ★閉じた後の画像に切り替え
             DestroyEnemies(hits);
             hasClosed = true;
         }
@@ -47,13 +46,8 @@ public class LeafMagicTrigger : MonoBehaviour
 
     private void CloseLeaves()
     {
-        // ★葉っぱを縦にする（rotation）
-        leaf1.rotation = Quaternion.Euler(0, 0, 0);
-        leaf2.rotation = Quaternion.Euler(0, 0, 0);
-
-        // ★葉っぱをオブジェクト中央へ寄せる（position）
-        leaf1.position = transform.position;
-        leaf2.position = transform.position;
+        if (leafOpenImage != null) leafOpenImage.SetActive(false);
+        if (leafClosedImage != null) leafClosedImage.SetActive(true);
     }
 
     private void DestroyEnemies(Collider2D[] hits)
