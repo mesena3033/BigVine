@@ -201,9 +201,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SkyEnemy
   MoveBool: 1
-  MoveHori: "\u5DE6"
-  MoveHoriSpeed: 2
-  RoundTrip: 0
-  RoundTripWidth: 0
+  Move: "\u5DE6"
+  MoveSpeed: 2
+  RoundTrip: 1
+  RoundTripWidth: 10
   DestroyXMin: -20
   DestroyXMax: 20
