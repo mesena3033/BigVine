@@ -1064,7 +1064,7 @@ Transform:
   m_GameObject: {fileID: 239515026}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 258.72, y: 22.13167, z: -36500}
+  m_LocalPosition: {x: 258.72, y: 22.13167, z: -38070}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1927,7 +1927,7 @@ Transform:
   m_GameObject: {fileID: 349818066}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 258.72, y: 22.13167, z: -36500}
+  m_LocalPosition: {x: 258.72, y: 22.13167, z: -38070}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -6794,6 +6794,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1185466088588696823, guid: 64442454c6d6ef84984c2908ce516e73, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 1815143185399790993, guid: 64442454c6d6ef84984c2908ce516e73, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3216933243632881761, guid: 64442454c6d6ef84984c2908ce516e73, type: 3}
       propertyPath: m_IsTrigger
       value: 1
@@ -6810,9 +6818,17 @@ PrefabInstance:
       propertyPath: m_LocalPosition.x
       value: 9.21
       objectReference: {fileID: 0}
+    - target: {fileID: 4602541762135212516, guid: 64442454c6d6ef84984c2908ce516e73, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5136754475020051777, guid: 64442454c6d6ef84984c2908ce516e73, type: 3}
       propertyPath: m_IsTrigger
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7130262533014909782, guid: 64442454c6d6ef84984c2908ce516e73, type: 3}
+      propertyPath: m_Layer
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 7350824450026876940, guid: 64442454c6d6ef84984c2908ce516e73, type: 3}
       propertyPath: m_LocalScale.x
@@ -6870,7 +6886,9 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 1815143185399790993, guid: 64442454c6d6ef84984c2908ce516e73, type: 3}
+    - {fileID: 4602541762135212516, guid: 64442454c6d6ef84984c2908ce516e73, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:
