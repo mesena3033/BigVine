@@ -5,7 +5,6 @@ public class MagicClickTrigger : MonoBehaviour
 {
     [SerializeField] private GameObject stage2Object;
     [SerializeField] private GameObject stage3Object;
-    [SerializeField] private GameObject stage4Object;
     [SerializeField] private GameObject stage5Object;
 
     [SerializeField] private AudioSource audiosource;
@@ -17,7 +16,6 @@ public class MagicClickTrigger : MonoBehaviour
     {
         stage2Object.SetActive(true);
         stage3Object.SetActive(false);
-        stage4Object.SetActive(false);
         stage5Object.SetActive(false);
     }
 
@@ -41,7 +39,6 @@ public class MagicClickTrigger : MonoBehaviour
         else if (triggerCount == 2)
         {
             StartCoroutine(FadeOut(stage3Object));
-            StartCoroutine(FadeIn(stage4Object));
             StartCoroutine(FadeIn(stage5Object));
             //StartCoroutine(FadeOut(stage4Object));
 
