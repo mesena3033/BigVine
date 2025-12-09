@@ -14,6 +14,8 @@ public class BossVine : MonoBehaviour
     [SerializeField] private float extendSpeed = 20f;
     [SerializeField] private float waitTime = 3.0f;
 
+    public BossController ownerBoss; // このツタを生成したボス
+
     public void StartAttack(float length, float warningDuration)
     {
         StartCoroutine(AttackSequence(length, warningDuration));
