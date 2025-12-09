@@ -157,11 +157,7 @@ public class PlayerAction : MonoBehaviour
         _act?.Disable();
     }
 
-    /// <summary>
-    /// 他のオブジェクトと接触している間の処理。
-    /// 接触面の角度に応じて物理マテリアルを切り替える
-    /// </summary>
-    /// <param name="collision">接触しているオブジェクトの情報</param>
+    // 他のオブジェクトと接触している間の処理
     void OnCollisionStay2D(Collision2D collision)
     {
         foreach (var contact in collision.contacts)
@@ -180,11 +176,7 @@ public class PlayerAction : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// 接触が終了したときの処理。
-    /// 物理マテリアルを通常状態に戻す
-    /// </summary>
-    /// <param name="collision">接触が終了したオブジェクトの情報</param>
+    // 接触が終了したときの処理
     void OnCollisionExit2D(Collision2D collision)
     {
         _col.sharedMaterial = normalMat;
