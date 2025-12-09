@@ -11,6 +11,9 @@ public class BossController : MonoBehaviour
     [SerializeField] private Transform firePoint; // 弾の発射位置
 
     [Header("攻撃設定: 突進 (25%)")]
+    [SerializeField] private GameObject warningAreaPrefab; // 突進の警告エフェクト（赤い四角）
+    [SerializeField] private float chargeWarningTime = 1.2f; // 突進の警告表示時間
+    [SerializeField] private float blinkInterval = 0.2f;     // 警告の点滅間隔（秒）
     public float chargeSpeed = 10f;
     public float chargeDuration = 1.5f;
     public float returnSpeed = 5f;
@@ -24,6 +27,19 @@ public class BossController : MonoBehaviour
     [SerializeField] private float throwForce = 10f;      // 投げる強さ
     [SerializeField] private float throwInterval = 0.5f;  // 連射間隔
 
+    [Header("溶解液攻撃: 警告")]
+    [SerializeField] private SpriteRenderer headRenderer;           // 点滅させる頭のSpriteRenderer
+    [SerializeField] private Color acidWarningColor = Color.red;   // 警告色
+    [SerializeField] private float acidWarningTime = 1.0f;         // 警告の表示時間
+    [SerializeField] private float acidBlinkInterval = 0.2f;       // 点滅間隔
+
+    [Header("攻撃設定: 急降下爆撃 (別枠30%)")]
+    [SerializeField] private float diveFollowTime = 2.0f;    // 警告がプレイヤーを追従する時間
+    [SerializeField] private float diveFastBlinkTime = 1.0f; // 警告が高速点滅する時間
+    [SerializeField] private float diveFallSpeed = 40f;      // ボスが上から落ちてくる速度
+    [SerializeField] private float diveStunTime = 2.0f;      // 着地後の行動不能時間
+    [SerializeField] private float submergeAnimTime = 1.0f; // 地面に潜る/戻るアニメーションの時間
+
     [Header("ステージ範囲制限")]
     public float minX = -16.0f;
     public float maxX = 16.0f;
@@ -33,6 +49,11 @@ public class BossController : MonoBehaviour
     [Header("参照")]
     [SerializeField] private Rigidbody2D rb;
     [SerializeField] private SpriteRenderer[] bodyPartsRenderers;
+
+    [Header("効果音")]
+    [SerializeField] private AudioSource audioSource; // 音を再生するコンポーネント
+    [SerializeField] private AudioClip damageSound;   // ダメージを受けた時のSE
+    [SerializeField] private AudioClip deathSound;  // 倒された時のSE
 
     private Transform playerTransform;
     private bool isDead = false;
@@ -62,26 +83,35 @@ public class BossController : MonoBehaviour
 
             if (playerTransform != null)
             {
-                float roll = Random.Range(0f, 100f);
-
                 // プレイヤーの方を向く
                 FacePlayer();
 
-                if (roll < 25f) // 0 ～ 25 (25%) -> 突進
+                float specialAttackRoll = Random.Range(0f, 100f);
+
+                // 30%の確率で新しい大技「急降下爆撃」を行う
+                if (specialAttackRoll < 30f)
                 {
-                    yield return StartCoroutine(ChargeAttack());
+                    yield return StartCoroutine(DiveBombAttack());
                 }
-                else if (roll < 65f) // 25 ～ 65 (40%) -> ツタ
+                else // 残り70%の場合は、これまで通りの通常攻撃を行う
                 {
-                    // ツタの中でさらに縦横をランダム分岐 (50:50)
-                    if (Random.value > 0.5f)
-                        yield return StartCoroutine(VineAttackHorizontal());
-                    else
-                        yield return StartCoroutine(VineAttackVertical());
-                }
-                else // 65 ～ 100 (35%) -> 溶解液
-                {
-                    yield return StartCoroutine(AcidSpitAttack());
+                    float normalAttackRoll = Random.Range(0f, 100f);
+
+                    if (normalAttackRoll < 25f) // 0 ～ 25 (25%) -> 突進
+                    {
+                        yield return StartCoroutine(ChargeAttack());
+                    }
+                    else if (normalAttackRoll < 65f) // 25 ～ 65 (40%) -> ツタ
+                    {
+                        if (Random.value > 0.5f)
+                            yield return StartCoroutine(VineAttackHorizontal());
+                        else
+                            yield return StartCoroutine(VineAttackVertical());
+                    }
+                    else // 65 ～ 100 (35%) -> 溶解液
+                    {
+                        yield return StartCoroutine(AcidSpitAttack());
+                    }
                 }
             }
             else
@@ -96,12 +126,60 @@ public class BossController : MonoBehaviour
     IEnumerator ChargeAttack()
     {
         Debug.Log("ボス：突進構え");
-        yield return new WaitForSeconds(0.5f);
+
+        float moveDir;
+
+        GameObject warningInstance = null; // 生成したオブジェクトを保持する変数
+        if (warningAreaPrefab != null && playerTransform != null)
+        {
+            // --- ① プレハブから警告オブジェクトを生成 ---
+            warningInstance = Instantiate(warningAreaPrefab);
+
+            // --- ② 突進範囲を計算 ---
+            moveDir = Mathf.Sign(playerTransform.position.x - transform.position.x);
+            float chargeDistance = chargeSpeed * chargeDuration;
+            float startX = transform.position.x;
+            float endX = Mathf.Clamp(startX + moveDir * chargeDistance, minX, maxX);
+
+            // --- ③ 警告のサイズと位置を設定 ---
+            float warningWidth = Mathf.Abs(endX - startX);
+            float warningCenterX = startX + (endX - startX) / 2;
+
+            Bounds totalBounds = new Bounds(transform.position, Vector3.zero);
+            foreach (var sr in bodyPartsRenderers)
+            {
+                if (sr != null) totalBounds.Encapsulate(sr.bounds);
+            }
+            float warningHeight = totalBounds.size.y;
+            float warningCenterY = totalBounds.center.y;
+
+            // 生成したインスタンスの位置とサイズを変更
+            warningInstance.transform.position = new Vector3(warningCenterX, warningCenterY, 0);
+            warningInstance.transform.localScale = new Vector3(warningWidth, warningHeight, 1);
+
+            // --- ④ 点滅処理 ---
+            float elapsedTime = 0f;
+            warningInstance.SetActive(true);
+
+            while (elapsedTime < chargeWarningTime)
+            {
+                warningInstance.SetActive(!warningInstance.activeSelf);
+                yield return new WaitForSeconds(blinkInterval);
+                elapsedTime += blinkInterval;
+            }
+
+            // --- ⑤ 使い終わったオブジェクトを破棄 ---
+            Destroy(warningInstance);
+        }
+        else
+        {
+            yield return new WaitForSeconds(chargeWarningTime);
+        }
 
         Debug.Log("ボス：突進開始");
         float directionSign = transform.localScale.x > 0 ? -1 : 1; 
         // 簡易的にプレイヤー方向へ突進するために再計算
-        float moveDir = Mathf.Sign(playerTransform.position.x - transform.position.x);
+        moveDir = Mathf.Sign(playerTransform.position.x - transform.position.x);
 
         float timer = 0f;
         while (timer < chargeDuration)
@@ -163,6 +241,34 @@ public class BossController : MonoBehaviour
     // --- 溶解液攻撃 (投擲) ---
     IEnumerator AcidSpitAttack()
     {
+        Debug.Log("ボス：溶解液攻撃準備");
+
+        if (headRenderer != null)
+        {
+            // 1. 元の色を保存しておく
+            Color originalColor = headRenderer.color;
+            float elapsedTime = 0f;
+
+            // 2. 警告時間中、点滅を繰り返すループ
+            while (elapsedTime < acidWarningTime)
+            {
+                // 色を警告色と元の色で交互に切り替える
+                headRenderer.color = (headRenderer.color == originalColor) ? acidWarningColor : originalColor;
+
+                // 設定した間隔で待機
+                yield return new WaitForSeconds(acidBlinkInterval);
+                elapsedTime += acidBlinkInterval;
+            }
+
+            // 3. 警告終了後、必ず元の色に戻す
+            headRenderer.color = originalColor;
+        }
+        else
+        {
+            // headRendererが設定されていない場合は、単純に待つだけ
+            yield return new WaitForSeconds(acidWarningTime);
+        }
+
         Debug.Log("ボス：溶解液攻撃");
 
         // 3発撃つ
@@ -191,13 +297,85 @@ public class BossController : MonoBehaviour
         yield return new WaitForSeconds(1.0f); // 撃ち終わりの硬直
     }
 
+    // --- 攻撃: 急降下爆撃 ---
+    IEnumerator DiveBombAttack()
+    {
+        Debug.Log("ボス：[大技] 急降下爆撃開始");
+
+        // --- 1. 地中に潜って消える (アニメーション) ---
+        yield return StartCoroutine(AnimateSubmerge(true, submergeAnimTime)); // 潜るアニメーションを呼び出し
+
+        // --- 2. 警告エリアを生成し、プレイヤーを追従 ---
+        GameObject warning = Instantiate(warningAreaPrefab);
+        Bounds totalBounds = new Bounds(transform.position, Vector3.zero);
+        foreach (var sr in bodyPartsRenderers) if (sr != null) totalBounds.Encapsulate(sr.bounds);
+
+        float warningWidth = totalBounds.size.x; // 幅はボスの体の幅
+        float warningHeight = maxY - minY;       // 高さはステージの縦幅いっぱい
+        float warningCenterY = (maxY + minY) / 2f; // Y座標はステージの中心
+        warning.transform.localScale = new Vector3(warningWidth, warningHeight, 1);
+
+        float elapsedTime = 0f;
+        float blinkInterval = 0.2f;
+        while (elapsedTime < diveFollowTime)
+        {
+            // 追従中もY座標は中心に固定
+            warning.transform.position = new Vector3(playerTransform.position.x, warningCenterY, 0);
+            warning.SetActive(!warning.activeSelf);
+            yield return new WaitForSeconds(blinkInterval);
+            elapsedTime += blinkInterval;
+        }
+
+        // --- 3. 追従終了、警告の点滅を高速化 ---
+        elapsedTime = 0f;
+        float fastBlinkInterval = blinkInterval / 2;
+        while (elapsedTime < diveFastBlinkTime)
+        {
+            warning.SetActive(!warning.activeSelf);
+            yield return new WaitForSeconds(fastBlinkInterval);
+            elapsedTime += fastBlinkInterval;
+        }
+
+        float fallXPosition = warning.transform.position.x;
+        Destroy(warning);
+
+        // --- 4. 上から高速で落ちてくる ---
+        transform.position = new Vector3(fallXPosition, maxY + 5f, 0);
+        foreach (var sr in bodyPartsRenderers) sr.enabled = true; // 再び表示
+
+        // 着地位置をY=minYではなく、ボスの足元がminYに来るように調整
+        Vector3 targetFallPosition = new Vector3(fallXPosition, minY + totalBounds.size.y / 2, 0);
+        while (transform.position.y > targetFallPosition.y)
+        {
+            transform.position = Vector3.MoveTowards(transform.position, targetFallPosition, diveFallSpeed * Time.deltaTime);
+            yield return null;
+        }
+        transform.position = targetFallPosition;
+
+        // --- 5. 着地後、一定時間行動不能 ---
+        Debug.Log("ボス：着地、行動不能");
+        yield return new WaitForSeconds(diveStunTime);
+
+        // --- 6. 再び潜り、元の場所に戻る (アニメーション) ---
+        // (一度潜るアニメーションを挟むことで、ワープ感をなくす)
+        yield return StartCoroutine(AnimateSubmerge(true, submergeAnimTime * 0.5f)); // 短めに潜る
+        yield return StartCoroutine(AnimateSubmerge(false, submergeAnimTime));     // 元の場所へ浮上
+
+        Debug.Log("ボス：通常パターンに復帰");
+    }
+
 
     // --- 共通処理 ---
     void SpawnVine(Vector3 pos, float angle, float length)
     {
         GameObject vineObj = Instantiate(vinePrefab, pos, Quaternion.Euler(0, 0, angle));
         BossVine vineScript = vineObj.GetComponent<BossVine>();
-        if (vineScript != null) vineScript.StartAttack(length, vineWarningTime);
+        if (vineScript != null)
+        {
+            vineScript.ownerBoss = this; // 生成したツタに、自分自身(ボス)の情報を渡す
+
+            vineScript.StartAttack(length, vineWarningTime);
+        }
     }
 
     void FacePlayer()
@@ -219,6 +397,13 @@ public class BossController : MonoBehaviour
     public void TakeDamage(int damage)
     {
         if (isDead) return;
+
+        // SEが設定されていれば再生する
+        if (audioSource != null && damageSound != null)
+        {
+            audioSource.PlayOneShot(damageSound);
+        }
+
         currentHp -= damage;
         StartCoroutine(FlashDamageEffect());
         if (currentHp <= 0) Die();
@@ -237,6 +422,52 @@ public class BossController : MonoBehaviour
     {
         isDead = true;
         Debug.Log("ボス撃破！");
+
+        // オーディオソースと撃破SEが設定されていれば再生する
+        if (audioSource != null && deathSound != null)
+        {
+            // 他の音を止めずに再生する
+            audioSource.PlayOneShot(deathSound);
+        }
+
         Destroy(gameObject, 0.5f);
+    }
+
+    // --- 地面に潜る/戻るアニメーション ---
+    private IEnumerator AnimateSubmerge(bool isSubmerging, float duration)
+    {
+        // ボスの高さを計算
+        Bounds totalBounds = new Bounds(transform.position, Vector3.zero);
+        foreach (var sr in bodyPartsRenderers) if (sr != null) totalBounds.Encapsulate(sr.bounds);
+        float bossHeight = totalBounds.size.y;
+
+        Vector3 startPos, endPos;
+
+        if (isSubmerging) // 潜る場合
+        {
+            startPos = transform.position;
+            endPos = new Vector3(startPos.x, startPos.y - bossHeight, startPos.z);
+        }
+        else // 戻ってくる（浮上する）場合
+        {
+            startPos = new Vector3(initialPosition.x, initialPosition.y - bossHeight, initialPosition.z);
+            endPos = initialPosition;
+            transform.position = startPos; // 見えないうちに地下へ移動
+            foreach (var sr in bodyPartsRenderers) sr.enabled = true; // 表示を戻す
+        }
+
+        float elapsedTime = 0f;
+        while (elapsedTime < duration)
+        {
+            transform.position = Vector3.Lerp(startPos, endPos, elapsedTime / duration);
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+        transform.position = endPos; // ぴったり位置を合わせる
+
+        if (isSubmerging) // 潜り終わったら非表示にする
+        {
+            foreach (var sr in bodyPartsRenderers) sr.enabled = false;
+        }
     }
 }
