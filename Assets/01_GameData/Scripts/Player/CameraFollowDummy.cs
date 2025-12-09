@@ -7,6 +7,10 @@ public class CameraFollowDummy : MonoBehaviour
     public float startOffset = 5f; // 開始時のXオフセット
     public float fixedZ = -10f;
 
+    // カメラが移動できる右の限界座標
+    [Header("Camera Bounds")]
+    public float maxCameraX = 100f; 
+
     [Header("Smooth Settings")]
     public float smoothSpeed = 5f; // Y軸移動の滑らかさ
 
@@ -26,8 +30,11 @@ public class CameraFollowDummy : MonoBehaviour
     {
         if (player == null) return;
 
-        // --- X軸の計算 (既存のロジック: 戻らないカメラ) ---
-        float targetX = Mathf.Max(player.position.x, minCameraX);
+        // 1. まずプレイヤーを追いかける目標座標を計算し、それが左の限界(minCameraX)より小さくならないようにする
+        float desiredX = Mathf.Max(player.position.x, minCameraX);
+
+        // 2. 上記で計算した目標座標が、さらに右の限界(maxCameraX)を超えないように制限する
+        float targetX = Mathf.Min(desiredX, maxCameraX);
 
         // --- Y軸の計算 (新規追加: 滑らかに移動) ---
         // 目標となるY座標 = 基本の高さ(fixedY) + 追加オフセット(currentOffsetY)
