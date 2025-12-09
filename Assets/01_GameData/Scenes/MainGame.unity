@@ -342,11 +342,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3656700031083955205, guid: 0c0c08f4a45989c4bb120c73b422702f, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 120
+      value: 127.5
       objectReference: {fileID: 0}
     - target: {fileID: 3656700031083955205, guid: 0c0c08f4a45989c4bb120c73b422702f, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 10
+      value: 3.5
       objectReference: {fileID: 0}
     - target: {fileID: 3656700031083955205, guid: 0c0c08f4a45989c4bb120c73b422702f, type: 3}
       propertyPath: m_LocalPosition.z
@@ -381,6 +381,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4157810246919261711, guid: 0c0c08f4a45989c4bb120c73b422702f, type: 3}
+      propertyPath: Move
+      value: "\u4E0B"
+      objectReference: {fileID: 0}
+    - target: {fileID: 4157810246919261711, guid: 0c0c08f4a45989c4bb120c73b422702f, type: 3}
       propertyPath: MoveHori
       value: "\u53F3"
       objectReference: {fileID: 0}
@@ -390,7 +394,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4157810246919261711, guid: 0c0c08f4a45989c4bb120c73b422702f, type: 3}
       propertyPath: RoundTripWidth
-      value: 10
+      value: 5
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -1060,7 +1064,7 @@ Transform:
   m_GameObject: {fileID: 239515026}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 258.72, y: 22.13167, z: -60}
+  m_LocalPosition: {x: 258.72, y: 22.13167, z: -1250}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1876,7 +1880,7 @@ Transform:
   m_GameObject: {fileID: 349818066}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 258.72, y: 22.13167, z: -60}
+  m_LocalPosition: {x: 258.72, y: 22.13167, z: -1250}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -5296,11 +5300,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3656700031083955205, guid: 0c0c08f4a45989c4bb120c73b422702f, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 120
+      value: 112.5
       objectReference: {fileID: 0}
     - target: {fileID: 3656700031083955205, guid: 0c0c08f4a45989c4bb120c73b422702f, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 6
+      value: 3.5
       objectReference: {fileID: 0}
     - target: {fileID: 3656700031083955205, guid: 0c0c08f4a45989c4bb120c73b422702f, type: 3}
       propertyPath: m_LocalPosition.z
@@ -5335,12 +5339,16 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4157810246919261711, guid: 0c0c08f4a45989c4bb120c73b422702f, type: 3}
+      propertyPath: Move
+      value: "\u4E0A"
+      objectReference: {fileID: 0}
+    - target: {fileID: 4157810246919261711, guid: 0c0c08f4a45989c4bb120c73b422702f, type: 3}
       propertyPath: RoundTrip
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4157810246919261711, guid: 0c0c08f4a45989c4bb120c73b422702f, type: 3}
       propertyPath: RoundTripWidth
-      value: 10
+      value: 5
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -5532,7 +5540,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 697293215758887499, guid: e477f3c64b0f44945afcd22092e309e7, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1648334964070309048, guid: e477f3c64b0f44945afcd22092e309e7, type: 3}
       propertyPath: player
@@ -5606,7 +5614,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 697293215758887499, guid: e477f3c64b0f44945afcd22092e309e7, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1648334964070309048, guid: e477f3c64b0f44945afcd22092e309e7, type: 3}
       propertyPath: player
