@@ -811,8 +811,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::MagicClickTrigger
   stage2Object: {fileID: 5057311875894611167}
   stage3Object: {fileID: 7189420628163974573}
-  stage4Object: {fileID: 0}
+  stage4Object: {fileID: 6883222783782990453}
   stage5Object: {fileID: 5512062831226503544}
+  audiosource: {fileID: 1214741007305118178, guid: 1b41b4eec403da44e85fef04b3ccf366, type: 3}
+  magicSE: {fileID: 8300000, guid: 9604889646a5ab04288f496add00f006, type: 3}
 --- !u!1 &4861026603686410897
 GameObject:
   m_ObjectHideFlags: 0
