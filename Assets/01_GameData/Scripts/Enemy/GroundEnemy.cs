@@ -46,6 +46,9 @@ public class GroundEnemy : MonoBehaviour
         else if (MoveHori == "右")
         {
             dir = -1;
+
+            //  右に向く
+            transform.localScale = new Vector2(-dir, 1);
         }
         else
             //  デフォは左
@@ -99,6 +102,7 @@ public class GroundEnemy : MonoBehaviour
         {
             dir *= -1;  //  方向を反転
 
+            //  画像反転
             transform.localScale = new Vector2(-dir, 1);
         }
     }
