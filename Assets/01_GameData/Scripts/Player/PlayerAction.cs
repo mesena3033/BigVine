@@ -63,6 +63,8 @@ public class PlayerAction : MonoBehaviour
     private Collider2D _col = null;
     private SpriteRenderer _sr = null;
 
+    private PlayerHP _playerHP = null;
+
     private bool _goJump = false;
 
     private bool _wasGrounded = false;
@@ -91,10 +93,22 @@ public class PlayerAction : MonoBehaviour
         _rb = GetComponent<Rigidbody2D>();
         _col = GetComponent<Collider2D>();
         _sr = GetComponent<SpriteRenderer>();
+        _playerHP = GetComponent<PlayerHP>();
     }
     private void Update()
     {
-        // 仕様変更：プレイヤーが静止している(_dirの入力がない)時のみ表示
+        // ノックバック中は照準ロジックも停止させると、より安定します
+        if (_playerHP != null && _playerHP.IsKnockingBack())
+        {
+            // ノックバック中はカーソルを強制的に非表示にする
+            if (_aimCursor.gameObject.activeSelf)
+            {
+                _aimCursor.gameObject.SetActive(false);
+            }
+            return;
+        }
+
+        // プレイヤーが静止している(_dirの入力がない)時のみ表示
 
         bool isMoving = _dir.sqrMagnitude > 0.01f; // 移動入力があるかどうか
         bool hasLookInput = _lookInput.sqrMagnitude > 0.01f; // 照準入力があるかどうか
@@ -118,6 +132,12 @@ public class PlayerAction : MonoBehaviour
 
     private void FixedUpdate()
     {
+        // ノックバック中はプレイヤーの物理的な操作（移動・ジャンプ）をすべて無効にする
+        if (_playerHP != null && _playerHP.IsKnockingBack())
+        {
+            return;
+        }
+
         // 移動処理の呼び出し
         Move();
         Jump();

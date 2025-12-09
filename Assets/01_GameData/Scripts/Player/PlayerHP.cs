@@ -29,6 +29,10 @@ public class PlayerHP : MonoBehaviour
     public float KnockbackForce = 10f; // ノックバックの強さ
     private Rigidbody2D rb;
 
+    [Header("Knockback Settings")]
+    public float KnockbackTime = 0.2f; // ノックバックで操作不能になる時間
+    private bool isKnockingBack = false; // ノックバック中かどうかのフラグ
+
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -63,6 +67,13 @@ public class PlayerHP : MonoBehaviour
         UpdateUI();
         StartCoroutine(InvincibleCoroutine());
     }
+
+    // PlayerActionスクリプトからノックバック状態を参照するためのメソッド
+    public bool IsKnockingBack()
+    {
+        return isKnockingBack;
+    }
+
     private IEnumerator InvincibleCoroutine()
     {
         isInvincible = true;
@@ -127,40 +138,77 @@ public class PlayerHP : MonoBehaviour
     }
     void OnCollisionStay2D(Collision2D collision)
     {
-        // 既に無敵時間中なら処理しない
-        if (isInvincible) return;
+        // 無敵時間中、または既にノックバック中なら処理しない
+        if (isInvincible || isKnockingBack) return;
 
         if (collision.gameObject.layer == LayerMask.NameToLayer("Enemy"))
         {
-            // ノックバック処理
-            Vector2 direction = (transform.position - collision.transform.position).normalized;
-            Vector2 knockbackDir = (direction + Vector2.up * 0.5f).normalized;
-
-            rb.linearVelocity = Vector2.zero;
-
-            rb.AddForce(knockbackDir * KnockbackForce, ForceMode2D.Impulse);
-
+            // より正確な衝突検知用のコルーチンを呼び出す
+            StartCoroutine(KnockbackFromCollisionCoroutine(collision));
             TakeDamage(1);
         }
     }
     void OnTriggerEnter2D(Collider2D other)
     {
+        // 無敵時間中、または既にノックバック中なら処理しない
+        if (isInvincible || isKnockingBack) return;
+
         if (other.gameObject.layer == LayerMask.NameToLayer("EnemyBullet"))
         {
             TakeDamage(1);
             Destroy(other.gameObject);
         }
-        // ツタの先端など、Trigger判定のEnemyの場合 (被弾のみ)
         else if (other.gameObject.layer == LayerMask.NameToLayer("Enemy"))
         {
-            // ノックバック処理
-            Vector2 direction = (transform.position - other.transform.position).normalized;
-            Vector2 knockbackDir = (direction + Vector2.up * 0.5f).normalized;
-
-            rb.linearVelocity = Vector2.zero; 
-            rb.AddForce(knockbackDir * KnockbackForce, ForceMode2D.Impulse);
-
+            // Trigger用のコルーチンを呼び出す
+            StartCoroutine(KnockbackFromTriggerCoroutine(other.transform));
             TakeDamage(1);
         }
+    }
+
+    // 物理的な衝突(OnCollision)からノックバックを処理するコルーチン
+    private IEnumerator KnockbackFromCollisionCoroutine(Collision2D collision)
+    {
+        isKnockingBack = true; // ノックバック状態をON
+
+        // 最初の接触点の法線ベクトルを取得（衝突面から垂直に外側へ向かうベクトル）
+        Vector2 contactNormal = collision.GetContact(0).normal;
+
+        // 法線ベクトルのX成分の符号で左右を判断
+        // 左から押されたらnormal.xは正(右向き)、右から押されたらnormal.xは負(左向き)になる
+        float directionX = Mathf.Sign(contactNormal.x);
+
+        // 真上/真下からの接触でdirectionXが0になる稀なケースに対応
+        if (directionX == 0)
+        {
+            directionX = (transform.position.x > collision.transform.position.x) ? 1f : -1f;
+        }
+
+        // ノックバックの方向ベクトルを作成
+        Vector2 knockbackDir = new Vector2(directionX, 0.5f).normalized;
+        rb.linearVelocity = knockbackDir * KnockbackForce;
+
+        // 指定した時間、操作不能にする
+        yield return new WaitForSeconds(KnockbackTime);
+
+        isKnockingBack = false; // ノックバック状態を解除
+    }
+
+    // トリガー(OnTrigger)からノックバックを処理するコルーチン
+    private IEnumerator KnockbackFromTriggerCoroutine(Transform enemyTransform)
+    {
+        isKnockingBack = true; // ノックバック状態をON
+
+        // プレイヤーと敵の水平方向の位置関係から、ノックバックの左右の向きを決定
+        float directionX = (transform.position.x > enemyTransform.position.x) ? 1f : -1f;
+
+        // ノックバックの方向ベクトルを作成
+        Vector2 knockbackDir = new Vector2(directionX, 0.5f).normalized;
+        rb.linearVelocity = knockbackDir * KnockbackForce;
+
+        // 指定した時間、操作不能にする
+        yield return new WaitForSeconds(KnockbackTime);
+
+        isKnockingBack = false; // ノックバック状態を解除
     }
 }
