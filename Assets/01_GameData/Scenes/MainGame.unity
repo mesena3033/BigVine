@@ -1064,7 +1064,7 @@ Transform:
   m_GameObject: {fileID: 239515026}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 258.72, y: 22.13167, z: -35330}
+  m_LocalPosition: {x: 258.72, y: 22.13167, z: -36500}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1927,7 +1927,7 @@ Transform:
   m_GameObject: {fileID: 349818066}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 258.72, y: 22.13167, z: -35330}
+  m_LocalPosition: {x: 258.72, y: 22.13167, z: -36500}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -4634,7 +4634,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemySpawnPoint
   enemyPrefab: {fileID: 5045383670841241688, guid: 879ceb6563f174b4294e228d27eea83a, type: 3}
-  spawnOffset: {x: 15, y: -7}
+  spawnOffset: {x: 20, y: -7}
   spawnOnce: 1
 --- !u!61 &1512034356
 BoxCollider2D:
