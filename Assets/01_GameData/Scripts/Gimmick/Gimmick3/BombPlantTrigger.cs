@@ -4,18 +4,22 @@ public class FlowerBombTrigger : MonoBehaviour
 {
     [SerializeField] private GameObject budObject;
     [SerializeField] private GameObject flowerObject;
-    [SerializeField] private GameObject fruitObject;
+    [SerializeField] private GameObject fruitPrefab; // ← プレハブを入れる
+
     [SerializeField] private float detectionRadius = 5f;
     [SerializeField] private float fruitLaunchForce = 300f;
     [SerializeField] private LayerMask enemyLayer;
+    [SerializeField] private int maxShots = 3; // ← 撃てる回数
 
     private bool isFlowerActive = false;
-    private bool hasLaunchedFruit = false;
+    private int currentShots = 0;
+
+    private bool isCooling = false;
+    [SerializeField] private float fireInterval = 0.5f; // 発射間隔
 
     private void Start()
     {
         if (flowerObject != null) flowerObject.SetActive(false);
-        if (fruitObject != null) fruitObject.SetActive(false);
     }
 
     private void OnTriggerEnter2D(Collider2D other)
@@ -31,15 +35,17 @@ public class FlowerBombTrigger : MonoBehaviour
 
     private void Update()
     {
-        if (!isFlowerActive || hasLaunchedFruit) return;
+        if (!isFlowerActive) return;
+        if (currentShots >= maxShots) return;
+        if (isCooling) return; // ← クールダウン中は撃たせない
 
         Transform target = FindNearestEnemy();
         if (target != null)
         {
-            LaunchFruitAt(target);
-            hasLaunchedFruit = true;
+            StartCoroutine(FireRoutine(target));
         }
     }
+
 
     private Transform FindNearestEnemy()
     {
@@ -62,33 +68,34 @@ public class FlowerBombTrigger : MonoBehaviour
 
     private void LaunchFruitAt(Transform target)
     {
-        if (fruitObject == null || target == null)
-        {
-            Debug.Log("Fruit or target is null");
-            return;
-        }
+        if (fruitPrefab == null || target == null) return;
 
-        fruitObject.SetActive(true);
-        fruitObject.transform.position = transform.position;
+        // ★プレハブから生成
+        GameObject fruit = Instantiate(fruitPrefab, transform.position, Quaternion.identity);
 
-        Rigidbody2D rb = fruitObject.GetComponent<Rigidbody2D>();
+        Rigidbody2D rb = fruit.GetComponent<Rigidbody2D>();
         if (rb != null)
         {
             rb.gravityScale = 0f;
             Vector2 direction = (target.position - transform.position).normalized;
-            Debug.Log("Launching fruit toward: " + target.name + " with direction: " + direction);
             rb.AddForce(direction * fruitLaunchForce);
         }
-        else
-        {
-            Debug.Log("No Rigidbody2D found on fruitObject");
-        }
-
     }
 
     private void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.yellow;
         Gizmos.DrawWireSphere(transform.position, detectionRadius);
+    }
+
+    private System.Collections.IEnumerator FireRoutine(Transform target)
+    {
+        isCooling = true;            // クールダウン開始
+        LaunchFruitAt(target);       // 発射
+        currentShots++;              // 発射数カウント
+
+        yield return new WaitForSeconds(fireInterval); // ← ここで待つ！
+
+        isCooling = false;           // クールダウン終了
     }
 }
