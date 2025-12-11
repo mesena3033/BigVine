@@ -4,7 +4,7 @@ public class PlayerCenteredLoop : MonoBehaviour
 {
     [SerializeField] private Transform player;
 
-    [Header("背景3枚（左→右の順）")]
+    [Header("背景4枚（左→右の順）")]
     [SerializeField] private Transform[] backgrounds;
 
     private float width;
@@ -12,7 +12,6 @@ public class PlayerCenteredLoop : MonoBehaviour
 
     private void Start()
     {
-        // 背景の横幅（3枚とも同じ前提）
         width = backgrounds[0].GetComponent<SpriteRenderer>().bounds.size.x;
     }
 
@@ -22,19 +21,18 @@ public class PlayerCenteredLoop : MonoBehaviour
         {
             if (!IsPlayerInCenterArea())
                 canMove = true;
-
             return;
         }
 
-        // 背景を左→右順にソート
+        // 左→右順に並べ替え
         System.Array.Sort(backgrounds, (a, b) => a.position.x.CompareTo(b.position.x));
 
         Transform bgLeft = backgrounds[0];
-        Transform bgRight = backgrounds[2];
+        Transform bgRight = backgrounds[backgrounds.Length - 1]; // 4枚目が右端
 
         float centerX = (bgLeft.position.x + bgRight.position.x) * 0.5f;
 
-        // ---- 右へ進んだとき（左の背景を右へ回す） ----
+        // ---- 右へ進んだとき ----
         if (player.position.x > centerX)
         {
             float newX = bgRight.position.x + width;
@@ -43,7 +41,7 @@ public class PlayerCenteredLoop : MonoBehaviour
             return;
         }
 
-        // ---- 左へ進んだとき（右の背景を左へ回す） ----
+        // ---- 左へ進んだとき ----
         if (player.position.x < centerX)
         {
             float newX = bgLeft.position.x - width;
@@ -53,13 +51,12 @@ public class PlayerCenteredLoop : MonoBehaviour
         }
     }
 
-    // プレイヤーが中央ゾーンにいるか判定
     private bool IsPlayerInCenterArea()
     {
         System.Array.Sort(backgrounds, (a, b) => a.position.x.CompareTo(b.position.x));
 
         Transform left = backgrounds[0];
-        Transform right = backgrounds[2];
+        Transform right = backgrounds[backgrounds.Length - 1];
 
         float centerX = (left.position.x + right.position.x) * 0.5f;
         float p = player.position.x;
