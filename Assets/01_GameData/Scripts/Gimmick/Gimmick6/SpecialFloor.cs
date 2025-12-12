@@ -2,10 +2,19 @@ using UnityEngine;
 
 public class SpecialFloor : MonoBehaviour
 {
-    [SerializeField] GameObject blockCollider; // 白い四角
+    [SerializeField] GameObject beforeImage;   // 足場完成前の画像
+    [SerializeField] GameObject afterImage;    // 足場完成後の画像
     [SerializeField] Collider2D floorCollider; // 床本体 (最初は isTrigger = true)
     [SerializeField] LayerMask enemyLayer;     // 敵レイヤー
+
     bool isActivated = false;
+
+    private void Start()
+    {
+        // 最初は「完成前」だけ表示
+        if (beforeImage != null) beforeImage.SetActive(true);
+        if (afterImage != null) afterImage.SetActive(false);
+    }
 
     private void OnTriggerEnter2D(Collider2D other)
     {
@@ -20,7 +29,12 @@ public class SpecialFloor : MonoBehaviour
     void Activate()
     {
         isActivated = true;
-        blockCollider.SetActive(false);
-        floorCollider.isTrigger = false; // ← 乗れる床に変化！
+
+        // 画像切り替え
+        if (beforeImage != null) beforeImage.SetActive(false);
+        if (afterImage != null) afterImage.SetActive(true);
+
+        // 床を乗れるようにする
+        floorCollider.isTrigger = false;
     }
 }
