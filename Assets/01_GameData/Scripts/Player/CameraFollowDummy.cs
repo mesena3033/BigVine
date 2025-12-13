@@ -17,6 +17,10 @@ public class CameraFollowDummy : MonoBehaviour
     private float minCameraX;
     private float currentOffsetY = 0f; // 現在適用中のYオフセット量
 
+    private Camera cam; // カメラコンポーネントを保持する変数
+    private float initialOrthographicSize; // 元のカメラサイズを保存する変数
+    private float targetOrthographicSize; // 目標のカメラサイズ
+
     void Start()
     {
         if (player == null) return;
@@ -24,6 +28,18 @@ public class CameraFollowDummy : MonoBehaviour
 
         // 初期位置設定
         transform.position = new Vector3(minCameraX, fixedY, fixedZ);
+
+        cam = GetComponent<Camera>();
+        if (cam != null && cam.orthographic)
+        {
+            // カメラの初期サイズを保存しておく
+            initialOrthographicSize = cam.orthographicSize;
+            targetOrthographicSize = initialOrthographicSize;
+        }
+        else
+        {
+            Debug.LogError("Orthographic設定のCameraコンポーネントが見つかりません。", this);
+        }
     }
 
     void LateUpdate()
@@ -45,6 +61,11 @@ public class CameraFollowDummy : MonoBehaviour
 
         // 座標更新
         transform.position = new Vector3(targetX, newY, fixedZ);
+
+        if (cam != null)
+        {
+            cam.orthographicSize = Mathf.Lerp(cam.orthographicSize, targetOrthographicSize, Time.deltaTime * smoothSpeed);
+        }
     }
 
     // 外部（トリガーなど）から呼ばれる関数
@@ -52,5 +73,17 @@ public class CameraFollowDummy : MonoBehaviour
     public void SetVerticalOffset(float offset)
     {
         currentOffsetY = offset;
+    }
+
+    public void SetOrthographicSize(float newSize)
+    {
+        // 目標サイズをセットする（実際の変更はLateUpdateで滑らかに行われる）
+        targetOrthographicSize = newSize;
+    }
+
+    public void ResetCameraSettings()
+    {
+        SetVerticalOffset(0f);
+        SetOrthographicSize(initialOrthographicSize);
     }
 }
