@@ -377,11 +377,18 @@ MonoBehaviour:
   acidWarningColor: {r: 1, g: 0, b: 0, a: 0.6039216}
   acidWarningTime: 1
   acidBlinkInterval: 0.2
+  diveBombChance: 0.55
   diveFollowTime: 2
   diveFastBlinkTime: 1
   diveFallSpeed: 40
   diveStunTime: 2
   submergeAnimTime: 1
+  rangeAttackHitboxPrefab: {fileID: 7462081598080175507, guid: a3df315ec6c993748966870570b573f9, type: 3}
+  zoomInDuration: 1.5
+  rangeWarningTime: 1.5
+  attackTravelTime: 0.2
+  numberOfAttacks: 6
+  attackRadius: 15
   minX: -14.8
   maxX: 14.8
   maxY: 12
