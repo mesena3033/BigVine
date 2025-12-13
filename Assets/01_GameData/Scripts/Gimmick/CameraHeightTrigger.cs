@@ -6,6 +6,9 @@ public class CameraHeightTrigger : MonoBehaviour
     public float offsetAmount = 3.0f;   // カメラを上げる量
     public string playerTag = "Player"; // プレイヤーのタグ
 
+    [Tooltip("引きカメラにする際の大きさ (Orthographic Size)")]
+    public float zoomOutSize = 8.0f;
+
     // 判定の基準となるY座標（このオブジェクトの中心より少し下にするなどの調整用）
     // 0ならこのオブジェクトの中心と同じ高さ
     public float resetThresholdOffset = 0f;
@@ -34,7 +37,7 @@ public class CameraHeightTrigger : MonoBehaviour
         if (playerTransform.position.y < thresholdY)
         {
             // カメラを元に戻す
-            cameraScript.SetVerticalOffset(0f);
+            cameraScript.ResetCameraSettings();
             // 監視終了
             isMonitoring = false;
             playerTransform = null;
@@ -51,6 +54,8 @@ public class CameraHeightTrigger : MonoBehaviour
 
             // カメラを上にずらす
             cameraScript.SetVerticalOffset(offsetAmount);
+
+            cameraScript.SetOrthographicSize(zoomOutSize);
 
             // 高さ監視をスタートする
             isMonitoring = true;
