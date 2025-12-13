@@ -1,5 +1,6 @@
-﻿using UnityEngine;
-using System.Collections;
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
 
 public class BossController : MonoBehaviour
 {
@@ -33,12 +34,23 @@ public class BossController : MonoBehaviour
     [SerializeField] private float acidWarningTime = 1.0f;         // 警告の表示時間
     [SerializeField] private float acidBlinkInterval = 0.2f;       // 点滅間隔
 
+    [Header("攻撃設定: 大技分岐")]
+    [SerializeField] private float diveBombChance = 0.55f; // 押しつぶし攻撃を行う確率 (55%)
+
     [Header("攻撃設定: 急降下爆撃 (別枠30%)")]
     [SerializeField] private float diveFollowTime = 2.0f;    // 警告がプレイヤーを追従する時間
     [SerializeField] private float diveFastBlinkTime = 1.0f; // 警告が高速点滅する時間
     [SerializeField] private float diveFallSpeed = 40f;      // ボスが上から落ちてくる速度
     [SerializeField] private float diveStunTime = 2.0f;      // 着地後の行動不能時間
     [SerializeField] private float submergeAnimTime = 1.0f; // 地面に潜る/戻るアニメーションの時間
+
+    [Header("攻撃設定: 画面奥からの範囲攻撃")]
+    [SerializeField] private GameObject rangeAttackHitboxPrefab;      // 攻撃判定のプレハブ
+    [SerializeField] private float zoomInDuration = 1.5f;      // 顔が奥から迫ってくる時間
+    [SerializeField] private float rangeWarningTime = 2.0f;    // 警告線の表示時間
+    [SerializeField] private float attackTravelTime = 0.2f;    // 攻撃判定が中心まで到達する時間
+    [SerializeField] private int numberOfAttacks = 6;          // 攻撃の数（警告線の数）
+    [SerializeField] private float attackRadius = 15f;         // 攻撃が開始される半径（警告線の長さ）
 
     [Header("ステージ範囲制限")]
     public float minX = -16.0f;
@@ -58,6 +70,8 @@ public class BossController : MonoBehaviour
     private Transform playerTransform;
     private bool isDead = false;
     private Vector3 initialPosition;
+    private Vector3 initialHeadScale; // 顔の初期スケールを保存する変数
+    private Vector3 initialHeadLocalPosition;
 
     void Start()
     {
@@ -69,6 +83,13 @@ public class BossController : MonoBehaviour
 
         // firePointが設定されていなければ自分の位置にする
         if (firePoint == null) firePoint = transform;
+
+        // 顔の初期スケールを保存
+        if (headRenderer != null)
+        {
+            initialHeadScale = headRenderer.transform.localScale;
+            initialHeadLocalPosition = headRenderer.transform.localPosition;
+        }
 
         StartCoroutine(BossBehaviorLoop());
     }
@@ -91,7 +112,7 @@ public class BossController : MonoBehaviour
                 // 30%の確率で新しい大技「急降下爆撃」を行う
                 if (specialAttackRoll < 30f)
                 {
-                    yield return StartCoroutine(DiveBombAttack());
+                    yield return StartCoroutine(SpecialAttackBranch());
                 }
                 else // 残り70%の場合は、これまで通りの通常攻撃を行う
                 {
@@ -297,29 +318,49 @@ public class BossController : MonoBehaviour
         yield return new WaitForSeconds(1.0f); // 撃ち終わりの硬直
     }
 
+    // --- 攻撃分岐: 大技 ---
+    IEnumerator SpecialAttackBranch()
+    {
+        Debug.Log("ボス：[大技] 準備");
+
+        // --- 1. 地中に潜って消える (アニメーション) ---
+        yield return StartCoroutine(AnimateSubmerge(true, submergeAnimTime));
+
+        // --- 2. 確率で攻撃を分岐 ---
+        if (Random.value < diveBombChance) // 55%で押しつぶし
+        {
+            yield return StartCoroutine(DiveBombAttack());
+        }
+        else // 残り45%で新攻撃
+        {
+            yield return StartCoroutine(BackgroundRangeAttack());
+        }
+
+        // --- 3. どちらの攻撃後でも、元の場所に戻るアニメーションを行う ---
+        yield return StartCoroutine(AnimateSubmerge(false, submergeAnimTime));
+
+        Debug.Log("ボス：通常パターンに復帰");
+    }
+
     // --- 攻撃: 急降下爆撃 ---
     IEnumerator DiveBombAttack()
     {
         Debug.Log("ボス：[大技] 急降下爆撃開始");
-
-        // --- 1. 地中に潜って消える (アニメーション) ---
-        yield return StartCoroutine(AnimateSubmerge(true, submergeAnimTime)); // 潜るアニメーションを呼び出し
 
         // --- 2. 警告エリアを生成し、プレイヤーを追従 ---
         GameObject warning = Instantiate(warningAreaPrefab);
         Bounds totalBounds = new Bounds(transform.position, Vector3.zero);
         foreach (var sr in bodyPartsRenderers) if (sr != null) totalBounds.Encapsulate(sr.bounds);
 
-        float warningWidth = totalBounds.size.x; // 幅はボスの体の幅
-        float warningHeight = maxY - minY;       // 高さはステージの縦幅いっぱい
-        float warningCenterY = (maxY + minY) / 2f; // Y座標はステージの中心
+        float warningWidth = totalBounds.size.x;
+        float warningHeight = maxY - minY;
+        float warningCenterY = (maxY + minY) / 2f;
         warning.transform.localScale = new Vector3(warningWidth, warningHeight, 1);
 
         float elapsedTime = 0f;
         float blinkInterval = 0.2f;
         while (elapsedTime < diveFollowTime)
         {
-            // 追従中もY座標は中心に固定
             warning.transform.position = new Vector3(playerTransform.position.x, warningCenterY, 0);
             warning.SetActive(!warning.activeSelf);
             yield return new WaitForSeconds(blinkInterval);
@@ -341,9 +382,8 @@ public class BossController : MonoBehaviour
 
         // --- 4. 上から高速で落ちてくる ---
         transform.position = new Vector3(fallXPosition, maxY + 5f, 0);
-        foreach (var sr in bodyPartsRenderers) sr.enabled = true; // 再び表示
+        foreach (var sr in bodyPartsRenderers) sr.enabled = true;
 
-        // 着地位置をY=minYではなく、ボスの足元がminYに来るように調整
         Vector3 targetFallPosition = new Vector3(fallXPosition, minY + totalBounds.size.y / 2, 0);
         while (transform.position.y > targetFallPosition.y)
         {
@@ -356,12 +396,135 @@ public class BossController : MonoBehaviour
         Debug.Log("ボス：着地、行動不能");
         yield return new WaitForSeconds(diveStunTime);
 
-        // --- 6. 再び潜り、元の場所に戻る (アニメーション) ---
-        // (一度潜るアニメーションを挟むことで、ワープ感をなくす)
-        yield return StartCoroutine(AnimateSubmerge(true, submergeAnimTime * 0.5f)); // 短めに潜る
-        yield return StartCoroutine(AnimateSubmerge(false, submergeAnimTime));     // 元の場所へ浮上
+        // --- 6. 再び潜る ---
+        // 攻撃後の復帰は SpecialAttackBranch で行うので、ここでは潜るだけ
+        float endY = transform.position.y - totalBounds.size.y;
+        float submergeDuration = submergeAnimTime * 0.5f; // 短めに
+        elapsedTime = 0f;
+        Vector3 startPos = transform.position;
+        Vector3 endPos = new Vector3(startPos.x, endY, startPos.z);
+        while (elapsedTime < submergeDuration)
+        {
+            transform.position = Vector3.Lerp(startPos, endPos, elapsedTime / submergeDuration);
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+        foreach (var sr in bodyPartsRenderers) sr.enabled = false;
+    }
 
-        Debug.Log("ボス：通常パターンに復帰");
+    // --- 攻撃: 画面奥からの範囲攻撃 ---
+    IEnumerator BackgroundRangeAttack()
+    {
+        Debug.Log("ボス：[大技] 画面奥からの範囲攻撃");
+
+        // --- 1. 顔以外のパーツを非表示にする ---
+        foreach (var sr in bodyPartsRenderers)
+        {
+            if (headRenderer != null && sr != headRenderer)
+            {
+                sr.enabled = false;
+            }
+        }
+
+        // --- 2. ボス本体を画面中央へ移動させる ---
+        Vector3 screenCenter = new Vector3((minX + maxX) / 2, (minY + maxY) / 2, 0);
+        transform.position = screenCenter;
+
+        // --- 3. 顔が画面中央奥から迫ってくる演出 ---
+        if (headRenderer != null)
+        {
+            headRenderer.enabled = true;
+            headRenderer.transform.localPosition = Vector3.zero; // 顔の相対位置を一時的にゼロに
+
+            Vector3 startScale = Vector3.zero;
+            Vector3 targetScale = initialHeadScale * 2f;
+
+            float elapsedTime = 0f;
+            while (elapsedTime < zoomInDuration)
+            {
+                float t = elapsedTime / zoomInDuration;
+                headRenderer.transform.localScale = Vector3.Lerp(startScale, targetScale, t * t);
+                elapsedTime += Time.deltaTime;
+                yield return null;
+            }
+            headRenderer.transform.localScale = targetScale;
+        }
+
+        // --- 4. 共通の警告プレハブを使って放射状の警告線を生成＆点滅 ---
+        List<GameObject> warningInstances = new List<GameObject>();
+        for (int i = 0; i < numberOfAttacks; i++)
+        {
+            if (warningAreaPrefab == null) break;
+
+            float angle = 360f / numberOfAttacks * i;
+            Quaternion rotation = Quaternion.Euler(0, 0, angle);
+            Vector3 direction = rotation * Vector3.right;
+
+            Vector3 warningScale = new Vector3(attackRadius, 0.3f, 1f);
+            Vector3 warningPosition = screenCenter + direction * (attackRadius / 2f);
+
+            GameObject warning = Instantiate(warningAreaPrefab, warningPosition, rotation);
+            warning.transform.localScale = warningScale;
+            warningInstances.Add(warning);
+        }
+
+        float warningElapsedTime = 0f;
+        while (warningElapsedTime < rangeWarningTime)
+        {
+            foreach (var warning in warningInstances)
+            {
+                warning.SetActive(!warning.activeSelf);
+            }
+            yield return new WaitForSeconds(blinkInterval);
+            warningElapsedTime += blinkInterval;
+        }
+
+        foreach (var warning in warningInstances)
+        {
+            if (warning != null) warning.SetActive(true);
+        }
+
+        // --- 5. 警告線の先端から中心へ攻撃判定を走らせる ---
+        List<GameObject> hitboxes = new List<GameObject>();
+        foreach (var warning in warningInstances)
+        {
+            if (rangeAttackHitboxPrefab == null || warning == null) break;
+
+            Vector3 direction = warning.transform.right;
+            Vector3 startPos = screenCenter + direction * attackRadius;
+
+            GameObject hitbox = Instantiate(rangeAttackHitboxPrefab, startPos, warning.transform.rotation);
+            hitboxes.Add(hitbox);
+
+            StartCoroutine(MoveHitbox(hitbox.transform, screenCenter, attackTravelTime));
+        }
+
+        yield return new WaitForSeconds(attackTravelTime + 0.5f);
+
+        // --- 6. クリーンアップ ---
+        foreach (var warning in warningInstances) Destroy(warning);
+        foreach (var hitbox in hitboxes) Destroy(hitbox);
+
+        if (headRenderer != null)
+        {
+            headRenderer.enabled = false;
+            headRenderer.transform.localScale = initialHeadScale;
+            headRenderer.transform.localPosition = initialHeadLocalPosition; // 顔の相対位置を元に戻す
+        }
+    }
+
+    IEnumerator MoveHitbox(Transform hitbox, Vector3 targetPosition, float duration)
+    {
+        Vector3 startPosition = hitbox.position;
+        float elapsedTime = 0f;
+        while (elapsedTime < duration)
+        {
+            if (hitbox == null) yield break; // 移動中に破壊された場合
+            hitbox.position = Vector3.Lerp(startPosition, targetPosition, elapsedTime / duration);
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+        if (hitbox != null) Destroy(hitbox.gameObject);
     }
 
 
