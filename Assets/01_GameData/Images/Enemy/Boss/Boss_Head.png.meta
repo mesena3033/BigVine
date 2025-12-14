@@ -1,10 +1,13 @@
 fileFormatVersion: 2
-guid: da2cba4fc5906294bb6fc33312eb3718
+guid: 9718b75796ffe2d4fa43f0d9b7647494
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -1441936388933518770
-    second: Boss_Body_Sample_0
+      213: 5682331369050246991
+    second: Boss_Head_0
+  - first:
+      213: 4096064501603288196
+    second: Boss_Head_1
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -51,7 +54,7 @@ TextureImporter:
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 100
+  spritePixelsToUnits: 300
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -100,13 +103,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Boss_Body_Sample_0
+      name: Boss_Head_0
       rect:
         serializedVersion: 2
-        x: 0
-        y: 0
-        width: 1080
-        height: 2340
+        x: 206
+        y: 898
+        width: 475
+        height: 513
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -115,8 +118,30 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: e4a78e47e763dfbe0800000000000000
-      internalID: -1441936388933518770
+      spriteID: f4f8c4c1642bbde40800000000000000
+      internalID: 5682331369050246991
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boss_Head_1
+      rect:
+        serializedVersion: 2
+        x: 343
+        y: 826
+        width: 15
+        height: 24
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 484c62b56f428d830800000000000000
+      internalID: 4096064501603288196
       vertices: []
       indices: 
       edges: []
@@ -135,7 +160,8 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      Boss_Body_Sample_0: -1441936388933518770
+      Boss_Head_0: 5682331369050246991
+      Boss_Head_1: 4096064501603288196
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
