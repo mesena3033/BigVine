@@ -7,9 +7,6 @@ public class MagicClickTrigger : MonoBehaviour
     [SerializeField] private GameObject stage3Object;
     [SerializeField] private GameObject stage5Object;
 
-    [SerializeField] private AudioSource audiosource;
-    [SerializeField] private AudioClip magicSE;
-
     private int triggerCount = 0;
 
     private void Start()
@@ -33,16 +30,12 @@ public class MagicClickTrigger : MonoBehaviour
 
             //StartCoroutine(ShowAndFade(stage4Object, stage3Object, 0.5f));
 
-            audiosource.PlayOneShot(magicSE);
-
         }
         else if (triggerCount == 2)
         {
             StartCoroutine(FadeOut(stage3Object));
             StartCoroutine(FadeIn(stage5Object));
             //StartCoroutine(FadeOut(stage4Object));
-
-            audiosource.PlayOneShot(magicSE);
         }
     }
 
