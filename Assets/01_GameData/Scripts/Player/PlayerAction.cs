@@ -47,6 +47,15 @@ public class PlayerAction : MonoBehaviour
 
     [SerializeField] private AudioSource _audioSource;
 
+    //SE用
+    public AudioSource SetGround;
+
+    private SpriteRenderer SpriteRenderer;
+    public Sprite SetWalkA;
+    public Sprite SetWalkB;
+
+    public AudioSource SetWalkSE;
+
 
     // ---------------------------- Field
 
@@ -94,6 +103,10 @@ public class PlayerAction : MonoBehaviour
         _col = GetComponent<Collider2D>();
         _sr = GetComponent<SpriteRenderer>();
         _playerHP = GetComponent<PlayerHP>();
+
+        SetGround = GetComponent<AudioSource>();
+        SetWalkSE = GetComponent<AudioSource>();
+        SpriteRenderer = GetComponent<SpriteRenderer>();
     }
     private void Update()
     {
@@ -127,6 +140,12 @@ public class PlayerAction : MonoBehaviour
             // 移動中、または入力なしの場合は非表示
             if (_aimCursor.gameObject.activeSelf)
                 _aimCursor.gameObject.SetActive(false);
+        }
+
+        //  移動中、特定のスプライトになったらSEを鳴らす
+        if (SpriteRenderer.sprite == SetWalkA || SpriteRenderer.sprite == SetWalkB)
+        {
+            SetWalkSE.Play();
         }
     }
 
@@ -382,6 +401,8 @@ public class PlayerAction : MonoBehaviour
         bool groundedNow = IsGrounded();
         if (groundedNow && !_wasGrounded)
         {
+            SetGround.Play();
+
             // 今回新しく着地した瞬間だけ Idle/Run を発火
             if (_dir.x != 0)
             {
