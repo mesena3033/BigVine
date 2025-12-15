@@ -7,6 +7,8 @@ public class RockDropTrigger : MonoBehaviour
     [SerializeField] private Rigidbody2D rockRb;
     [SerializeField] private float gravityScale = 2f;
 
+    [SerializeField] private GameObject targetImage;
+
     //ÉJÉÅÉâ
     [SerializeField] private CinemachineCamera virtualCamera;
     [SerializeField] private int highPriority = 20;
@@ -44,6 +46,8 @@ public class RockDropTrigger : MonoBehaviour
                 rockRb.bodyType = RigidbodyType2D.Dynamic;
                 rockRb.gravityScale = gravityScale;
             }
+
+            if (targetImage != null) targetImage.SetActive(false);
 
             if (virtualCamera != null)
             {
