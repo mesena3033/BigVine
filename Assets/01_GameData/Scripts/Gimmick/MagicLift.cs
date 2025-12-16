@@ -8,6 +8,8 @@ public class MagicLift : MonoBehaviour
     [SerializeField] private float upSpeed = 20f;     // 上昇スピード
     [SerializeField] private float downSpeed = 14f;   // 下降スピード
 
+    [SerializeField] private Transform player;
+
     [SerializeField] private GameObject liftImage;    // ★追加画像（普段表示、上昇中は非表示）
 
     public bool playerOnPlatform = false;
@@ -66,5 +68,21 @@ public class MagicLift : MonoBehaviour
         if (liftImage != null) liftImage.SetActive(true);
 
         isMoving = false;
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.CompareTag("Player"))
+        {
+            collision.transform.SetParent(platformRB.transform);
+        }
+    }
+
+    private void OnCollisionExit2D(Collision2D collision)
+    {
+        if (collision.gameObject.CompareTag("Player"))
+        {
+            collision.transform.SetParent(null);
+        }
     }
 }

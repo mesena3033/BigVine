@@ -4,18 +4,14 @@ public class FlowerBombTrigger : MonoBehaviour
 {
     [SerializeField] private GameObject budObject;
     [SerializeField] private GameObject flowerObject;
-    [SerializeField] private GameObject fruitPrefab; // ← プレハブを入れる
+    [SerializeField] private GameObject fruitPrefab;
 
     [SerializeField] private float detectionRadius = 5f;
     [SerializeField] private float fruitLaunchForce = 300f;
     [SerializeField] private LayerMask enemyLayer;
-    [SerializeField] private int maxShots = 3; // ← 撃てる回数
 
     private bool isFlowerActive = false;
-    private int currentShots = 0;
-
-    private bool isCooling = false;
-    [SerializeField] private float fireInterval = 0.5f; // 発射間隔
+    private bool hasShot = false; // ★1回撃ったか
 
     private void Start()
     {
@@ -31,25 +27,28 @@ public class FlowerBombTrigger : MonoBehaviour
 
         if (budObject != null) budObject.SetActive(false);
         if (flowerObject != null) flowerObject.SetActive(true);
+
+        Destroy(other.gameObject); // 魔法弾消す
     }
 
     private void Update()
     {
         if (!isFlowerActive) return;
-        if (currentShots >= maxShots) return;
-        if (isCooling) return; // ← クールダウン中は撃たせない
+        if (hasShot) return;
 
         Transform target = FindNearestEnemy();
         if (target != null)
         {
-            StartCoroutine(FireRoutine(target));
+            LaunchFruitAt(target);
+            hasShot = true; // ★ここで終了
         }
     }
 
-
     private Transform FindNearestEnemy()
     {
-        Collider2D[] hits = Physics2D.OverlapCircleAll(transform.position, detectionRadius, enemyLayer);
+        Collider2D[] hits =
+            Physics2D.OverlapCircleAll(transform.position, detectionRadius, enemyLayer);
+
         Transform closest = null;
         float minDist = Mathf.Infinity;
 
@@ -70,15 +69,15 @@ public class FlowerBombTrigger : MonoBehaviour
     {
         if (fruitPrefab == null || target == null) return;
 
-        // ★プレハブから生成
-        GameObject fruit = Instantiate(fruitPrefab, transform.position, Quaternion.identity);
+        GameObject fruit =
+            Instantiate(fruitPrefab, transform.position, Quaternion.identity);
 
         Rigidbody2D rb = fruit.GetComponent<Rigidbody2D>();
         if (rb != null)
         {
             rb.gravityScale = 0f;
-            Vector2 direction = (target.position - transform.position).normalized;
-            rb.AddForce(direction * fruitLaunchForce);
+            Vector2 dir = (target.position - transform.position).normalized;
+            rb.AddForce(dir * fruitLaunchForce);
         }
     }
 
@@ -86,16 +85,5 @@ public class FlowerBombTrigger : MonoBehaviour
     {
         Gizmos.color = Color.yellow;
         Gizmos.DrawWireSphere(transform.position, detectionRadius);
-    }
-
-    private System.Collections.IEnumerator FireRoutine(Transform target)
-    {
-        isCooling = true;            // クールダウン開始
-        LaunchFruitAt(target);       // 発射
-        currentShots++;              // 発射数カウント
-
-        yield return new WaitForSeconds(fireInterval); // ← ここで待つ！
-
-        isCooling = false;           // クールダウン終了
     }
 }
