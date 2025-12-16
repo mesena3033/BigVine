@@ -35,6 +35,8 @@ public class PlayerHP : MonoBehaviour
 
     void Start()
     {
+        Physics2D.IgnoreLayerCollision(LayerMask.NameToLayer("Player"), LayerMask.NameToLayer("Enemy"), false);
+
         rb = GetComponent<Rigidbody2D>();
 
         //  ƒŒƒCƒ„[IDæ“¾
