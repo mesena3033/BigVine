@@ -712,6 +712,7 @@ GameObject:
   - component: {fileID: 2832072352754573714}
   - component: {fileID: 6493961005955485525}
   - component: {fileID: 3055659728230837818}
+  - component: {fileID: 1660761803616700276}
   m_Layer: 6
   m_Name: Square (1)
   m_TagString: Untagged
@@ -728,8 +729,8 @@ Transform:
   m_GameObject: {fileID: 7804116048992974226}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 4.1255, y: -0.78, z: 0}
-  m_LocalScale: {x: 1.7663553, y: 0.68568826, z: 1}
+  m_LocalPosition: {x: 4.1255, y: -1.2959, z: 0}
+  m_LocalScale: {x: 1.7663553, y: 1.7173566, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 2313706783968625032}
@@ -824,7 +825,7 @@ BoxCollider2D:
     serializedVersion: 2
     m_Bits: 4294967295
   m_IsTrigger: 1
-  m_UsedByEffector: 0
+  m_UsedByEffector: 1
   m_CompositeOperation: 0
   m_CompositeOrder: 0
   m_Offset: {x: 0, y: 0}
@@ -857,6 +858,25 @@ MonoBehaviour:
   enemyLayer:
     serializedVersion: 2
     m_Bits: 512
+--- !u!251 &1660761803616700276
+PlatformEffector2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7804116048992974226}
+  m_Enabled: 1
+  m_UseColliderMask: 1
+  m_ColliderMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_RotationalOffset: 0
+  m_UseOneWay: 1
+  m_UseOneWayGrouping: 0
+  m_SurfaceArc: 100
+  m_UseSideFriction: 0
+  m_UseSideBounce: 0
+  m_SideArc: 1
 --- !u!1 &7813434223423733878
 GameObject:
   m_ObjectHideFlags: 0
@@ -959,6 +979,7 @@ GameObject:
   - component: {fileID: 4633583210393003025}
   - component: {fileID: 7764191926451343641}
   - component: {fileID: 2210795425130163601}
+  - component: {fileID: 1201937798081275050}
   m_Layer: 6
   m_Name: Square
   m_TagString: Untagged
@@ -975,8 +996,8 @@ Transform:
   m_GameObject: {fileID: 7832944783630024383}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 10.3267, y: -3.6452, z: 0}
-  m_LocalScale: {x: 1.9066, y: 0.381, z: 1}
+  m_LocalPosition: {x: 10.3267, y: -4.447, z: 0}
+  m_LocalScale: {x: 1.9066, y: 1.984591, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 3282243004895191834}
@@ -1071,7 +1092,7 @@ BoxCollider2D:
     serializedVersion: 2
     m_Bits: 4294967295
   m_IsTrigger: 1
-  m_UsedByEffector: 0
+  m_UsedByEffector: 1
   m_CompositeOperation: 0
   m_CompositeOrder: 0
   m_Offset: {x: 0, y: 0}
@@ -1104,6 +1125,25 @@ MonoBehaviour:
   enemyLayer:
     serializedVersion: 2
     m_Bits: 512
+--- !u!251 &1201937798081275050
+PlatformEffector2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7832944783630024383}
+  m_Enabled: 1
+  m_UseColliderMask: 1
+  m_ColliderMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_RotationalOffset: 0
+  m_UseOneWay: 1
+  m_UseOneWayGrouping: 0
+  m_SurfaceArc: 100
+  m_UseSideFriction: 0
+  m_UseSideBounce: 0
+  m_SideArc: 1
 --- !u!1 &7849544078604356015
 GameObject:
   m_ObjectHideFlags: 0
