@@ -17,6 +17,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/01_GameData/Scenes/GameClear.unity
     guid: 89e8cbe291f5af94bbc30f91b73a3db8
+  - enabled: 1
+    path: Assets/01_GameData/Scenes/Stage2.unity
+    guid: 2e9edcb9502827f4f92b8d02710a6302
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
   m_UseUCBPForAssetBundles: 0
