@@ -269,7 +269,7 @@ MonoBehaviour:
   noFrictionMat: {fileID: 6200000, guid: d5ea279103a960a4d87cdccc6e02389f, type: 2}
   _bulletPrefab: {fileID: 1773498709948148356, guid: 29028aac0d9d80d47af87acbd1c25ebc, type: 3}
   _bulletSpeed: 10
-  _aimCursor: {fileID: 8560953253815192920, guid: 287cc0a2787656a4fa944f9e923d07b0, type: 3}
+  _aimCursorPrefab: {fileID: 6881883304666046696, guid: 287cc0a2787656a4fa944f9e923d07b0, type: 3}
   _aimRadius: 6
   _shotDelay: 0.3
   _shotCooldown: 0.5

@@ -35,8 +35,9 @@ public class PlayerAction : MonoBehaviour
 
     // 弾発射関連 
     [SerializeField] private GameObject _bulletPrefab;
-    [SerializeField] private float _bulletSpeed = 10f; 
-    [SerializeField] private Transform _aimCursor;
+    [SerializeField] private float _bulletSpeed = 10f;
+    [SerializeField] private GameObject _aimCursorPrefab; // ここにプレハブをアサインする
+    private Transform _aimCursorInstance; // 生成された実体を動かすための変数
     [SerializeField] private float _aimRadius = 6f;
 
     [SerializeField] private float _shotDelay = 0.3f;   // 発射までの遅延
@@ -107,16 +108,24 @@ public class PlayerAction : MonoBehaviour
         SetGround = GetComponent<AudioSource>();
         SetWalkSE = GetComponent<AudioSource>();
         SpriteRenderer = GetComponent<SpriteRenderer>();
+
+        if (_aimCursorPrefab != null)
+        {
+            GameObject obj = Instantiate(_aimCursorPrefab);
+            _aimCursorInstance = obj.transform;
+
+            // 最初は非表示にしておく
+            _aimCursorInstance.gameObject.SetActive(false);
+        }
     }
     private void Update()
     {
         // ノックバック中は照準ロジックも停止させると、より安定します
         if (_playerHP != null && _playerHP.IsKnockingBack())
         {
-            // ノックバック中はカーソルを強制的に非表示にする
-            if (_aimCursor.gameObject.activeSelf)
+            if (_aimCursorInstance != null && _aimCursorInstance.gameObject.activeSelf)
             {
-                _aimCursor.gameObject.SetActive(false);
+                _aimCursorInstance.gameObject.SetActive(false);
             }
             return;
         }
@@ -129,17 +138,20 @@ public class PlayerAction : MonoBehaviour
         // 「移動していない」かつ「照準入力がある」場合のみカーソル有効
         if (!isMoving && hasLookInput)
         {
-            if (!_aimCursor.gameObject.activeSelf)
-                _aimCursor.gameObject.SetActive(true);
+            if (_aimCursorInstance != null)
+            {
+                if (!_aimCursorInstance.gameObject.activeSelf)
+                    _aimCursorInstance.gameObject.SetActive(true);
 
-            Vector3 aimDir = new Vector3(_lookInput.x, _lookInput.y, 0).normalized;
-            _aimCursor.position = transform.position + aimDir * _aimRadius;
+                Vector3 aimDir = new Vector3(_lookInput.x, _lookInput.y, 0).normalized;
+                _aimCursorInstance.position = transform.position + aimDir * _aimRadius;
+            }
         }
         else
         {
             // 移動中、または入力なしの場合は非表示
-            if (_aimCursor.gameObject.activeSelf)
-                _aimCursor.gameObject.SetActive(false);
+            if (_aimCursorInstance != null && _aimCursorInstance.gameObject.activeSelf)
+                _aimCursorInstance.gameObject.SetActive(false);
         }
 
         //  移動中、特定のスプライトになったらSEを鳴らす
@@ -311,13 +323,10 @@ public class PlayerAction : MonoBehaviour
         if (context.performed)
         {
             // 条件：静止中かつ照準が出ている(_aimCursorがアクティブ) かつ 発射プロセス中でない
-            if (_aimCursor.gameObject.activeSelf && !_isShootingProcess)
+            if (_aimCursorInstance != null && _aimCursorInstance.gameObject.activeSelf && !_isShootingProcess)
             {
                 _animator.SetTrigger("Magic");
-
                 FaceToCursor();
-
-                // コルーチンを開始して遅延射撃を行う
                 StartCoroutine(FireRoutine());
             }
         }
@@ -349,7 +358,7 @@ public class PlayerAction : MonoBehaviour
     private void FaceToCursor()
     {
         // プレイヤーからカーソルへのベクトル
-        float xDiff = _aimCursor.position.x - transform.position.x;
+        float xDiff = _aimCursorInstance.position.x - transform.position.x;
 
         // Xがプラスなら右(0~90, -90~0)、マイナスなら左(90~180, -180~-90)にある
         if (xDiff > 0)
@@ -376,9 +385,12 @@ public class PlayerAction : MonoBehaviour
         Rigidbody2D rb = bulletObj.GetComponent<Rigidbody2D>();
 
         // 照準カーソル方向へ発射
-        // ※待機時間の0.5秒の間にカーソル位置が変わっていた場合、現在のカーソル位置に向かって飛びます
-        Vector2 direction = (_aimCursor.position - spawnPos).normalized;
-        rb.linearVelocity = direction * _bulletSpeed;
+        // ※待機時間の0.5秒の間にカーソル位置が変わっていた場合、現在のカーソル位置に向かって飛ぶ
+        if (_aimCursorInstance != null)
+        {
+            Vector2 direction = (_aimCursorInstance.position - spawnPos).normalized;
+            rb.linearVelocity = direction * _bulletSpeed;
+        }
     }
     private void OnJump(InputAction.CallbackContext context)
     {
