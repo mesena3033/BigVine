@@ -16,7 +16,7 @@ public class GrowthPointGimmick : MonoBehaviour
     [Header("砲台 (Turret) 用設定")]
     [SerializeField] private GameObject bulletPrefab;
     [SerializeField] private Transform firePoint;
-    [SerializeField] private float fireForce = 15f;
+    [SerializeField] private float fireForce = 25f;
     [SerializeField] private float cooldown = 1.0f;
 
     [Header("ひっつき爆弾 (StickyBombLauncher) 用設定")]
@@ -92,7 +92,7 @@ public class GrowthPointGimmick : MonoBehaviour
             // 3. 弾に力を加えて発射する
             if (rb != null)
             {
-                rb.AddForce(Vector2.down * fireForce, ForceMode2D.Impulse);
+                rb.AddForce(Vector2.right * fireForce, ForceMode2D.Impulse);
             }
         }
         else
@@ -117,9 +117,7 @@ public class GrowthPointGimmick : MonoBehaviour
             Rigidbody2D rb = bomb.GetComponent<Rigidbody2D>();
             if (rb != null)
             {
-                // 山なりに投げるため、少し上向きの力を加える (45度方向)
-                Vector2 throwDirection = (stickyBombFirePoint.right + stickyBombFirePoint.up).normalized;
-                rb.AddForce(throwDirection * stickyBombThrowForce, ForceMode2D.Impulse);
+                rb.AddForce(Vector2.down * stickyBombThrowForce, ForceMode2D.Impulse);
             }
         }
         else

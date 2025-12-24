@@ -280,7 +280,7 @@ MonoBehaviour:
   shieldDuration: 3
   bulletPrefab: {fileID: 547647870031191795, guid: b1ca078da067f82448c3803895ca265e, type: 3}
   firePoint: {fileID: 241336068117758727}
-  fireForce: 15
+  fireForce: 50
   cooldown: 1
   stickyBombPrefab: {fileID: 0}
   stickyBombFirePoint: {fileID: 0}
