@@ -11,34 +11,20 @@ public class Fallitem : MonoBehaviour
         rb.bodyType = RigidbodyType2D.Kinematic; // 最初は動かない
     }
 
-    private void Update()
+    private void OnTriggerEnter2D(Collider2D other)
     {
         if (used) return;
 
-        if (Input.GetMouseButtonDown(0))
+        // ★MagicBullet に当たった？
+        if (other.CompareTag("MagicBullet"))
         {
-            // マウス位置をワールド座標に変換
-            Vector2 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-
-            // クリック位置にあるコライダーを取得
-            Collider2D hit = Physics2D.OverlapPoint(mousePos);
-
-            // 自分自身がクリックされた？
-            if (hit != null && hit.gameObject == this.gameObject)
-            {
-                Fall();
-            }
-
-
+            Fall();
         }
     }
+
     private void Fall()
     {
         used = true;
         rb.bodyType = RigidbodyType2D.Dynamic; // ← これで落ちる！
     }
-
-
 }
-
-

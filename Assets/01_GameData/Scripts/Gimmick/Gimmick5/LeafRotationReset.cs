@@ -1,21 +1,25 @@
 using UnityEngine;
+using System.Collections;
 
 public class LeafMagicTrigger : MonoBehaviour
 {
-    [SerializeField] private GameObject budObject;
-    [SerializeField] private GameObject leafOpenImage;   // ★閉じる前の画像
-    [SerializeField] private GameObject leafClosedImage; // ★閉じた後の画像
+    [SerializeField] private GameObject budObject;        // 芽
+    [SerializeField] private GameObject leafOpenImage;    // 開く
+    [SerializeField] private GameObject leafClosedImage;  // 閉じる
 
     [SerializeField] private float detectionRadius = 3f;
     [SerializeField] private LayerMask enemyLayer;
 
+    [SerializeField] private float closeDuration = 0.5f;
+    [SerializeField] private float openDuration = 0.5f;
+
     private bool hasTriggered = false;
-    private bool hasClosed = false;
+    private bool isProcessing = false;
 
     private void Start()
     {
-        if (leafOpenImage != null) leafOpenImage.SetActive(false);
-        if (leafClosedImage != null) leafClosedImage.SetActive(false);
+        // ★最初は芽だけ表示
+        SetActiveState(bud: true, open: false, closed: false);
     }
 
     private void OnTriggerEnter2D(Collider2D other)
@@ -25,29 +29,38 @@ public class LeafMagicTrigger : MonoBehaviour
 
         hasTriggered = true;
 
-        if (budObject != null) Destroy(budObject);
+        if (budObject != null) budObject.SetActive(false);
 
-        // 魔法が当たったら「閉じる前の画像」を表示
-        if (leafOpenImage != null) leafOpenImage.SetActive(true);
+        SetActiveState(bud: false, open: true, closed: false);
     }
 
     private void Update()
     {
-        if (!hasTriggered || hasClosed) return;
+        if (!hasTriggered || isProcessing) return;
 
         Collider2D[] hits = Physics2D.OverlapCircleAll(transform.position, detectionRadius, enemyLayer);
         if (hits.Length > 0)
         {
-            CloseLeaves();       // ★閉じた後の画像に切り替え
             DestroyEnemies(hits);
-            hasClosed = true;
+            StartCoroutine(LeafCycle());
         }
     }
 
-    private void CloseLeaves()
+    private IEnumerator LeafCycle()
     {
-        if (leafOpenImage != null) leafOpenImage.SetActive(false);
-        if (leafClosedImage != null) leafClosedImage.SetActive(true);
+        isProcessing = true;
+
+        SetActiveState(bud: false, open: false, closed: true);
+        yield return new WaitForSeconds(closeDuration);
+
+        SetActiveState(bud: false, open: true, closed: false);
+        yield return new WaitForSeconds(openDuration);
+
+        SetActiveState(bud: true, open: false, closed: false);
+
+        hasTriggered = false;
+
+        isProcessing = false;
     }
 
     private void DestroyEnemies(Collider2D[] hits)
@@ -56,6 +69,13 @@ public class LeafMagicTrigger : MonoBehaviour
         {
             Destroy(hit.gameObject);
         }
+    }
+
+    private void SetActiveState(bool bud, bool open, bool closed)
+    {
+        if (budObject != null) budObject.SetActive(bud);
+        if (leafOpenImage != null) leafOpenImage.SetActive(open);
+        if (leafClosedImage != null) leafClosedImage.SetActive(closed);
     }
 
     private void OnDrawGizmosSelected()
