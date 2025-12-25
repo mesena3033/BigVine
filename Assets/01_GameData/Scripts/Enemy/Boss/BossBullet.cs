@@ -48,11 +48,11 @@ public class BossBullet : MonoBehaviour
         {
             Destroy(gameObject);
         }
-        // 地面
-        else if (other.gameObject.layer == LayerMask.NameToLayer("Ground"))
-        {
-            Destroy(gameObject);
-        }
+        // 地面(コメントアウトしている場合は貫通)
+        //else if (other.gameObject.layer == LayerMask.NameToLayer("Ground"))
+        //{
+        //    Destroy(gameObject);
+        //}
     }
 
     // --- ボスに向かって跳ね返す計算 ---

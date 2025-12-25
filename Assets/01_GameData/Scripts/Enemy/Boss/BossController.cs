@@ -12,16 +12,26 @@ public class BossController : MonoBehaviour
     [SerializeField] private Transform firePoint; // 弾の発射位置
 
     [Header("攻撃設定: 突進 (25%)")]
+    [Header("攻撃設定: 突進 (25%)")]
     [SerializeField] private GameObject warningAreaPrefab; // 突進の警告エフェクト（赤い四角）
-    [SerializeField] private float chargeWarningTime = 1.2f; // 突進の警告表示時間
+    [SerializeField] private float chargeWarningTime = 3.0f; // 突進の警告表示時間
     [SerializeField] private float blinkInterval = 0.2f;     // 警告の点滅間隔（秒）
-    public float chargeSpeed = 10f;
-    public float chargeDuration = 1.5f;
+    public float chargeSpeed = 10f;     // 廃止（chargeThroughSpeed に統合）
+    public float chargeDuration = 1.5f; // 廃止（画面外に出るまで突進するため）
     public float returnSpeed = 5f;
+    [Tooltip("画面を駆け抜ける際の突進速度")]
+    [SerializeField] private float chargeThroughSpeed = 25f; // 新しい突進速度
+    [Tooltip("突進時のカメラシェイクの強さ")]
+    [SerializeField] private float shakeMagnitude = 0.5f;
+    [Tooltip("突進時のカメラシェイクの時間")]
+    [SerializeField] private float shakeDuration = 12.0f;
 
-    [Header("攻撃設定: ツタ (40%)")]
+    // 独立ループ
+    [Header("攻撃設定: ツタ (独立ループ)")]
     [SerializeField] private GameObject vinePrefab;
     [SerializeField] private float vineWarningTime = 1.0f;
+    [Tooltip("ツタ攻撃を独立して実行する間隔（秒）")]
+    [SerializeField] private float vineAttackInterval = 6.0f; // 6秒ごとなど
 
     [Header("攻撃設定: 溶解液 (35%)")]
     [SerializeField] private GameObject acidBulletPrefab; // 弾のプレハブ
@@ -42,9 +52,14 @@ public class BossController : MonoBehaviour
     [SerializeField] private float diveFastBlinkTime = 1.0f; // 警告が高速点滅する時間
     [SerializeField] private float diveFallSpeed = 40f;      // ボスが上から落ちてくる速度
     [SerializeField] private float diveStunTime = 2.0f;      // 着地後の行動不能時間
+    [Tooltip("急降下攻撃の着地時のカメラシェイクの強さ")]
+    [SerializeField] private float diveShakeMagnitude = 0.8f; 
+    [Tooltip("急降下攻撃の着地時のカメラシェイクの時間")]
+    [SerializeField] private float diveShakeDuration = 0.4f;
     [SerializeField] private float submergeAnimTime = 1.0f; // 地面に潜る/戻るアニメーションの時間
 
     [Header("攻撃設定: 画面奥からの範囲攻撃")]
+    [SerializeField] private GameObject backgroundAttackFacePrefab;
     [SerializeField] private GameObject rangeAttackHitboxPrefab;      // 攻撃判定のプレハブ
     [SerializeField] private float zoomInDuration = 1.5f;      // 顔が奥から迫ってくる時間
     [SerializeField] private float rangeWarningTime = 2.0f;    // 警告線の表示時間
@@ -103,6 +118,7 @@ public class BossController : MonoBehaviour
         }
 
         StartCoroutine(BossBehaviorLoop());
+        StartCoroutine(VineAttackLoop());
     }
 
     void LateUpdate()
@@ -119,34 +135,26 @@ public class BossController : MonoBehaviour
         while (!isDead)
         {
             // 待機
-            yield return new WaitForSeconds(2.0f);
+            yield return new WaitForSeconds(3.0f); // 攻撃間隔を少し調整
             if (isDead) break;
 
             if (playerTransform != null)
             {
                 float specialAttackRoll = Random.Range(0f, 100f);
 
-                // 30%の確率で新しい大技「急降下爆撃」を行う
+                // 30%の確率で大技を行う
                 if (specialAttackRoll < 30f)
                 {
                     yield return StartCoroutine(SpecialAttackBranch());
                 }
-                else // 残り70%の場合は、これまで通りの通常攻撃を行う
+                else // 残り70%の場合は、通常攻撃（突進 or 溶解液）を行う
                 {
-                    float normalAttackRoll = Random.Range(0f, 100f);
-
-                    if (normalAttackRoll < 25f) // 0 ～ 25 (25%) -> 突進
+                    // 突進と溶解液の確率:50%:50%
+                    if (Random.value < 0.5f)
                     {
                         yield return StartCoroutine(ChargeAttack());
                     }
-                    else if (normalAttackRoll < 65f) // 25 ～ 65 (40%) -> ツタ
-                    {
-                        if (Random.value > 0.5f)
-                            yield return StartCoroutine(VineAttackHorizontal());
-                        else
-                            yield return StartCoroutine(VineAttackVertical());
-                    }
-                    else // 65 ～ 100 (35%) -> 溶解液
+                    else
                     {
                         yield return StartCoroutine(AcidSpitAttack());
                     }
@@ -160,26 +168,57 @@ public class BossController : MonoBehaviour
         }
     }
 
+    // ツタ攻撃を一定間隔で独立して実行するループ
+    IEnumerator VineAttackLoop()
+    {
+        // 戦闘開始直後にいきなりツタが来ないように、最初は少し待つ
+        yield return new WaitForSeconds(vineAttackInterval / 2f);
+
+        while (!isDead)
+        {
+            // ボスが行動不能な状態（潜っている最中など）は待機
+            if (bodyPartsRenderers[0] != null && !bodyPartsRenderers[0].enabled)
+            {
+                yield return new WaitForSeconds(1.0f); // 1秒ごとに状態をチェック
+                continue; // ループの先頭に戻る
+            }
+
+            if (playerTransform != null)
+            {
+                // 横か縦かをランダムに選択して攻撃
+                if (Random.value > 0.5f)
+                {
+                    yield return StartCoroutine(VineAttackHorizontal());
+                }
+                else
+                {
+                    yield return StartCoroutine(VineAttackVertical());
+                }
+            }
+
+            // 次のツタ攻撃までの待機
+            yield return new WaitForSeconds(vineAttackInterval);
+        }
+    }
+
     // --- 攻撃: 突進 ---
     IEnumerator ChargeAttack()
     {
         Debug.Log("ボス：突進構え");
 
-        float moveDir;
+        float moveDir = 0;
 
-        GameObject warningInstance = null; // 生成したオブジェクトを保持する変数
+        GameObject warningInstance = null;
         if (warningAreaPrefab != null && playerTransform != null)
         {
-            // --- ① プレハブから警告オブジェクトを生成 ---
             warningInstance = Instantiate(warningAreaPrefab);
 
-            // --- ② 突進範囲を計算 ---
             moveDir = Mathf.Sign(playerTransform.position.x - transform.position.x);
-            float chargeDistance = chargeSpeed * chargeDuration;
-            float startX = transform.position.x;
-            float endX = Mathf.Clamp(startX + moveDir * chargeDistance, minX, maxX);
 
-            // --- ③ 警告のサイズと位置を設定 ---
+            // 画面端までの距離を計算して警告範囲を設定
+            float startX = transform.position.x;
+            float endX = (moveDir > 0) ? maxX + 5.0f : minX - 5.0f; // 画面外まで突き抜けるように設定
+
             float warningWidth = Mathf.Abs(endX - startX);
             float warningCenterX = startX + (endX - startX) / 2;
 
@@ -191,11 +230,9 @@ public class BossController : MonoBehaviour
             float warningHeight = totalBounds.size.y;
             float warningCenterY = totalBounds.center.y;
 
-            // 生成したインスタンスの位置とサイズを変更
             warningInstance.transform.position = new Vector3(warningCenterX, warningCenterY, 0);
             warningInstance.transform.localScale = new Vector3(warningWidth, warningHeight, 1);
 
-            // --- ④ 点滅処理 ---
             float elapsedTime = 0f;
             warningInstance.SetActive(true);
 
@@ -206,7 +243,6 @@ public class BossController : MonoBehaviour
                 elapsedTime += blinkInterval;
             }
 
-            // --- ⑤ 使い終わったオブジェクトを破棄 ---
             Destroy(warningInstance);
         }
         else
@@ -215,49 +251,48 @@ public class BossController : MonoBehaviour
         }
 
         Debug.Log("ボス：突進開始");
-        float directionSign = transform.localScale.x > 0 ? -1 : 1; 
-        // 簡易的にプレイヤー方向へ突進するために再計算
-        moveDir = Mathf.Sign(playerTransform.position.x - transform.position.x);
 
-        float timer = 0f;
-        while (timer < chargeDuration)
+        // 警告時に計算した突進方向を再度使用
+        if (moveDir == 0) // 警告が表示されなかった場合の保険
+        {
+            moveDir = Mathf.Sign(playerTransform.position.x - transform.position.x);
+        }
+
+        // 突進方向に向きを合わせる
+        FlipBody(moveDir > 0);
+
+        // --- カメラシェイクを呼び出す ---
+        if (CameraShaker.Instance != null)
+        {
+            CameraShaker.Instance.Shake(shakeDuration, shakeMagnitude);
+        }
+
+        // --- 画面外に出るまで突進し続けるループ ---
+        while (transform.position.x > minX - 5f && transform.position.x < maxX + 5f)
         {
             if (isDead) break;
-            float moveAmount = moveDir * chargeSpeed * Time.deltaTime;
-            float newX = Mathf.Clamp(transform.position.x + moveAmount, minX, maxX);
-            transform.position = new Vector3(newX, transform.position.y, transform.position.z);
 
-            timer += Time.deltaTime;
+            float moveAmount = moveDir * chargeThroughSpeed * Time.deltaTime;
+            transform.Translate(new Vector3(moveAmount, 0, 0), Space.World);
+
             yield return null;
         }
 
-        yield return new WaitForSeconds(1.0f);
+        // --- 画面外に出た後、ボスを非表示にし、地面から再登場する ---
+        Debug.Log("ボス：次の待機位置へ帰還準備");
 
-        // --- 戻る処理 ---
-        Debug.Log("ボス：次の待機位置へ帰還");
+        // 1. レンダラーを全て非表示にする
+        foreach (var sr in bodyPartsRenderers)
+        {
+            if (sr != null) sr.enabled = false;
+        }
 
-        // 1. 次の待機位置をランダムに決定
+        // 2. 次の待機位置を決定
         UpdateNextStandbyPosition();
 
-        // 2. 予告パーティクルを生成
-        if (returnParticlePrefab != null)
-        {
-            Vector3 particlePos = new Vector3(currentTargetPosition.x, minY, currentTargetPosition.z);
-            Instantiate(returnParticlePrefab, particlePos, Quaternion.identity);
-            yield return new WaitForSeconds(0.5f); // パーティクルが少し再生されるのを待つ
-        }
-
-        // 3. 決定した待機位置の方向を向く
-        FlipBody(Mathf.Sign(currentTargetPosition.x - transform.position.x) < 0);
-
-        // 4. 新しい待機位置まで移動する
-        while (Vector3.Distance(transform.position, currentTargetPosition) > 0.1f)
-        {
-            if (isDead) break;
-            transform.position = Vector3.MoveTowards(transform.position, currentTargetPosition, returnSpeed * Time.deltaTime);
-            yield return null;
-        }
-        transform.position = currentTargetPosition;
+        // 3. 地面から再登場するアニメーションを呼び出す
+        //    (AnimateSubmergeの第2引数に、潜るアニメーションの時間を渡す)
+        yield return StartCoroutine(AnimateSubmerge(false, submergeAnimTime));
     }
 
     // --- 攻撃: 横ツタ ---
@@ -271,7 +306,7 @@ public class BossController : MonoBehaviour
         Vector3 spawnPos = new Vector3(spawnX, spawnY, 0);
         float zAngle = isLeftStart ? 0f : 180f;
 
-        SpawnVine(spawnPos, zAngle, Mathf.Abs(maxX - minX));
+        SpawnVine(spawnPos, zAngle, Mathf.Abs(maxX - minX), VineType.Horizontal);
         yield return new WaitForSeconds(vineWarningTime + 0.5f);
     }
 
@@ -284,7 +319,7 @@ public class BossController : MonoBehaviour
         float zAngle = -90f;
         float length = Mathf.Abs(maxY - minY);
 
-        SpawnVine(spawnPos, zAngle, length);
+        SpawnVine(spawnPos, zAngle, length, VineType.Vertical);
         yield return new WaitForSeconds(vineWarningTime + 0.5f);
     }
 
@@ -383,14 +418,15 @@ public class BossController : MonoBehaviour
         foreach (var sr in bodyPartsRenderers) if (sr != null) totalBounds.Encapsulate(sr.bounds);
 
         float warningWidth = totalBounds.size.x;
-        float warningHeight = maxY - minY;
-        float warningCenterY = (maxY + minY) / 2f;
+        float warningHeight = (maxY - minY) * 3f;
+        float warningCenterY = minY + warningHeight / 2f; // 地面を基準に中心を計算
         warning.transform.localScale = new Vector3(warningWidth, warningHeight, 1);
 
         float elapsedTime = 0f;
         float blinkInterval = 0.2f;
         while (elapsedTime < diveFollowTime)
         {
+            // Y座標の中心も更新
             warning.transform.position = new Vector3(playerTransform.position.x, warningCenterY, 0);
             warning.SetActive(!warning.activeSelf);
             yield return new WaitForSeconds(blinkInterval);
@@ -422,6 +458,12 @@ public class BossController : MonoBehaviour
         }
         transform.position = targetFallPosition;
 
+        // 着地した瞬間にカメラを揺らす
+        if (CameraShaker.Instance != null)
+        {
+            CameraShaker.Instance.Shake(diveShakeDuration, diveShakeMagnitude);
+        }
+
         // --- 5. 着地後、一定時間行動不能 ---
         Debug.Log("ボス：着地、行動不能");
         yield return new WaitForSeconds(diveStunTime);
@@ -447,127 +489,180 @@ public class BossController : MonoBehaviour
     {
         Debug.Log("ボス：[大技] 画面奥からの範囲攻撃");
 
-        // --- 1. 顔以外のパーツを非表示にする ---
+        // --- 1. ボス本体（全パーツ）を非表示にする ---
         foreach (var sr in bodyPartsRenderers)
         {
-            if (headRenderer != null && sr != headRenderer)
-            {
-                sr.enabled = false;
-            }
+            if (sr != null) sr.enabled = false;
         }
 
-        // --- 2. ボス本体を画面中央へ移動させる ---
-        Vector3 screenCenter = new Vector3((minX + maxX) / 2, (minY + maxY) / 2, 0);
-        transform.position = screenCenter;
+        // プレイヤーがいない場合は攻撃を中断する
+        if (playerTransform == null) yield break;
 
-        // --- 3. 顔が画面中央奥から迫ってくる演出 ---
-        if (headRenderer != null)
+        // --- 2. プレイヤーの位置に専用の顔を生成 ---
+        Vector3 attackCenterPosition = playerTransform.position; // 初期位置はプレイヤーの現在地
+        GameObject faceInstance = Instantiate(backgroundAttackFacePrefab, attackCenterPosition, Quaternion.identity);
+        Collider2D faceCollider = faceInstance.GetComponent<Collider2D>();
+
+        // 生成直後は当たり判定を無効化
+        if (faceCollider != null)
         {
-            headRenderer.enabled = true;
-            headRenderer.transform.localPosition = Vector3.zero; // 顔の相対位置を一時的にゼロに
-
-            Vector3 startScale = Vector3.zero;
-            Vector3 targetScale = initialHeadScale * 2f;
-
-            float elapsedTime = 0f;
-            while (elapsedTime < zoomInDuration)
-            {
-                float t = elapsedTime / zoomInDuration;
-                headRenderer.transform.localScale = Vector3.Lerp(startScale, targetScale, t * t);
-                elapsedTime += Time.deltaTime;
-                yield return null;
-            }
-            headRenderer.transform.localScale = targetScale;
+            faceCollider.enabled = false;
         }
+
+        // --- 3. プレイヤーを追従しながら拡大し、その後位置を固定 ---
+        Vector3 startScale = Vector3.zero;
+        Vector3 targetScale = faceInstance.transform.localScale * 2f; // プレハブのスケールを基準に拡大
+        float elapsedTime = 0f;
+        float followDuration = zoomInDuration / 2f; // 拡大時間nの半分(n/2)を追従時間とする
+
+        while (elapsedTime < zoomInDuration)
+        {
+            // 拡大時間の前半はプレイヤーを追従する
+            if (elapsedTime < followDuration && playerTransform != null)
+            {
+                attackCenterPosition = playerTransform.position;
+                faceInstance.transform.position = attackCenterPosition;
+            }
+            // 後半は位置を動かさない
+
+            // 拡大処理
+            float t = elapsedTime / zoomInDuration;
+            faceInstance.transform.localScale = Vector3.Lerp(startScale, targetScale, t * t);
+
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+        faceInstance.transform.localScale = targetScale;
+
+        // 拡大完了時の位置を最終的な攻撃中心点とする
+        attackCenterPosition = faceInstance.transform.position;
+
+        // 拡大しきったら当たり判定を有効化
+        if (faceCollider != null)
+        {
+            faceCollider.enabled = true;
+        }
+
 
         // --- 4. 共通の警告プレハブを使って放射状の警告線を生成＆点滅 ---
         List<GameObject> warningInstances = new List<GameObject>();
         for (int i = 0; i < numberOfAttacks; i++)
         {
             if (warningAreaPrefab == null) break;
-
             float angle = 360f / numberOfAttacks * i;
             Quaternion rotation = Quaternion.Euler(0, 0, angle);
             Vector3 direction = rotation * Vector3.right;
-
             Vector3 warningScale = new Vector3(attackRadius, 0.3f, 1f);
-            Vector3 warningPosition = screenCenter + direction * (attackRadius / 2f);
-
+            Vector3 warningPosition = attackCenterPosition + direction * (attackRadius / 2f);
             GameObject warning = Instantiate(warningAreaPrefab, warningPosition, rotation);
             warning.transform.localScale = warningScale;
             warningInstances.Add(warning);
         }
-
         float warningElapsedTime = 0f;
         while (warningElapsedTime < rangeWarningTime)
         {
-            foreach (var warning in warningInstances)
-            {
-                warning.SetActive(!warning.activeSelf);
-            }
+            foreach (var warning in warningInstances) warning.SetActive(!warning.activeSelf);
             yield return new WaitForSeconds(blinkInterval);
             warningElapsedTime += blinkInterval;
         }
+        foreach (var warning in warningInstances) if (warning != null) warning.SetActive(true);
 
-        foreach (var warning in warningInstances)
-        {
-            if (warning != null) warning.SetActive(true);
-        }
 
         // --- 5. 警告線の先端から中心へ攻撃判定を走らせる ---
         List<GameObject> hitboxes = new List<GameObject>();
+
+        // 攻撃開始と同時に警告線を破棄 
         foreach (var warning in warningInstances)
         {
-            if (rangeAttackHitboxPrefab == null || warning == null) break;
+            // 警告線の角度や位置情報を利用してから破棄する
+            if (rangeAttackHitboxPrefab != null && warning != null)
+            {
+                // 角度（-180～180）を取得
+                float startAngle = warning.transform.eulerAngles.z;
 
-            Vector3 direction = warning.transform.right;
-            Vector3 startPos = screenCenter + direction * attackRadius;
+                // 開始位置を計算
+                Vector3 direction = warning.transform.right;
+                Vector3 startPos = attackCenterPosition + direction * attackRadius;
 
-            GameObject hitbox = Instantiate(rangeAttackHitboxPrefab, startPos, warning.transform.rotation);
-            hitboxes.Add(hitbox);
+                // 当たり判定を生成
+                GameObject hitbox = Instantiate(rangeAttackHitboxPrefab, startPos, warning.transform.rotation);
+                hitboxes.Add(hitbox);
 
-            StartCoroutine(MoveHitbox(hitbox.transform, screenCenter, attackTravelTime));
+                // 新しい移動コルーチンを呼び出す
+                StartCoroutine(MoveHitboxInSpiral(hitbox.transform, attackCenterPosition, attackRadius, attackTravelTime, startAngle));
+            }
+            // 使い終わった警告線はすぐに破棄
+            Destroy(warning);
         }
+        // warningInstancesリストをクリアしておく
+        warningInstances.Clear();
+
 
         yield return new WaitForSeconds(attackTravelTime + 0.5f);
 
         // --- 6. クリーンアップ ---
-        foreach (var warning in warningInstances) Destroy(warning);
-        foreach (var hitbox in hitboxes) Destroy(hitbox);
 
-        if (headRenderer != null)
+        // 生成した顔オブジェクトを破棄
+        if (faceInstance != null)
         {
-            headRenderer.enabled = false;
-            headRenderer.transform.localScale = initialHeadScale;
-            headRenderer.transform.localPosition = initialHeadLocalPosition; // 顔の相対位置を元に戻す
+            Destroy(faceInstance);
         }
     }
 
-    IEnumerator MoveHitbox(Transform hitbox, Vector3 targetPosition, float duration)
+    private IEnumerator MoveHitboxInSpiral(Transform hitbox, Vector3 center, float startRadius, float duration, float startAngle)
     {
-        Vector3 startPosition = hitbox.position;
         float elapsedTime = 0f;
+        // 時計回りに360度回転させる
+        float angleToTravel = 180f;
+
         while (elapsedTime < duration)
         {
-            if (hitbox == null) yield break; // 移動中に破壊された場合
-            hitbox.position = Vector3.Lerp(startPosition, targetPosition, elapsedTime / duration);
+            if (hitbox == null) yield break; // 移動中に破壊された場合に備える
+
+            float progress = elapsedTime / duration; // 0.0 (開始) ～ 1.0 (終了)
+
+            // 1. 半径を中心に向かって徐々に小さくする (Spiral)
+            float currentRadius = Mathf.Lerp(startRadius, 0f, progress);
+
+            // 2. 角度を時計回りに変化させる (Rotation)
+            float currentAngleDegrees = startAngle - (angleToTravel * progress);
+
+            // 3. 角度をラジアンに変換 (Mathf.Cos/Sinはラジアンを使用するため)
+            float currentAngleRadians = currentAngleDegrees * Mathf.Deg2Rad;
+
+            // 4. 新しい座標を計算
+            float x = center.x + currentRadius * Mathf.Cos(currentAngleRadians);
+            float y = center.y + currentRadius * Mathf.Sin(currentAngleRadians);
+
+            hitbox.position = new Vector3(x, y, center.z);
+
+            // 当たり判定自体も進行方向に向ける（お好みで）
+            Vector3 directionToCenter = (center - hitbox.position).normalized;
+            if (directionToCenter != Vector3.zero)
+            {
+                float angle = Mathf.Atan2(directionToCenter.y, directionToCenter.x) * Mathf.Rad2Deg;
+                hitbox.rotation = Quaternion.Euler(0, 0, angle + 90); // 進行方向に対して垂直にするなど調整
+            }
+
             elapsedTime += Time.deltaTime;
             yield return null;
         }
+
+        // 終了したら当たり判定を破棄
         if (hitbox != null) Destroy(hitbox.gameObject);
     }
 
 
     // --- 共通処理 ---
-    void SpawnVine(Vector3 pos, float angle, float length)
+    void SpawnVine(Vector3 pos, float angle, float length, VineType type)
     {
         GameObject vineObj = Instantiate(vinePrefab, pos, Quaternion.Euler(0, 0, angle));
         BossVine vineScript = vineObj.GetComponent<BossVine>();
         if (vineScript != null)
         {
-            vineScript.ownerBoss = this; // 生成したツタに、自分自身(ボス)の情報を渡す
+            vineScript.ownerBoss = this;
 
-            vineScript.StartAttack(length, vineWarningTime);
+            vineScript.StartAttack(length, vineWarningTime, type);
         }
     }
 
