@@ -8,23 +8,39 @@ public class BossHead : MonoBehaviour
     [Header("追従の滑らかさ")]
     [SerializeField] private float followSpeed = 8f;   // この値が大きいほど、機敏に追いかける
 
-    private Vector3 offset; // 体と頭の初期位置の差分
+    private bool isFlipped = false; // 現在反転しているか(右を向いているか)
+
+    private Vector3 initialOffset; // 体と頭の初期位置の差分
 
     void Start()
     {
         if (targetBody != null)
         {
             // 最初に、体と頭がどれだけ離れているかを計算して保存しておく
-            offset = transform.position - targetBody.position;
+            initialOffset = transform.position - targetBody.position;
         }
+    }
+
+    // BossControllerから向きの指示を受け取るための公開メソッド
+    public void SetFlip(bool flipped)
+    {
+        isFlipped = flipped;
     }
 
     void LateUpdate()
     {
         if (targetBody != null)
         {
-            // 目標地点 = 体の現在の位置 + 保存しておいた差分
-            Vector3 targetPosition = targetBody.position + offset;
+            // 現在の向きに応じたオフセットを計算
+            Vector3 currentOffset = initialOffset;
+            if (isFlipped)
+            {
+                // 右を向いているときは、Xのオフセットを反転させる
+                currentOffset.x = -initialOffset.x;
+            }
+
+            // 目標地点 = 体の現在の位置 + 計算した差分
+            Vector3 targetPosition = targetBody.position + currentOffset;
 
             // 現在地から目標地点へ、滑らかに移動する
             transform.position = Vector3.Lerp(transform.position, targetPosition, Time.deltaTime * followSpeed);

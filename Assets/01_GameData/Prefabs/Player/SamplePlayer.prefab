@@ -106,7 +106,6 @@ GameObject:
   - component: {fileID: 3939048263590554709}
   - component: {fileID: 3290019656100336504}
   - component: {fileID: 8446779125202320514}
-  - component: {fileID: 5377858848237006064}
   - component: {fileID: 1798869747967253805}
   - component: {fileID: 98361637012075412}
   m_Layer: 7
@@ -359,14 +358,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!81 &5377858848237006064
-AudioListener:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6905193025528546659}
-  m_Enabled: 1
 --- !u!82 &1798869747967253805
 AudioSource:
   m_ObjectHideFlags: 0
