@@ -54,6 +54,10 @@ MonoBehaviour:
   tipCollider: {fileID: 8794405511754993936}
   extendSpeed: 20
   waitTime: 3
+  leafPlatformPrefab: {fileID: 5360793329882596048, guid: 1cb301ded2d1d16448b25da14d5d3d22, type: 3}
+  leafSpawnInterval: 2.5
+  leafSpawnOffsetY: 1.2
+  ownerBoss: {fileID: 4736163668965967867, guid: 5efb54d2dcd68c346b4e58318ff4a8e1, type: 3}
 --- !u!1 &1086600607920005063
 GameObject:
   m_ObjectHideFlags: 0

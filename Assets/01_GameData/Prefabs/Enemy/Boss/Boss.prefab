@@ -363,11 +363,14 @@ MonoBehaviour:
   maxHp: 10
   firePoint: {fileID: 8974242826373296849}
   warningAreaPrefab: {fileID: 5272749377792569298, guid: 7720f3d224fe54f498f0602baabf8775, type: 3}
-  chargeWarningTime: 1.2
+  chargeWarningTime: 2.5
   blinkInterval: 0.3
   chargeSpeed: 10
   chargeDuration: 1.5
   returnSpeed: 5
+  chargeThroughSpeed: 25
+  shakeMagnitude: 0.5
+  shakeDuration: 1.5
   vinePrefab: {fileID: 62990156499339028, guid: 10daec1fd81e5124f9dee57315ec6b74, type: 3}
   vineWarningTime: 1
   acidBulletPrefab: {fileID: 1353344790339811824, guid: ad4a8ba9189438245b99b92cd8d9a68f, type: 3}
@@ -378,20 +381,23 @@ MonoBehaviour:
   acidWarningTime: 1
   acidBlinkInterval: 0.2
   diveBombChance: 0.55
-  diveFollowTime: 2
+  diveFollowTime: 1
   diveFastBlinkTime: 1
-  diveFallSpeed: 40
-  diveStunTime: 2
+  diveFallSpeed: 80
+  diveStunTime: 0.2
+  diveShakeMagnitude: 0.8
+  diveShakeDuration: 0.4
   submergeAnimTime: 1
+  backgroundAttackFacePrefab: {fileID: 3364829916827020191, guid: 3aecad3c4d9086643842c36054e215db, type: 3}
   rangeAttackHitboxPrefab: {fileID: 7462081598080175507, guid: a3df315ec6c993748966870570b573f9, type: 3}
   zoomInDuration: 1.5
   rangeWarningTime: 1.5
-  attackTravelTime: 0.2
+  attackTravelTime: 0.5
   numberOfAttacks: 6
   attackRadius: 15
   minX: -14.8
   maxX: 14.8
-  maxY: 12
+  maxY: 29
   minY: -4
   returnParticlePrefab: {fileID: 8474264078067937215, guid: cdd9b7f3e7d46e148bafd19ea71315bc, type: 3}
   standbyPositionOffset: {x: 2, y: 0}
