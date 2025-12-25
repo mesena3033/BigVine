@@ -27,7 +27,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 292582804575931520}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: -2.5, y: 2.5, z: 0}
   m_LocalScale: {x: 3, y: 3, z: 1}
   m_ConstrainProportionsScale: 0
@@ -317,8 +317,8 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 8974242826373296849}
   - {fileID: 1079691172799973616}
+  - {fileID: 8974242826373296849}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!50 &5634155258599180397
@@ -393,10 +393,13 @@ MonoBehaviour:
   maxX: 14.8
   maxY: 12
   minY: -4
+  returnParticlePrefab: {fileID: 8474264078067937215, guid: cdd9b7f3e7d46e148bafd19ea71315bc, type: 3}
+  standbyPositionOffset: {x: 2, y: 0}
   rb: {fileID: 5634155258599180397}
   bodyPartsRenderers:
   - {fileID: 7914862452732439169}
   - {fileID: 2244607862419707536}
+  bossHead: {fileID: 6563922546566151111}
   audioSource: {fileID: 361209097546753697}
   damageSound: {fileID: 8300000, guid: 378289842495b9349afef1d6fea1d8fe, type: 3}
   deathSound: {fileID: 8300000, guid: 03707d94009d3e74dab1ad4850ca38ab, type: 3}

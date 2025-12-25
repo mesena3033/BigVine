@@ -58,9 +58,16 @@ public class BossController : MonoBehaviour
     public float maxY = 12.0f;
     public float minY = -4.0f;
 
+    [Header("基準点設定")]
+    [SerializeField] private GameObject returnParticlePrefab; // 戻る場所を示すパーティクル
+    [SerializeField] private Vector2 standbyPositionOffset = new Vector2(2, 0); // 画面端からのオフセット
+
     [Header("参照")]
     [SerializeField] private Rigidbody2D rb;
     [SerializeField] private SpriteRenderer[] bodyPartsRenderers;
+
+    [Header("参照: 頭の制御用")]
+    [SerializeField] private BossHead bossHead; // BossHeadスクリプトをインスペクターから設定
 
     [Header("効果音")]
     [SerializeField] private AudioSource audioSource; // 音を再生するコンポーネント
@@ -70,6 +77,7 @@ public class BossController : MonoBehaviour
     private Transform playerTransform;
     private bool isDead = false;
     private Vector3 initialPosition;
+    private Vector3 currentTargetPosition; // 現在の目標待機位置
     private Vector3 initialHeadScale; // 顔の初期スケールを保存する変数
     private Vector3 initialHeadLocalPosition;
 
@@ -77,6 +85,9 @@ public class BossController : MonoBehaviour
     {
         currentHp = maxHp;
         initialPosition = transform.position;
+
+        // 最初の目標待機位置は、初期位置と同じ場所にする
+        currentTargetPosition = initialPosition;
 
         GameObject player = GameObject.FindGameObjectWithTag("Player");
         if (player != null) playerTransform = player.transform;
@@ -94,6 +105,15 @@ public class BossController : MonoBehaviour
         StartCoroutine(BossBehaviorLoop());
     }
 
+    void LateUpdate()
+    {
+        // isDeadでない、かつプレイヤーがいる場合、常にプレイヤーの方向を向く
+        if (!isDead && playerTransform != null)
+        {
+            FacePlayer();
+        }
+    }
+
     IEnumerator BossBehaviorLoop()
     {
         while (!isDead)
@@ -104,9 +124,6 @@ public class BossController : MonoBehaviour
 
             if (playerTransform != null)
             {
-                // プレイヤーの方を向く
-                FacePlayer();
-
                 float specialAttackRoll = Random.Range(0f, 100f);
 
                 // 30%の確率で新しい大技「急降下爆撃」を行う
@@ -216,19 +233,31 @@ public class BossController : MonoBehaviour
 
         yield return new WaitForSeconds(1.0f);
 
-        // 戻る処理
-        Debug.Log("ボス：定位置へ帰還");
-        // 戻る方向を向く
-        FlipBody(Mathf.Sign(initialPosition.x - transform.position.x) < 0);
+        // --- 戻る処理 ---
+        Debug.Log("ボス：次の待機位置へ帰還");
 
-        while (Vector3.Distance(transform.position, initialPosition) > 0.1f)
+        // 1. 次の待機位置をランダムに決定
+        UpdateNextStandbyPosition();
+
+        // 2. 予告パーティクルを生成
+        if (returnParticlePrefab != null)
+        {
+            Vector3 particlePos = new Vector3(currentTargetPosition.x, minY, currentTargetPosition.z);
+            Instantiate(returnParticlePrefab, particlePos, Quaternion.identity);
+            yield return new WaitForSeconds(0.5f); // パーティクルが少し再生されるのを待つ
+        }
+
+        // 3. 決定した待機位置の方向を向く
+        FlipBody(Mathf.Sign(currentTargetPosition.x - transform.position.x) < 0);
+
+        // 4. 新しい待機位置まで移動する
+        while (Vector3.Distance(transform.position, currentTargetPosition) > 0.1f)
         {
             if (isDead) break;
-            transform.position = Vector3.MoveTowards(transform.position, initialPosition, returnSpeed * Time.deltaTime);
+            transform.position = Vector3.MoveTowards(transform.position, currentTargetPosition, returnSpeed * Time.deltaTime);
             yield return null;
         }
-        transform.position = initialPosition;
-        FacePlayer();
+        transform.position = currentTargetPosition;
     }
 
     // --- 攻撃: 横ツタ ---
@@ -336,7 +365,8 @@ public class BossController : MonoBehaviour
             yield return StartCoroutine(BackgroundRangeAttack());
         }
 
-        // --- 3. どちらの攻撃後でも、元の場所に戻るアニメーションを行う ---
+        // --- 3. 次の待機位置を決定し、そこに戻る ---
+        UpdateNextStandbyPosition();
         yield return StartCoroutine(AnimateSubmerge(false, submergeAnimTime));
 
         Debug.Log("ボス：通常パターンに復帰");
@@ -545,15 +575,43 @@ public class BossController : MonoBehaviour
     {
         if (playerTransform == null) return;
         float direction = playerTransform.position.x - transform.position.x;
-        FlipBody(direction < 0);
+        // プレイヤーが右側にいるべきか（反転すべきか）を判断
+        bool shouldFlip = direction > 0;
+
+        // 状態管理のif文を削除し、毎フレームFlipBodyを呼び出すように戻します
+        FlipBody(shouldFlip);
     }
 
     void FlipBody(bool flipX)
     {
+        // --- 全パーツのスプライト反転 ---
+        // bodyPartsRenderers配列に含まれる全てのスプライトの向きを更新
         foreach (var sr in bodyPartsRenderers)
         {
-            if (sr != null) sr.flipX = flipX;
+            if (sr != null)
+            {
+                sr.flipX = flipX;
+            }
         }
+
+        // --- 頭の位置制御スクリプトに反転状態を伝える ---
+        // BossHeadスクリプトに「今どっちを向いているか」を教える
+        if (bossHead != null)
+        {
+            bossHead.SetFlip(flipX);
+        }
+    }
+
+    // --- 次の待機位置を決定する ---
+    void UpdateNextStandbyPosition()
+    {
+        // 50%の確率で左端か右端かを決める
+        float targetX = (Random.value < 0.5f)
+            ? minX + standbyPositionOffset.x  // 左端
+            : maxX - standbyPositionOffset.x; // 右端
+
+        // 新しい待機位置を更新 (YとZは初期位置のものを流用)
+        currentTargetPosition = new Vector3(targetX, initialPosition.y, initialPosition.z);
     }
 
     // --- ダメージ・死亡 ---
@@ -613,8 +671,19 @@ public class BossController : MonoBehaviour
         }
         else // 戻ってくる（浮上する）場合
         {
-            startPos = new Vector3(initialPosition.x, initialPosition.y - bossHeight, initialPosition.z);
-            endPos = initialPosition;
+            // 予告パーティクルを生成
+            if (returnParticlePrefab != null)
+            {
+                // Y座標は地面（minY）に合わせる
+                Vector3 particlePos = new Vector3(currentTargetPosition.x, minY, currentTargetPosition.z);
+                Instantiate(returnParticlePrefab, particlePos, Quaternion.identity);
+                // パーティクルが少し再生されるのを待つ
+                yield return new WaitForSeconds(0.5f);
+            }
+
+            // 戻り先の座標計算に、固定のinitialPositionではなくcurrentTargetPositionを使用する
+            startPos = new Vector3(currentTargetPosition.x, currentTargetPosition.y - bossHeight, currentTargetPosition.z);
+            endPos = currentTargetPosition;
             transform.position = startPos; // 見えないうちに地下へ移動
             foreach (var sr in bodyPartsRenderers) sr.enabled = true; // 表示を戻す
         }
