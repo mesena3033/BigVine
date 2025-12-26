@@ -12,7 +12,6 @@ GameObject:
   - component: {fileID: 6569172548323159003}
   - component: {fileID: 6199807270061219114}
   - component: {fileID: 4565892550612318550}
-  - component: {fileID: 7983381835476820165}
   m_Layer: 0
   m_Name: GameObject
   m_TagString: Untagged
@@ -83,6 +82,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 24aa883f7175cac43a3dd2172016ca86, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BomPoint
+  targetPlant: {fileID: 0}
   explosionPrefab: {fileID: 1227852117291470994, guid: 5aa952796f16f8142a557923b7fb67e0, type: 3}
   fallTime: 1.5
   fallSpeed: 5
@@ -99,33 +99,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 843e74ee4379b8040b94d52780d841f1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Fallitem
---- !u!50 &7983381835476820165
-Rigidbody2D:
-  serializedVersion: 5
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1959564374026913155}
-  m_BodyType: 0
-  m_Simulated: 1
-  m_UseFullKinematicContacts: 0
-  m_UseAutoMass: 0
-  m_Mass: 1
-  m_LinearDamping: 0
-  m_AngularDamping: 0.05
-  m_GravityScale: 1
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_Interpolate: 0
-  m_SleepingMode: 1
-  m_CollisionDetection: 0
-  m_Constraints: 0
 --- !u!1 &2059881209003504134
 GameObject:
   m_ObjectHideFlags: 0
