@@ -33,6 +33,15 @@ public class BossController : MonoBehaviour
     [Tooltip("ツタ攻撃を独立して実行する間隔（秒）")]
     [SerializeField] private float vineAttackInterval = 6.0f; // 6秒ごとなど
 
+    [Header("攻撃設定: ハエ呼び寄せ (独立ループ)")]
+    [SerializeField] private GameObject flyPrefab; // ハエのプレハブ
+    [SerializeField] private float flySummonInterval = 20.0f; // 呼び寄せの間隔
+    [SerializeField] private GameObject sonicWaveEffectPrefab; // 頭から出る音波エフェクトのプレハブ
+    [SerializeField] private AudioClip flySummonSound; // 呼び寄せSE
+    [SerializeField] private int numberOfFlies = 3; // 呼び出すハエの数
+    [SerializeField] private float flyMoveSpeed = 5f; // ハエが目標地点まで移動する速度
+    [SerializeField] private Vector2 flySpawnOffset = new Vector2(2.0f, 0); // 画面端からのオフセット
+
     [Header("攻撃設定: 溶解液 (35%)")]
     [SerializeField] private GameObject acidBulletPrefab; // 弾のプレハブ
     [SerializeField] private float throwForce = 10f;      // 投げる強さ
@@ -119,6 +128,7 @@ public class BossController : MonoBehaviour
 
         StartCoroutine(BossBehaviorLoop());
         StartCoroutine(VineAttackLoop());
+        StartCoroutine(FlySummonLoop());
     }
 
     void LateUpdate()
@@ -198,6 +208,112 @@ public class BossController : MonoBehaviour
 
             // 次のツタ攻撃までの待機
             yield return new WaitForSeconds(vineAttackInterval);
+        }
+    }
+
+    // ハエ呼び寄せ攻撃を一定間隔で独立して実行するループ
+    IEnumerator FlySummonLoop()
+    {
+        // 戦闘開始直後にいきなり呼ばないように、最初は少し待つ
+        yield return new WaitForSeconds(flySummonInterval / 2f);
+
+        while (!isDead)
+        {
+            // 次の呼び出しまで待機
+            yield return new WaitForSeconds(flySummonInterval);
+
+            // ボスが行動不能な状態（潜っている最中など）は攻撃しない
+            if (bodyPartsRenderers[0] != null && !bodyPartsRenderers[0].enabled)
+            {
+                // 状態が回復するまで1秒ごとにチェック
+                yield return new WaitUntil(() => bodyPartsRenderers[0] != null && bodyPartsRenderers[0].enabled && !isDead);
+            }
+
+            if (playerTransform != null)
+            {
+                yield return StartCoroutine(SummonFlies());
+            }
+        }
+    }
+
+    // ハエを召喚し、プレイヤーの近くへ移動させる処理
+    IEnumerator SummonFlies()
+    {
+        Debug.Log("ボス：ハエの呼び寄せ");
+
+        // --- 演出：音波エフェクトとSE ---
+        if (sonicWaveEffectPrefab != null)
+        {
+            // ボスの頭の位置（firePoint）からエフェクトを出す
+            Instantiate(sonicWaveEffectPrefab, firePoint.position, Quaternion.identity);
+        }
+        if (audioSource != null && flySummonSound != null)
+        {
+            audioSource.PlayOneShot(flySummonSound);
+        }
+
+        // 呼び寄せモーションのような短い待機時間
+        yield return new WaitForSeconds(1.0f);
+
+        // --- ハエの生成と移動開始 ---
+        if (playerTransform == null || flyPrefab == null) yield break;
+
+        for (int i = 0; i < numberOfFlies; i++)
+        {
+            // 1. 出現位置を画面外の左右ランダムに決める
+            bool spawnOnLeft = (Random.value > 0.5f);
+            float spawnX = spawnOnLeft ? minX - flySpawnOffset.x : maxX + flySpawnOffset.x;
+            // Y座標はプレイヤーの少し上あたりでランダムにする
+            float spawnY = playerTransform.position.y + Random.Range(2.0f, 5.0f);
+            Vector3 spawnPosition = new Vector3(spawnX, spawnY, 0);
+
+            // 2. 目標地点をプレイヤーの近くに設定
+            float targetX = playerTransform.position.x + Random.Range(-3.0f, 3.0f);
+            float targetY = playerTransform.position.y + Random.Range(2.0f, 4.0f);
+            Vector3 targetPosition = new Vector3(targetX, targetY, 0);
+
+            // 3. ハエを生成
+            GameObject flyInstance = Instantiate(flyPrefab, spawnPosition, Quaternion.identity);
+
+            // 4. ハエを目標地点まで動かすコルーチンを開始
+            StartCoroutine(MoveFlyToTarget(flyInstance, targetPosition));
+
+            // 全員同時に出現しないように少し待つ
+            yield return new WaitForSeconds(0.3f);
+        }
+    }
+
+    // 生成したハエを特定のターゲット地点まで移動させるコルーチン
+    IEnumerator MoveFlyToTarget(GameObject fly, Vector3 targetPosition)
+    {
+        if (fly == null) yield break;
+
+        SkyEnemy skyEnemyScript = fly.GetComponent<SkyEnemy>();
+        // SkyEnemyの自律移動はまだ開始しない
+
+        // 向きをターゲットの方向に向ける（画像の向きによる）
+        if (targetPosition.x < fly.transform.position.x)
+        {
+            fly.transform.localScale = new Vector3(1, 1, 1); // 左向き
+        }
+        else
+        {
+            fly.transform.localScale = new Vector3(-1, 1, 1); // 右向き
+        }
+
+        // ターゲットに到達するまで移動
+        while (fly != null && Vector3.Distance(fly.transform.position, targetPosition) > 0.1f)
+        {
+            fly.transform.position = Vector3.MoveTowards(fly.transform.position, targetPosition, flyMoveSpeed * Time.deltaTime);
+            yield return null;
+        }
+
+        // ターゲット到達後、SkyEnemyの自律移動を開始させる
+        if (fly != null && skyEnemyScript != null)
+        {
+            // 左右どちらに移動を始めるかを決める
+            string initialDirection = (Random.value > 0.5f) ? "右" : "左";
+            skyEnemyScript.ActivateAIMovement(initialDirection);
         }
     }
 

@@ -170,6 +170,16 @@ public class SkyEnemy : MonoBehaviour
         
     }
 
+    //  外部から自律移動を開始させるためのメソッド
+    public void ActivateAIMovement(string initialMoveDirection)
+    {
+        //  移動方向を設定
+        Move = initialMoveDirection;
+
+        //  移動フラグを立てる
+        MoveBool = true;
+    }
+
     //  方向の反転
     private void ReverseDirection()
     {
