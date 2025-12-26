@@ -41,11 +41,30 @@ public class BossController : MonoBehaviour
     [SerializeField] private int numberOfFlies = 3; // 呼び出すハエの数
     [SerializeField] private float flyMoveSpeed = 5f; // ハエが目標地点まで移動する速度
     [SerializeField] private Vector2 flySpawnOffset = new Vector2(2.0f, 0); // 画面端からのオフセット
+    [Tooltip("ハエを1匹食べた時のHP回復量")]
+    [SerializeField] private int flyHealAmount = 1;
 
     [Header("攻撃設定: 溶解液 (35%)")]
     [SerializeField] private GameObject acidBulletPrefab; // 弾のプレハブ
     [SerializeField] private float throwForce = 10f;      // 投げる強さ
     [SerializeField] private float throwInterval = 0.5f;  // 連射間隔
+
+    [Header("攻撃設定: 天井からの毒液")]
+    [Tooltip("一度に降らせる毒液の弾の数")]
+    [SerializeField] private int acidRainShots = 20;
+    [Tooltip("毒液の弾を発射する間隔")]
+    [SerializeField] private float acidRainInterval = 0.1f;
+    [Tooltip("天井攻撃の滞在時間")]
+    [SerializeField] private float ceilingStayDuration = 4.0f; // 新しい変数
+    [Tooltip("毒液の弾が左右にばらける度合い")]
+    [SerializeField] private float acidRainSpreadForce = 8f;
+    [Tooltip("ボスが天井に出現/消失するアニメーションの時間")]
+    [SerializeField] private float ceilingAnimDuration = 1.0f;
+    [Header("対空行動設定")]
+    [Tooltip("プレイヤーが高所にいると判断するY座標の閾値")]
+    [SerializeField] private float highPlayerYThreshold = 12.0f;
+    [Tooltip("対空攻撃（天井溶解液）を連続で行う際のクールダウン時間")]
+    [SerializeField] private float antiAirAttackCooldown = 4.0f;
 
     [Header("溶解液攻撃: 警告")]
     [SerializeField] private SpriteRenderer headRenderer;           // 点滅させる頭のSpriteRenderer
@@ -105,6 +124,9 @@ public class BossController : MonoBehaviour
     private Vector3 initialHeadScale; // 顔の初期スケールを保存する変数
     private Vector3 initialHeadLocalPosition;
 
+    private bool canFacePlayer = true; // プレイヤーの方向を向くかどうかを制御するフラグ
+    private BossStageCameraController cameraController; // カメラスクリプトの参照
+
     void Start()
     {
         currentHp = maxHp;
@@ -129,12 +151,19 @@ public class BossController : MonoBehaviour
         StartCoroutine(BossBehaviorLoop());
         StartCoroutine(VineAttackLoop());
         StartCoroutine(FlySummonLoop());
+
+        // メインカメラからカメラスクリプトを取得して保持しておく
+        cameraController = Camera.main.GetComponent<BossStageCameraController>();
+        if (cameraController == null)
+        {
+            Debug.LogError("シーン内にBossStageCameraControllerが見つかりません！");
+        }
     }
 
     void LateUpdate()
     {
-        // isDeadでない、かつプレイヤーがいる場合、常にプレイヤーの方向を向く
-        if (!isDead && playerTransform != null)
+        // isDeadでなく、プレイヤーがいて、向き変更が許可されている場合のみプレイヤーの方向を向く
+        if (!isDead && playerTransform != null && canFacePlayer)
         {
             FacePlayer();
         }
@@ -144,6 +173,30 @@ public class BossController : MonoBehaviour
     {
         while (!isDead)
         {
+            // --- 行動選択の前に、まずプレイヤーの位置をチェック ---
+            if (playerTransform != null && playerTransform.position.y > highPlayerYThreshold)
+            {
+                // プレイヤーが高所にいる場合、通常行動をキャンセルして対空攻撃を優先する
+                Debug.Log("プレイヤーが高所にいるため、対空攻撃パターンに移行");
+
+                // 1. 地面に潜る
+                yield return StartCoroutine(AnimateSubmerge(true, submergeAnimTime));
+
+                // 2. 天井からの溶解液攻撃を実行
+                yield return StartCoroutine(CeilingAcidAttack());
+
+                // 3. 地上に戻る
+                UpdateNextStandbyPosition();
+                yield return StartCoroutine(AnimateSubmerge(false, submergeAnimTime));
+
+                // 4. 攻撃後のクールダウン
+                Debug.Log($"対空攻撃クールダウン開始（{antiAirAttackCooldown}秒）");
+                yield return new WaitForSeconds(antiAirAttackCooldown);
+
+                // 5. ループの先頭に戻り、再度プレイヤーの位置をチェックする
+                continue;
+            }
+
             // 待機
             yield return new WaitForSeconds(3.0f); // 攻撃間隔を少し調整
             if (isDead) break;
@@ -275,46 +328,36 @@ public class BossController : MonoBehaviour
             // 3. ハエを生成
             GameObject flyInstance = Instantiate(flyPrefab, spawnPosition, Quaternion.identity);
 
-            // 4. ハエを目標地点まで動かすコルーチンを開始
-            StartCoroutine(MoveFlyToTarget(flyInstance, targetPosition));
+            // 4. ハエ自身に「あの場所へ飛んでいけ」と命令する
+            SkyEnemyBoss skyEnemyScript = flyInstance.GetComponent<SkyEnemyBoss>();
+            if (skyEnemyScript != null)
+            {
+                // ハエに、自分自身（ボス）がオーナーであることを教える
+                skyEnemyScript.ownerBoss = this;
+                skyEnemyScript.GoToTargetAndActivateAI(targetPosition, flyMoveSpeed);
+            }
 
             // 全員同時に出現しないように少し待つ
             yield return new WaitForSeconds(0.3f);
         }
     }
 
-    // 生成したハエを特定のターゲット地点まで移動させるコルーチン
-    IEnumerator MoveFlyToTarget(GameObject fly, Vector3 targetPosition)
+    // ハエから呼び出され、HPを回復する公開メソッド
+    public void HealByEatingFly()
     {
-        if (fly == null) yield break;
+        if (isDead) return; // 既に死んでいたら何もしない
 
-        SkyEnemy skyEnemyScript = fly.GetComponent<SkyEnemy>();
-        // SkyEnemyの自律移動はまだ開始しない
+        Debug.Log("ボスがハエを捕食して回復！");
 
-        // 向きをターゲットの方向に向ける（画像の向きによる）
-        if (targetPosition.x < fly.transform.position.x)
+        currentHp += flyHealAmount;
+
+        // 上限HPを超えないように調整
+        if (currentHp > maxHp)
         {
-            fly.transform.localScale = new Vector3(1, 1, 1); // 左向き
-        }
-        else
-        {
-            fly.transform.localScale = new Vector3(-1, 1, 1); // 右向き
+            currentHp = maxHp;
         }
 
-        // ターゲットに到達するまで移動
-        while (fly != null && Vector3.Distance(fly.transform.position, targetPosition) > 0.1f)
-        {
-            fly.transform.position = Vector3.MoveTowards(fly.transform.position, targetPosition, flyMoveSpeed * Time.deltaTime);
-            yield return null;
-        }
-
-        // ターゲット到達後、SkyEnemyの自律移動を開始させる
-        if (fly != null && skyEnemyScript != null)
-        {
-            // 左右どちらに移動を始めるかを決める
-            string initialDirection = (Random.value > 0.5f) ? "右" : "左";
-            skyEnemyScript.ActivateAIMovement(initialDirection);
-        }
+        // ここに回復エフェクトやSE
     }
 
     // --- 攻撃: 突進 ---
@@ -507,13 +550,18 @@ public class BossController : MonoBehaviour
         yield return StartCoroutine(AnimateSubmerge(true, submergeAnimTime));
 
         // --- 2. 確率で攻撃を分岐 ---
-        if (Random.value < diveBombChance) // 55%で押しつぶし
+        float attackRoll = Random.value; // 0.0～1.0の乱数を生成
+        if (attackRoll < 0.4f) // 40%で押しつぶし
         {
             yield return StartCoroutine(DiveBombAttack());
         }
-        else // 残り45%で新攻撃
+        else if (attackRoll < 0.7f) // 30%で画面奥からの攻撃
         {
             yield return StartCoroutine(BackgroundRangeAttack());
+        }
+        else // 残り30%で天井からの毒液攻撃
+        {
+            yield return StartCoroutine(CeilingAcidAttack());
         }
 
         // --- 3. 次の待機位置を決定し、そこに戻る ---
@@ -766,6 +814,135 @@ public class BossController : MonoBehaviour
 
         // 終了したら当たり判定を破棄
         if (hitbox != null) Destroy(hitbox.gameObject);
+    }
+
+    // --- 攻撃: 天井からの毒液 ---
+    private IEnumerator CeilingAcidAttack()
+    {
+        Debug.Log("ボス：[大技] 天井からの毒液攻撃");
+
+        // --- 1. 準備 ---
+        canFacePlayer = false; // 攻撃中はボスの向きを固定
+        if (cameraController != null)
+        {
+            cameraController.ForceHighAltitudeView(true); // カメラをハイアングルに強制変更
+        }
+
+        // ボスの体の高さを計算
+        Bounds totalBounds = new Bounds(transform.position, Vector3.zero);
+        foreach (var sr in bodyPartsRenderers) if (sr != null) totalBounds.Encapsulate(sr.bounds);
+        float bossHeight = totalBounds.size.y;
+
+        // --- 2. 天井の中央から出現 ---
+        // X座標をステージの中央（0）に設定
+        Vector3 startPos = new Vector3(0, maxY + bossHeight, 0);
+        Vector3 endPos = new Vector3(0, maxY, 0);
+
+        // 見えない位置に移動し、上下反転させてから表示
+        transform.position = startPos;
+        foreach (var sr in bodyPartsRenderers)
+        {
+            if (sr != null)
+            {
+                // もし処理対象のスプライトが頭(headRenderer)なら、上下反転はしない。
+                // それ以外の体のパーツは上下反転させる。
+                if (sr == headRenderer)
+                {
+                    sr.flipY = false;
+                }
+                else
+                {
+                    sr.flipY = true;
+                }
+                sr.enabled = true;
+            }
+        }
+
+        // 頭にも上下反転したことを伝える
+        if (bossHead != null)
+        {
+            bossHead.SetVerticalFlip(true);
+        }
+
+        // ゆっくり降りてくるアニメーション
+        float elapsedTime = 0f;
+        while (elapsedTime < ceilingAnimDuration)
+        {
+            transform.position = Vector3.Lerp(startPos, endPos, elapsedTime / ceilingAnimDuration);
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+        transform.position = endPos;
+        yield return new WaitForSeconds(0.5f); // 攻撃前のタメ
+
+        // --- 3. 溶解液をばらまく (滞在時間ベースに変更) ---
+        float attackTimer = 0f;
+        float nextShotTime = 0f;
+        // 弾の発射間隔を2倍にして、よりゆっくりにする
+        float slowerInterval = acidRainInterval * 2f;
+
+        while (attackTimer < ceilingStayDuration)
+        {
+            if (isDead) break;
+
+            // 次の弾を発射する時間になったら
+            if (attackTimer >= nextShotTime)
+            {
+                if (acidBulletPrefab != null && firePoint != null)
+                {
+                    GameObject bullet = Instantiate(acidBulletPrefab, firePoint.position, Quaternion.identity);
+                    Rigidbody2D bulletRb = bullet.GetComponent<Rigidbody2D>();
+                    if (bulletRb != null)
+                    {
+                        // 左右ランダムな方向に力を加える
+                        float randomX = Random.Range(-1f, 1f);
+                        Vector2 force = new Vector2(randomX * acidRainSpreadForce, -5f);
+                        bulletRb.AddForce(force, ForceMode2D.Impulse);
+                    }
+                }
+                // 次の弾の発射時刻を更新
+                nextShotTime += slowerInterval;
+            }
+
+            attackTimer += Time.deltaTime;
+            yield return null;
+        }
+        yield return new WaitForSeconds(1.0f); // 攻撃後の硬直
+
+        // --- 4. 天井に消える ---
+        startPos = transform.position; // 現在地から
+        endPos = new Vector3(transform.position.x, maxY + bossHeight, 0); // 天井の上へ
+
+        elapsedTime = 0f;
+        while (elapsedTime < ceilingAnimDuration)
+        {
+            transform.position = Vector3.Lerp(startPos, endPos, elapsedTime / ceilingAnimDuration);
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+
+        // --- 5. 後片付け ---
+        // 見えなくなったら非表示にし、上下反転を元に戻す
+        foreach (var sr in bodyPartsRenderers)
+        {
+            if (sr != null)
+            {
+                sr.enabled = false;
+                sr.flipY = false;
+            }
+        }
+
+        // 頭の上下反転も元に戻す
+        if (bossHead != null)
+        {
+            bossHead.SetVerticalFlip(false);
+        }
+
+        if (cameraController != null)
+        {
+            cameraController.ForceHighAltitudeView(false); // カメラの強制を解除
+        }
+        canFacePlayer = true; // 向き固定を解除
     }
 
 

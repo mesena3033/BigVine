@@ -544,8 +544,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BossStageCameraController
   playerTransform: {fileID: 0}
   yThreshold: 12
-  highAltitudeCameraY: 14
-  sizeMultiplier: 1.6
+  highAltitudeCameraY: 12
+  sizeMultiplier: 1.8
   smoothTime: 0.5
 --- !u!1 &839685819
 GameObject:

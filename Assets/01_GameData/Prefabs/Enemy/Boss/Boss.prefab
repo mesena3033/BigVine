@@ -373,9 +373,25 @@ MonoBehaviour:
   shakeDuration: 1.5
   vinePrefab: {fileID: 62990156499339028, guid: 10daec1fd81e5124f9dee57315ec6b74, type: 3}
   vineWarningTime: 1
+  vineAttackInterval: 6
+  flyPrefab: {fileID: 1017828920492456893, guid: ac5ba7b58092c0c45a7ecf377751e70b, type: 3}
+  flySummonInterval: 20
+  sonicWaveEffectPrefab: {fileID: 658621277117570100, guid: c3b6325bc0762d54dae959649757400c, type: 3}
+  flySummonSound: {fileID: 8300000, guid: 6b0cb129fe411994695aa435ba1ee2af, type: 3}
+  numberOfFlies: 3
+  flyMoveSpeed: 5
+  flySpawnOffset: {x: 2, y: 0}
+  flyHealAmount: 1
   acidBulletPrefab: {fileID: 1353344790339811824, guid: ad4a8ba9189438245b99b92cd8d9a68f, type: 3}
   throwForce: 15
   throwInterval: 0.5
+  acidRainShots: 20
+  acidRainInterval: 0.1
+  ceilingStayDuration: 4
+  acidRainSpreadForce: 8
+  ceilingAnimDuration: 1
+  highPlayerYThreshold: 12
+  antiAirAttackCooldown: 4
   headRenderer: {fileID: 7914862452732439169}
   acidWarningColor: {r: 1, g: 0, b: 0, a: 0.6039216}
   acidWarningTime: 1
@@ -394,7 +410,7 @@ MonoBehaviour:
   rangeWarningTime: 1.5
   attackTravelTime: 0.5
   numberOfAttacks: 6
-  attackRadius: 15
+  attackRadius: 10
   minX: -14.8
   maxX: 14.8
   maxY: 29
