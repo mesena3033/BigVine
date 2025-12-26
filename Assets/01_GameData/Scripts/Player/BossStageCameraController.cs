@@ -29,6 +29,9 @@ public class BossStageCameraController : MonoBehaviour
     private Vector3 positionVelocity = Vector3.zero;
     private float sizeVelocity = 0f;
 
+    // 外部からカメラを強制的にハイアングルにするためのフラグ
+    private bool isForcedHighAltitude = false;
+
     void Start()
     {
         mainCamera = GetComponent<Camera>();
@@ -60,6 +63,12 @@ public class BossStageCameraController : MonoBehaviour
         initialOrthographicSize = mainCamera.orthographicSize;
     }
 
+    // 外部のスクリプトから、カメラの視点を強制的に高所視点に切り替える
+    public void ForceHighAltitudeView(bool force)
+    {
+        isForcedHighAltitude = force;
+    }
+
     // 全てのUpdate処理が終わった後にカメラを動かすため、LateUpdateを使用
     void LateUpdate()
     {
@@ -69,21 +78,18 @@ public class BossStageCameraController : MonoBehaviour
         // 1. 目標となるカメラの位置とサイズを決定する
         Vector3 targetPosition;
         float targetSize;
-        
-        if (playerTransform.position.y > yThreshold)
+
+        // 強制フラグがON、またはプレイヤーが閾値より高い位置にいる場合
+        if (isForcedHighAltitude || playerTransform.position.y > yThreshold)
         {
-            // 【12より大きい場合】
-            // 目標位置：XとZは初期値のまま、Yだけ指定の高さにする
+            // 【高所視点に移行】
             targetPosition = new Vector3(initialCameraPosition.x, highAltitudeCameraY, initialCameraPosition.z);
-            // 目標サイズ：初期サイズの2倍（sizeMultiplier倍）にする
             targetSize = initialOrthographicSize * sizeMultiplier;
         }
         else
         {
-            // 【12以下の場合】
-            // 目標位置：ゲーム開始時のカメラ位置に戻す
+            // 【通常視点に戻す】
             targetPosition = initialCameraPosition;
-            // 目標サイズ：ゲーム開始時のサイズに戻す
             targetSize = initialOrthographicSize;
         }
 
