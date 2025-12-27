@@ -8,8 +8,6 @@ public class BossHead : MonoBehaviour
     [Header("追従の滑らかさ")]
     [SerializeField] private float followSpeed = 8f;   // この値が大きいほど、機敏に追いかける
 
-    private bool isFlipped = false; // 現在反転しているか(右を向いているか)
-
     private Vector3 initialOffset; // 体と頭の初期位置の差分
 
     private bool isFlippedX = false; // 現在、左右反転しているか
@@ -34,7 +32,7 @@ public class BossHead : MonoBehaviour
     // BossControllerから向きの指示を受け取るための公開メソッド
     public void SetFlip(bool flipped)
     {
-        isFlipped = flipped;
+        isFlippedX = flipped;
     }
 
     void LateUpdate()
