@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Unity.Cinemachine;
 
 public class BossController : MonoBehaviour
 {
@@ -109,6 +110,12 @@ public class BossController : MonoBehaviour
     [SerializeField] private Rigidbody2D rb;
     [SerializeField] private SpriteRenderer[] bodyPartsRenderers;
 
+    [Header("参照: カメラ制御")]
+    // CameraShakerの代わりにImpulseを発生させるコンポーネント
+    [SerializeField] private CinemachineImpulseSource impulseSource;
+    // 新しいカメラ優先度コントローラー
+    [SerializeField] private CameraPriorityController cameraPriorityController;
+
     [Header("参照: 頭の制御用")]
     [SerializeField] private BossHead bossHead; // BossHeadスクリプトをインスペクターから設定
 
@@ -125,7 +132,6 @@ public class BossController : MonoBehaviour
     private Vector3 initialHeadLocalPosition;
 
     private bool canFacePlayer = true; // プレイヤーの方向を向くかどうかを制御するフラグ
-    private BossStageCameraController cameraController; // カメラスクリプトの参照
 
     void Start()
     {
@@ -152,11 +158,20 @@ public class BossController : MonoBehaviour
         StartCoroutine(VineAttackLoop());
         StartCoroutine(FlySummonLoop());
 
-        // メインカメラからカメラスクリプトを取得して保持しておく
-        cameraController = Camera.main.GetComponent<BossStageCameraController>();
-        if (cameraController == null)
+        // ゲーム開始時に、自分にアタッチされているImpulseSourceを自動で取得
+        if (impulseSource == null)
         {
-            Debug.LogError("シーン内にBossStageCameraControllerが見つかりません！");
+            impulseSource = GetComponent<CinemachineImpulseSource>();
+        }
+
+        // カメラ優先度コントローラーがインスペクターで設定されていなければ探す
+        if (cameraPriorityController == null && Camera.main != null)
+        {
+            cameraPriorityController = Camera.main.GetComponent<CameraPriorityController>();
+        }
+        if (cameraPriorityController == null)
+        {
+            Debug.LogError("シーン内にCameraPriorityControllerが見つかりません！");
         }
     }
 
@@ -421,9 +436,9 @@ public class BossController : MonoBehaviour
         FlipBody(moveDir > 0);
 
         // --- カメラシェイクを呼び出す ---
-        if (CameraShaker.Instance != null)
+        if (impulseSource != null)
         {
-            CameraShaker.Instance.Shake(shakeDuration, shakeMagnitude);
+            impulseSource.GenerateImpulse();
         }
 
         // --- 画面外に出るまで突進し続けるループ ---
@@ -623,9 +638,9 @@ public class BossController : MonoBehaviour
         transform.position = targetFallPosition;
 
         // 着地した瞬間にカメラを揺らす
-        if (CameraShaker.Instance != null)
+        if (impulseSource != null)
         {
-            CameraShaker.Instance.Shake(diveShakeDuration, diveShakeMagnitude);
+            impulseSource.GenerateImpulse();
         }
 
         // --- 5. 着地後、一定時間行動不能 ---
@@ -823,9 +838,9 @@ public class BossController : MonoBehaviour
 
         // --- 1. 準備 ---
         canFacePlayer = false; // 攻撃中はボスの向きを固定
-        if (cameraController != null)
+        if (cameraPriorityController != null)
         {
-            cameraController.ForceHighAltitudeView(true); // カメラをハイアングルに強制変更
+            cameraPriorityController.ForceHighAltitudeView(true);
         }
 
         // ボスの体の高さを計算
@@ -938,9 +953,9 @@ public class BossController : MonoBehaviour
             bossHead.SetVerticalFlip(false);
         }
 
-        if (cameraController != null)
+        if (cameraPriorityController != null)
         {
-            cameraController.ForceHighAltitudeView(false); // カメラの強制を解除
+            cameraPriorityController.ForceHighAltitudeView(false);
         }
         canFacePlayer = true; // 向き固定を解除
     }

@@ -20,7 +20,6 @@ public class StickyBomb : MonoBehaviour
     private Rigidbody2D rb;
     private SpriteRenderer spriteRenderer;
     private Color originalColor;
-    private bool isStuck = false;
 
     void Awake()
     {
@@ -32,27 +31,13 @@ public class StickyBomb : MonoBehaviour
         }
     }
 
-    void OnCollisionEnter2D(Collision2D collision)
+    // 爆弾が生成(Instantiate)された時に自動で呼び出されるStartメソッド
+    void Start()
     {
-        // まだ張り付いておらず、接触したのが"Ground"レイヤーなら
-        if (!isStuck && collision.gameObject.layer == LayerMask.NameToLayer("Ground"))
-        {
-            StickToSurface();
-        }
-    }
-
-    private void StickToSurface()
-    {
-        isStuck = true;
-
-        // 物理的な動きを完全に止める
-        rb.bodyType = RigidbodyType2D.Kinematic;
-        rb.linearVelocity = Vector2.zero;
-        rb.angularVelocity = 0f;
-
-        // 爆発シーケンスを開始
+        // 地面への接触を待たずに、すぐに爆発シーケンスを開始する
         StartCoroutine(ExplosionSequence());
     }
+
 
     private IEnumerator ExplosionSequence()
     {

@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using Unity.Cinemachine;
 
 public class GrowthPointGimmick : MonoBehaviour
 {
@@ -19,6 +20,11 @@ public class GrowthPointGimmick : MonoBehaviour
     [SerializeField] private float fireForce = 25f;
     [SerializeField] private float cooldown = 1.0f;
 
+    [Header("落石 (FallingRock) 用設定")]
+    [SerializeField] private GameObject fallingRockObject;
+    [SerializeField] private CinemachineCamera rockFollowCamera;
+    [SerializeField] private float fallingRockCooldown = 10f;
+
     [Header("ひっつき爆弾 (StickyBombLauncher) 用設定")]
     [SerializeField] private GameObject stickyBombPrefab;
     [SerializeField] private Transform stickyBombFirePoint;
@@ -29,6 +35,8 @@ public class GrowthPointGimmick : MonoBehaviour
     // --- 魔法が当たった時の処理 ---
     public void OnMagicHit()
     {
+        Debug.Log("★★★ OnMagicHit 呼ばれました！★★★ オブジェクト名: " + this.gameObject.name);
+
         if (isCooldown) return;
 
         Debug.Log("成長点活性化: " + type);
@@ -45,6 +53,7 @@ public class GrowthPointGimmick : MonoBehaviour
 
             case GimmickType.FallingRock:
                 // 落石処理
+                StartCoroutine(ActivateFallingRock());
                 break;
 
             case GimmickType.StickyBombLauncher:
@@ -80,29 +89,78 @@ public class GrowthPointGimmick : MonoBehaviour
     {
         isCooldown = true;
 
-        // 弾のプレハブ(bulletPrefab)と発射位置(firePoint)が設定されているか確認
-        if (bulletPrefab != null && firePoint != null)
+        float duration = 3.0f;      // 3秒間発射し続ける
+        float fireInterval = 0.5f;  // 0.5秒ごとに発射
+        float elapsedTime = 0f;
+
+        // 指定された時間、弾を発射し続けるループ
+        while (elapsedTime < duration)
         {
-            // 1. 弾を生成する
-            GameObject bullet = Instantiate(bulletPrefab, firePoint.position, firePoint.rotation);
-
-            // 2. 生成した弾のRigidbody2Dを取得する
-            Rigidbody2D rb = bullet.GetComponent<Rigidbody2D>();
-
-            // 3. 弾に力を加えて発射する
-            if (rb != null)
+            // 弾のプレハブ(bulletPrefab)と発射位置(firePoint)が設定されているか確認
+            if (bulletPrefab != null && firePoint != null)
             {
-                rb.AddForce(Vector2.right * fireForce, ForceMode2D.Impulse);
+                // 1. 弾を生成する
+                GameObject bullet = Instantiate(bulletPrefab, firePoint.position, firePoint.rotation);
+
+                // 2. 生成した弾のRigidbody2Dを取得する
+                Rigidbody2D rb = bullet.GetComponent<Rigidbody2D>();
+
+                // 3. 弾に力を加えて発射する
+                if (rb != null)
+                {
+                    rb.AddForce(Vector2.right * fireForce, ForceMode2D.Impulse);
+                }
             }
-        }
-        else
-        {
-            // どちらかが設定されていない場合、警告を出す
-            Debug.LogWarning("Bullet Prefab または Fire Point が設定されていません！");
+            else
+            {
+                // どちらかが設定されていない場合、警告を出す
+                Debug.LogWarning("Bullet Prefab または Fire Point が設定されていません！");
+                break; // ループを中断
+            }
+
+            // 次の発射まで待機
+            yield return new WaitForSeconds(fireInterval);
+            elapsedTime += fireInterval; // 経過時間を加算
         }
 
         // クールダウン
         yield return new WaitForSeconds(cooldown);
+        isCooldown = false;
+    }
+
+    // --- 落石ギミック処理 ---
+    private IEnumerator ActivateFallingRock()
+    {
+        isCooldown = true;
+
+        if (fallingRockObject != null)
+        {
+            Rigidbody2D rockRb = fallingRockObject.GetComponent<Rigidbody2D>();
+            if (rockRb != null)
+            {
+                rockRb.bodyType = RigidbodyType2D.Dynamic;
+            }
+            else
+            {
+                Debug.LogError("落石オブジェクトにRigidbody2Dがアタッチされていません！");
+            }
+
+            FallingRock rockScript = fallingRockObject.GetComponent<FallingRock>();
+            if (rockScript != null)
+            {
+                rockScript.StartFall(rockFollowCamera);
+            }
+            else
+            {
+                Debug.LogError("落石オブジェクトにFallingRockスクリプトがアタッチされていません！");
+            }
+        }
+        else
+        {
+            Debug.LogWarning("Falling Rock Objectが設定されていません！");
+        }
+
+        yield return new WaitForSeconds(fallingRockCooldown);
         isCooldown = false;
     }
 
