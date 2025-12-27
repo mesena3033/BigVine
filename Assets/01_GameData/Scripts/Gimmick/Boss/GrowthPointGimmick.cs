@@ -135,10 +135,21 @@ public class GrowthPointGimmick : MonoBehaviour
 
         if (fallingRockObject != null)
         {
+            Debug.Log("落石ギミック開始: 岩オブジェクトをチェックします。");
+
+            // 岩オブジェクトが非アクティブならアクティブにする
+            if (!fallingRockObject.activeSelf)
+            {
+                fallingRockObject.SetActive(true);
+                Debug.Log("岩オブジェクトをアクティブにしました。");
+            }
+
             Rigidbody2D rockRb = fallingRockObject.GetComponent<Rigidbody2D>();
             if (rockRb != null)
             {
+                // bodyTypeをDynamicに変更して重力を有効化
                 rockRb.bodyType = RigidbodyType2D.Dynamic;
+                Debug.Log("岩のRigidbody2DをDynamicに変更し、落下を開始させます。");
             }
             else
             {
@@ -148,7 +159,9 @@ public class GrowthPointGimmick : MonoBehaviour
             FallingRock rockScript = fallingRockObject.GetComponent<FallingRock>();
             if (rockScript != null)
             {
+                // 岩のスクリプトにカメラ情報を渡して落下シーケンスを開始
                 rockScript.StartFall(rockFollowCamera);
+                Debug.Log("FallingRockスクリプトのStartFallを呼び出しました。");
             }
             else
             {
@@ -157,7 +170,7 @@ public class GrowthPointGimmick : MonoBehaviour
         }
         else
         {
-            Debug.LogWarning("Falling Rock Objectが設定されていません！");
+            Debug.LogWarning("Falling Rock Objectがインスペクターで設定されていません！");
         }
 
         yield return new WaitForSeconds(fallingRockCooldown);

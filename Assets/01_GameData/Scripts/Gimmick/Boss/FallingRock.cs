@@ -38,9 +38,15 @@ public class FallingRock : MonoBehaviour
 
     public void StartFall(CinemachineCamera vcam)
     {
+        Debug.Log("StartFallが呼び出されました。");
         if (vcam != null)
         {
+            Debug.Log("追従カメラ " + vcam.name + " の制御を開始します。");
             StartCoroutine(FollowRockWithCamera(vcam));
+        }
+        else
+        {
+            Debug.LogWarning("引数で渡された追従カメラ(vcam)がnullです。インスペクターの設定を確認してください。");
         }
     }
 
@@ -49,36 +55,33 @@ public class FallingRock : MonoBehaviour
         if (cameraPriorityController == null)
         {
             Debug.LogError("致命的エラー：FallingRockがCameraPriorityControllerを見つけられていません！");
-        }
-        else
-        {
-            Debug.Log("FallingRockがCameraPriorityControllerを正常に参照しています。");
+            yield break; // コルーチンを中断
         }
 
         // 元のプライオリティを記憶
         int originalPriority = vcam.Priority.Value;
 
         // プライオリティの自動更新を一時停止させる
-        if (cameraPriorityController != null)
-        {
-            cameraPriorityController.IsPaused = true;
-        }
+        cameraPriorityController.IsPaused = true;
+        Debug.Log("CameraPriorityControllerを一時停止しました。");
 
         // このカメラのプライオリティを一時的に引き上げて、主導権を奪う
         vcam.Follow = transform;
-        vcam.Priority.Value = 11; // プレイヤーカメラ(10)より高くする
+        // 他のカメラ(10, 11)より確実に高い値に設定
+        vcam.Priority.Value = 20;
+        Debug.Log(vcam.name + " のPriorityを20に設定し、カメラをジャックします。");
+
 
         yield return new WaitForSeconds(cameraFollowDuration);
 
+        Debug.Log(cameraFollowDuration + "秒経過したので、カメラ制御を返却します。");
         // 仕事が終わったら、プライオリティを元に戻して主導権を返す
         vcam.Follow = null;
         vcam.Priority.Value = originalPriority;
 
         // プライオリティの自動更新を再開させる
-        if (cameraPriorityController != null)
-        {
-            cameraPriorityController.IsPaused = false;
-        }
+        cameraPriorityController.IsPaused = false;
+        Debug.Log("CameraPriorityControllerを再開しました。");
     }
 
     // OnCollisionEnter2D と DestroyAfterDelay は変更なし
