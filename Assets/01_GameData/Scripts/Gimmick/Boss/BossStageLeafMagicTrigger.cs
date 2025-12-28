@@ -21,6 +21,10 @@ public class BossStageLeafMagicTrigger : MonoBehaviour
     [SerializeField] private float closeDuration = 0.5f;
     [SerializeField] private float openDuration = 0.5f;
 
+    [Header("効果音")]
+    [SerializeField] private AudioSource audioSource;
+    [SerializeField] private AudioClip eatEnemySound; // 敵を食べるSE
+
     private bool hasTriggered = false;
     private bool isProcessing = false;
 
@@ -94,6 +98,12 @@ public class BossStageLeafMagicTrigger : MonoBehaviour
     // メソッド名をより分かりやすく変更
     private void EatEnemies(Collider2D[] enemiesToEat)
     {
+        // 敵を食べたSEを一回だけ鳴らす
+        if (enemiesToEat.Length > 0 && audioSource != null && eatEnemySound != null)
+        {
+            audioSource.PlayOneShot(eatEnemySound);
+        }
+
         foreach (var enemy in enemiesToEat)
         {
             // 念のため、オブジェクトがまだ存在するか確認してから破壊

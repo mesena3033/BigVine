@@ -123,6 +123,10 @@ public class BossController : MonoBehaviour
     [SerializeField] private AudioSource audioSource; // 音を再生するコンポーネント
     [SerializeField] private AudioClip damageSound;   // ダメージを受けた時のSE
     [SerializeField] private AudioClip deathSound;  // 倒された時のSE
+    [SerializeField] private AudioClip acidSpitSound; // 溶解液を発射する時のSE
+    [SerializeField] private AudioClip diveLandSound; // 急降下で着地した時のSE
+    [SerializeField] private AudioClip chargeStartSound; // 突進を開始する時のSE
+    [SerializeField] private AudioClip returnSound; // 地面から帰ってくる時のSE
 
     private Transform playerTransform;
     private bool isDead = false;
@@ -426,6 +430,12 @@ public class BossController : MonoBehaviour
 
         Debug.Log("ボス：突進開始");
 
+        // 突進開始SEを再生
+        if (audioSource != null && chargeStartSound != null)
+        {
+            audioSource.PlayOneShot(chargeStartSound);
+        }
+
         // 警告時に計算した突進方向を再度使用
         if (moveDir == 0) // 警告が表示されなかった場合の保険
         {
@@ -539,6 +549,12 @@ public class BossController : MonoBehaviour
             GameObject bullet = Instantiate(acidBulletPrefab, firePoint.position, Quaternion.identity);
             Rigidbody2D bulletRb = bullet.GetComponent<Rigidbody2D>();
 
+            // 溶解液発射SEを再生
+            if (audioSource != null && acidSpitSound != null)
+            {
+                audioSource.PlayOneShot(acidSpitSound);
+            }
+
             if (bulletRb != null && playerTransform != null)
             {
                 // プレイヤーへの方向計算
@@ -636,6 +652,12 @@ public class BossController : MonoBehaviour
             yield return null;
         }
         transform.position = targetFallPosition;
+
+        // 着地SEを再生
+        if (audioSource != null && diveLandSound != null)
+        {
+            audioSource.PlayOneShot(diveLandSound);
+        }
 
         // 着地した瞬間にカメラを揺らす
         if (impulseSource != null)
@@ -907,6 +929,13 @@ public class BossController : MonoBehaviour
                 {
                     GameObject bullet = Instantiate(acidBulletPrefab, firePoint.position, Quaternion.identity);
                     Rigidbody2D bulletRb = bullet.GetComponent<Rigidbody2D>();
+
+                    // 溶解液発射SEを再生
+                    if (audioSource != null && acidSpitSound != null)
+                    {
+                        audioSource.PlayOneShot(acidSpitSound);
+                    }
+
                     if (bulletRb != null)
                     {
                         // 左右ランダムな方向に力を加える
@@ -1077,6 +1106,12 @@ public class BossController : MonoBehaviour
             // 予告パーティクルを生成
             if (returnParticlePrefab != null)
             {
+                // 帰還SEを再生
+                if (audioSource != null && returnSound != null)
+                {
+                    audioSource.PlayOneShot(returnSound);
+                }
+
                 // Y座標は地面（minY）に合わせる
                 Vector3 particlePos = new Vector3(currentTargetPosition.x, minY, currentTargetPosition.z);
                 Instantiate(returnParticlePrefab, particlePos, Quaternion.identity);

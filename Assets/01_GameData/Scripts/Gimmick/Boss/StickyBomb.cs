@@ -17,6 +17,11 @@ public class StickyBomb : MonoBehaviour
     [SerializeField] private Color blinkColor = Color.red;
     [SerializeField] private float blinkInterval = 0.2f;
 
+    [Header("効果音")]
+    [SerializeField] private AudioSource audioSource;
+    [SerializeField] private AudioClip timerTickSound; // タイマーのループ音
+    [SerializeField] private AudioClip explosionSound; // 爆発音
+
     private Rigidbody2D rb;
     private SpriteRenderer spriteRenderer;
     private Color originalColor;
@@ -29,6 +34,12 @@ public class StickyBomb : MonoBehaviour
         {
             originalColor = spriteRenderer.color;
         }
+
+        // audioSourceがアタッチされていなければ追加する（念のため）
+        if (audioSource == null)
+        {
+            audioSource = gameObject.AddComponent<AudioSource>();
+        }
     }
 
     // 爆弾が生成(Instantiate)された時に自動で呼び出されるStartメソッド
@@ -36,6 +47,14 @@ public class StickyBomb : MonoBehaviour
     {
         // 地面への接触を待たずに、すぐに爆発シーケンスを開始する
         StartCoroutine(ExplosionSequence());
+
+        // タイマー音の再生を開始
+        if (audioSource != null && timerTickSound != null)
+        {
+            audioSource.clip = timerTickSound;
+            audioSource.loop = true;
+            audioSource.Play();
+        }
     }
 
 
@@ -69,6 +88,19 @@ public class StickyBomb : MonoBehaviour
 
     private void Explode()
     {
+        // タイマー音を停止
+        if (audioSource != null && audioSource.isPlaying)
+        {
+            audioSource.Stop();
+        }
+
+        // 爆発音を再生
+        // 自身がすぐDestroyされるため、音が途切れないようにPlayClipAtPointで再生
+        if (explosionSound != null)
+        {
+            AudioSource.PlayClipAtPoint(explosionSound, transform.position);
+        }
+
         // 爆発エフェクトが設定されていれば生成する
         if (explosionEffectPrefab != null)
         {

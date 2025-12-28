@@ -428,6 +428,10 @@ MonoBehaviour:
   audioSource: {fileID: 361209097546753697}
   damageSound: {fileID: 8300000, guid: 378289842495b9349afef1d6fea1d8fe, type: 3}
   deathSound: {fileID: 8300000, guid: 03707d94009d3e74dab1ad4850ca38ab, type: 3}
+  acidSpitSound: {fileID: 8300000, guid: 079108aaf98cc1f4688803e2efccf4d4, type: 3}
+  diveLandSound: {fileID: 8300000, guid: 61288d76ea26a464da82258f12635dd1, type: 3}
+  chargeStartSound: {fileID: 8300000, guid: 61288d76ea26a464da82258f12635dd1, type: 3}
+  returnSound: {fileID: 8300000, guid: 7232440601d498b4da441c89d297b7b5, type: 3}
 --- !u!82 &361209097546753697
 AudioSource:
   m_ObjectHideFlags: 0

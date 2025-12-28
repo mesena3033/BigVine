@@ -5,6 +5,10 @@ public class BossBullet : MonoBehaviour
     [SerializeField] private float lifeTime = 5.0f;
     [SerializeField] private int reflectDamage = 2; // 跳ね返した時のダメージ
 
+    [Header("効果音")]
+    [SerializeField] private AudioSource audioSource;
+    [SerializeField] private AudioClip reflectSound; // シールドで跳ね返った時の音
+
     private bool isReflected = false; // 跳ね返された状態フラグ
     private Rigidbody2D rb;
 
@@ -12,6 +16,16 @@ public class BossBullet : MonoBehaviour
     {
         rb = GetComponent<Rigidbody2D>();
         Destroy(gameObject, lifeTime);
+
+        // AudioSourceコンポーネントを取得または追加
+        if (GetComponent<AudioSource>() != null)
+        {
+            audioSource = GetComponent<AudioSource>();
+        }
+        else
+        {
+            audioSource = gameObject.AddComponent<AudioSource>();
+        }
     }
 
     void OnTriggerEnter2D(Collider2D other)
@@ -19,6 +33,12 @@ public class BossBullet : MonoBehaviour
         // --- 1. ツタシールドに当たった場合 (反射) ---
         if (!isReflected && other.CompareTag("CounterShield"))
         {
+            // 跳ね返りSEを再生
+            if (audioSource != null && reflectSound != null)
+            {
+                audioSource.PlayOneShot(reflectSound);
+            }
+
             ReflectToBoss();
             return; // ここで処理を終えて、下の破壊処理に行かないようにする
         }

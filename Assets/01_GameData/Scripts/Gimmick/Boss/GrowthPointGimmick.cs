@@ -32,6 +32,12 @@ public class GrowthPointGimmick : MonoBehaviour
     [SerializeField] private float stickyBombCooldown = 5f;
     private bool isCooldown = false;
 
+    [Header("効果音 (SE)")]
+    [SerializeField] private AudioSource audioSource; // このギミックから出る音を再生
+    [SerializeField] private AudioClip turretFireSound; // 砲台の発射音
+    [SerializeField] private AudioClip shieldOpenSound; // ツタシールドの展開音
+    [SerializeField] private AudioClip rockReleaseSound; // 落石が解放される音
+
     // --- 魔法が当たった時の処理 ---
     public void OnMagicHit()
     {
@@ -69,6 +75,12 @@ public class GrowthPointGimmick : MonoBehaviour
 
         if (shieldObject != null)
         {
+            // シールド展開SEを再生
+            if (audioSource != null && shieldOpenSound != null)
+            {
+                audioSource.PlayOneShot(shieldOpenSound);
+            }
+
             shieldObject.SetActive(true); // シールド出現
 
             yield return new WaitForSeconds(shieldDuration); // 一定時間待機
@@ -101,6 +113,12 @@ public class GrowthPointGimmick : MonoBehaviour
             {
                 // 1. 弾を生成する
                 GameObject bullet = Instantiate(bulletPrefab, firePoint.position, firePoint.rotation);
+
+                // 砲台の発射SEを再生
+                if (audioSource != null && turretFireSound != null)
+                {
+                    audioSource.PlayOneShot(turretFireSound);
+                }
 
                 // 2. 生成した弾のRigidbody2Dを取得する
                 Rigidbody2D rb = bullet.GetComponent<Rigidbody2D>();
@@ -150,6 +168,12 @@ public class GrowthPointGimmick : MonoBehaviour
                 // bodyTypeをDynamicに変更して重力を有効化
                 rockRb.bodyType = RigidbodyType2D.Dynamic;
                 Debug.Log("岩のRigidbody2DをDynamicに変更し、落下を開始させます。");
+
+                // 落石解放SEを再生
+                if (audioSource != null && rockReleaseSound != null)
+                {
+                    audioSource.PlayOneShot(rockReleaseSound);
+                }
             }
             else
             {
