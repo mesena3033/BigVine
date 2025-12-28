@@ -14,6 +14,11 @@ public class FallingRock : MonoBehaviour
     [Tooltip("衝撃を発生させるためのImpulse Sourceコンポーネント")]
     [SerializeField] private CinemachineImpulseSource impulseSource;
 
+    [Header("効果音")]
+    [SerializeField] private AudioSource audioSource;
+    [SerializeField] private AudioClip impactSound; // 地面やボスへの衝突音
+    private bool hasPlayedImpactSound = false; // 衝突音が再生済みかどうかのフラグ
+
     private Rigidbody2D rb;
     private bool hasHit = false;
 
@@ -92,20 +97,32 @@ public class FallingRock : MonoBehaviour
         BossController boss = collision.gameObject.GetComponentInParent<BossController>();
         if (boss != null)
         {
+            PlayImpactSound(); // 衝突音を再生
+
             hasHit = true;
+
             boss.TakeDamage(damageAmount);
-            if (CameraShaker.Instance != null)
-            {
-                CameraShaker.Instance.Shake(shakeDuration, shakeDuration);
-            }
             StartCoroutine(DestroyAfterDelay());
             return;
         }
 
         if (collision.gameObject.layer == LayerMask.NameToLayer("Ground"))
         {
+            PlayImpactSound(); // 衝突音を再生
+
             hasHit = true;
             StartCoroutine(DestroyAfterDelay());
+        }
+    }
+
+    // --- 衝突音を一度だけ再生するメソッド ---
+    private void PlayImpactSound()
+    {
+        // まだ再生されていなければ再生する
+        if (!hasPlayedImpactSound && audioSource != null && impactSound != null)
+        {
+            audioSource.PlayOneShot(impactSound);
+            hasPlayedImpactSound = true; // 再生済みフラグを立てる
         }
     }
 

@@ -10,6 +10,10 @@ public class MagicLiftHorizontal : MonoBehaviour
 
     [SerializeField] private GameObject liftImage;      // 普段表示、移動中は非表示
 
+    [Header("効果音")]
+    [SerializeField] private AudioSource audioSource;
+    [SerializeField] private AudioClip activationSound; // 起動する時のSE
+
     private Vector2 originalPos;
     private Vector2 movedPos;
 
@@ -35,6 +39,12 @@ public class MagicLiftHorizontal : MonoBehaviour
     private System.Collections.IEnumerator MoveThenReturn()
     {
         isMoving = true;
+
+        // 起動音を再生
+        if (audioSource != null && activationSound != null)
+        {
+            audioSource.PlayOneShot(activationSound);
+        }
 
         // 出現開始 → 画像を消す
         if (liftImage != null) liftImage.SetActive(false);
