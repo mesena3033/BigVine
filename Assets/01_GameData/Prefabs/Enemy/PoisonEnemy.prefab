@@ -68,6 +68,10 @@ PrefabInstance:
       propertyPath: RoundTrip
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6880078412270342316, guid: 0c0c08f4a45989c4bb120c73b422702f, type: 3}
+      propertyPath: m_Constraints
+      value: 7
+      objectReference: {fileID: 0}
     - target: {fileID: 6938266709626675070, guid: 0c0c08f4a45989c4bb120c73b422702f, type: 3}
       propertyPath: m_Radius
       value: 2.1884406
@@ -105,7 +109,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eeb1343a23b9cd4479d01de8d371595c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyBulletManager
-  Bullet: {fileID: 4468406488658083318, guid: cdb1b94d486fb69429b8d4891d502905, type: 3}
+  Bullet: {fileID: 2655456868727433219, guid: c4470f78f1ea76445879e43e2edf7a0b, type: 3}
   BulletInterval: 3
   ShootingControll: "\u4F4E"
   VerMove: "\u5DE6"
