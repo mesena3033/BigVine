@@ -34,7 +34,7 @@ public class TitleController : MonoBehaviour
     private void OnSubmit(InputAction.CallbackContext context)
     {
         // Spaceキー or コントローラーのSouthボタンでMainSceneへ
-        SceneManager.LoadScene("MainGame");
+        SceneManager.LoadScene("Stage1");
     }
     private void OnToggleBgm(InputAction.CallbackContext context)
     {
