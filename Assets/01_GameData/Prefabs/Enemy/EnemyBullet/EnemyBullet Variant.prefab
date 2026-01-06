@@ -10,7 +10,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -8645654282782984548, guid: cdb1b94d486fb69429b8d4891d502905, type: 3}
       propertyPath: BulletSpeed
-      value: 7
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: -3436401623360809208, guid: cdb1b94d486fb69429b8d4891d502905, type: 3}
       propertyPath: m_GravityScale
@@ -21,12 +21,20 @@ PrefabInstance:
       value: EnemyBullet Variant
       objectReference: {fileID: 0}
     - target: {fileID: 6517664859960263570, guid: cdb1b94d486fb69429b8d4891d502905, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6517664859960263570, guid: cdb1b94d486fb69429b8d4891d502905, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6517664859960263570, guid: cdb1b94d486fb69429b8d4891d502905, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -2.4987726
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6517664859960263570, guid: cdb1b94d486fb69429b8d4891d502905, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -17.231934
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6517664859960263570, guid: cdb1b94d486fb69429b8d4891d502905, type: 3}
       propertyPath: m_LocalPosition.z
