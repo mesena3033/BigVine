@@ -1306,6 +1306,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2941923173567920717, guid: 3fadb6243c658e44da61e4fac176c8d6, type: 3}
       propertyPath: DestroyYMax
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 2941923173567920717, guid: 3fadb6243c658e44da61e4fac176c8d6, type: 3}
+      propertyPath: DestroyYMin
       value: -40
       objectReference: {fileID: 0}
     - target: {fileID: 9179195784150608143, guid: 3fadb6243c658e44da61e4fac176c8d6, type: 3}

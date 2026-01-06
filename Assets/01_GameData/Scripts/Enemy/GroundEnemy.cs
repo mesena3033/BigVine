@@ -22,6 +22,9 @@ public class GroundEnemy : MonoBehaviour
     [SerializeField] private float DestroyYMin;
     [SerializeField] private float DestroyYMax;
 
+    [SerializeField] private bool Mukade;
+    int eSize = 1;
+
     private Rigidbody2D Rb2d;
     private float DefaultGravityScale;
     
@@ -36,23 +39,27 @@ public class GroundEnemy : MonoBehaviour
     void Start()
     {
         Rb2d = GetComponent<Rigidbody2D>();
+        if(Mukade == true)
+        {
+            eSize = 2;
+        }
 
         //  •ûŒü‘ã“ü
         if (MoveHori == "¶")
         {
             //  Ground‚Å”½“]‚·‚é‚½‚ß‹t‚É‚·‚é
-            dir = 1;
+            dir = eSize;
         }
         else if (MoveHori == "‰E")
         {
-            dir = -1;
+            dir = -eSize;
 
             //  ‰E‚ÉŒü‚­
             transform.localScale = new Vector2(-dir, 1);
         }
         else
             //  ƒfƒtƒH‚Í¶
-            { dir = -1; }
+            { dir = -eSize; }
 
         DefaultGravityScale = Rb2d.gravityScale;
     }
@@ -103,7 +110,7 @@ public class GroundEnemy : MonoBehaviour
             dir *= -1;  //  •ûŒü‚ğ”½“]
 
             //  ‰æ‘œ”½“]
-            transform.localScale = new Vector2(-dir, 1);
+            transform.localScale = new Vector2(-dir, eSize);
         }
     }
 

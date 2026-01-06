@@ -8,6 +8,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1275661993952568090, guid: 879ceb6563f174b4294e228d27eea83a, type: 3}
+      propertyPath: Mukade
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1275661993952568090, guid: 879ceb6563f174b4294e228d27eea83a, type: 3}
+      propertyPath: DestroyYMin
+      value: -40
+      objectReference: {fileID: 0}
     - target: {fileID: 1744671819880098153, guid: 879ceb6563f174b4294e228d27eea83a, type: 3}
       propertyPath: m_Size.x
       value: 5.0038376
