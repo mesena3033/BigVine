@@ -27,4 +27,13 @@ public class EnemyBullet : MonoBehaviour
         // 他のオブジェクトに当たったら消える
         Destroy(gameObject);
     }
+    void OnCollisionEnter2D(Collision2D other)
+    {
+        if (other.gameObject.layer != LayerMask.NameToLayer("Default") &&
+            other.gameObject.layer != LayerMask.NameToLayer("Enemy"))
+        {
+            // 他のオブジェクトに当たったら消える
+            Destroy(gameObject);
+        }
+    }
 }
