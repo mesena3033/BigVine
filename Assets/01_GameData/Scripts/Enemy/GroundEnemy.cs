@@ -41,18 +41,18 @@ public class GroundEnemy : MonoBehaviour
         if (MoveHori == "左")
         {
             //  Groundで反転するため逆にする
-            dir = 2;
+            dir = 1;
         }
         else if (MoveHori == "右")
         {
-            dir = -2;
+            dir = -1;
 
             //  右に向く
             transform.localScale = new Vector2(-dir, 1);
         }
         else
             //  デフォは左
-            { dir = -2; }
+            { dir = -1; }
 
         DefaultGravityScale = Rb2d.gravityScale;
     }
@@ -103,7 +103,7 @@ public class GroundEnemy : MonoBehaviour
             dir *= -1;  //  方向を反転
 
             //  画像反転
-            transform.localScale = new Vector2(-dir, 2);
+            transform.localScale = new Vector2(-dir, 1);
         }
     }
 
