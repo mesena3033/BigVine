@@ -29,8 +29,7 @@ public class EnemyBullet : MonoBehaviour
     }
     void OnCollisionEnter2D(Collision2D other)
     {
-        if (other.gameObject.layer != LayerMask.NameToLayer("Default") &&
-            other.gameObject.layer != LayerMask.NameToLayer("Enemy"))
+        if (other.gameObject.layer == LayerMask.NameToLayer("Ground"))
         {
             // 他のオブジェクトに当たったら消える
             Destroy(gameObject);
