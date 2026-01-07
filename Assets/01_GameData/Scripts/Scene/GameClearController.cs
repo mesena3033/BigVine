@@ -26,6 +26,6 @@ public class GameClearController : MonoBehaviour
     private void OnSubmit(InputAction.CallbackContext context)
     {
         // Spaceキー or コントローラーのSouthボタンでMainSceneへ
-        SceneManager.LoadScene("MainGame");
+        SceneManager.LoadScene("Stage1");
     }
 }

@@ -143,7 +143,12 @@ public class PlayerHP : MonoBehaviour
         // 無敵時間中、または既にノックバック中なら処理しない
         if (isInvincible || isKnockingBack) return;
 
-        if (collision.gameObject.layer == LayerMask.NameToLayer("Enemy"))
+        if (collision.gameObject.layer == LayerMask.NameToLayer("EnemyBullet"))
+        {
+            TakeDamage(1);
+            Destroy(collision.gameObject);
+        }
+        else if (collision.gameObject.layer == LayerMask.NameToLayer("Enemy"))
         {
             // より正確な衝突検知用のコルーチンを呼び出す
             StartCoroutine(KnockbackFromCollisionCoroutine(collision));

@@ -11,9 +11,9 @@ GameObject:
   - component: {fileID: 6517664859960263570}
   - component: {fileID: -3436401623360809208}
   - component: {fileID: -2739970147044495655}
-  - component: {fileID: -8645654282782984548}
   - component: {fileID: 6886363933666344394}
-  m_Layer: 9
+  - component: {fileID: -8645654282782984548}
+  m_Layer: 10
   m_Name: EnemyBullet
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -61,7 +61,7 @@ Rigidbody2D:
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
-  m_Constraints: 0
+  m_Constraints: 4
 --- !u!58 &-2739970147044495655
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -98,20 +98,6 @@ CircleCollider2D:
   m_CompositeOrder: 0
   m_Offset: {x: 0, y: 0}
   m_Radius: 0.49999997
---- !u!114 &-8645654282782984548
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4468406488658083318}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d18a6e49d650e36488beb656202f2b1d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::EnemyBullet
-  BulletSpeed: 5
-  LifeTime: 2
 --- !u!212 &6886363933666344394
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -170,3 +156,17 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &-8645654282782984548
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4468406488658083318}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d18a6e49d650e36488beb656202f2b1d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyBullet
+  BulletSpeed: 5
+  LifeTime: 2
