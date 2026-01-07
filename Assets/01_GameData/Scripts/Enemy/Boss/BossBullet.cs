@@ -9,6 +9,8 @@ public class BossBullet : MonoBehaviour
     [SerializeField] private AudioSource audioSource;
     [SerializeField] private AudioClip reflectSound; // シールドで跳ね返った時の音
 
+    [SerializeField] private float destroyYPosition = -6.0f; // このY座標以下になったら消滅する
+
     private bool isReflected = false; // 跳ね返された状態フラグ
     private Rigidbody2D rb;
 
@@ -25,6 +27,15 @@ public class BossBullet : MonoBehaviour
         else
         {
             audioSource = gameObject.AddComponent<AudioSource>();
+        }
+    }
+
+    void Update()
+    {
+        // 弾のY座標が指定した値以下になったら消滅
+        if (transform.position.y <= destroyYPosition)
+        {
+            Destroy(gameObject);
         }
     }
 
