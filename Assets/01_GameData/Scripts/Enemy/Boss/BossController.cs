@@ -5,6 +5,19 @@ using Unity.Cinemachine;
 
 public class BossController : MonoBehaviour
 {
+    // ボスの形態を定義するenum
+    private enum BossForm
+    {
+        Form1, // 第一形態
+        Form2, // 第二形態
+        Form3  // 最終形態
+    }
+    private BossForm currentForm;
+
+    // 形態ごとのパラメータ倍率
+    private float cooldownMultiplier = 1.0f; // クールタイムに乗算（値が大きいほど長くなり、簡単になる）
+    private float speedMultiplier = 1.0f;    // スピードに乗算（値が小さいほど遅くなり、簡単になる）
+
     [Header("ステータス")]
     [SerializeField] private int maxHp = 10;
     private int currentHp;
@@ -139,6 +152,76 @@ public class BossController : MonoBehaviour
 
     void Start()
     {
+        // --- 形態の決定 ---
+        if (GameManager.Instance != null)
+        {
+            int growthCount = GameManager.Instance.growthMagicCount;
+            if (growthCount <= 10)
+            {
+                currentForm = BossForm.Form1;
+                cooldownMultiplier = 1.6f; // クールタイムが1.6倍（長くなる）
+                speedMultiplier = 0.65f;  // スピードが0.65倍（遅くなる）
+                Debug.Log("ボスは第一形態で出現します。");
+            }
+            else if (growthCount <= 20)
+            {
+                currentForm = BossForm.Form2;
+                cooldownMultiplier = 1.3f; // クールタイムが1.3倍
+                speedMultiplier = 0.8f;   // スピードが0.8倍
+                Debug.Log("ボスは第二形態で出現します。");
+            }
+            else
+            {
+                currentForm = BossForm.Form3;
+                cooldownMultiplier = 1.0f; // 基準
+                speedMultiplier = 1.0f;   // 基準
+                Debug.Log("ボスは最終形態で出現します。");
+            }
+        }
+        else
+        {
+            // GameManagerが見つからない場合は最終形態で動作
+            currentForm = BossForm.Form3;
+            Debug.LogWarning("GameManagerが見つからないため、ボスは最終形態で出現します。");
+        }
+
+        // --- 形態に応じてパラメータを調整 ---
+        // 突進
+        chargeWarningTime *= cooldownMultiplier;
+        chargeThroughSpeed *= speedMultiplier;
+        returnSpeed *= speedMultiplier;
+
+        // ツタ (独立ループ)
+        vineAttackInterval *= cooldownMultiplier;
+        vineWarningTime *= cooldownMultiplier;
+
+        // ハエ呼び寄せ (独立ループ)
+        flySummonInterval *= cooldownMultiplier;
+        flyMoveSpeed *= speedMultiplier;
+
+        // 溶解液 (投擲)
+        throwForce *= speedMultiplier;
+        throwInterval *= cooldownMultiplier; // 連射間隔は長いほど簡単になる
+        acidWarningTime *= cooldownMultiplier;
+
+        // 天井からの毒液
+        acidRainInterval *= cooldownMultiplier; // 弾の発射間隔は長いほど簡単になる
+        ceilingStayDuration *= cooldownMultiplier;
+
+        // 対空行動
+        antiAirAttackCooldown *= cooldownMultiplier;
+
+        // 急降下爆撃
+        diveFollowTime *= cooldownMultiplier;
+        diveFastBlinkTime *= cooldownMultiplier;
+        diveFallSpeed *= speedMultiplier;
+        diveStunTime *= cooldownMultiplier;
+
+        // 画面奥からの範囲攻撃
+        zoomInDuration /= speedMultiplier; // 時間は長いほど簡単になる（speedMultiplierは1未満なので割る）
+        rangeWarningTime *= cooldownMultiplier;
+        attackTravelTime /= speedMultiplier; // 時間は長いほど簡単になる
+
         currentHp = maxHp;
         initialPosition = transform.position;
 
@@ -580,19 +663,37 @@ public class BossController : MonoBehaviour
         // --- 1. 地中に潜って消える (アニメーション) ---
         yield return StartCoroutine(AnimateSubmerge(true, submergeAnimTime));
 
-        // --- 2. 確率で攻撃を分岐 ---
-        float attackRoll = Random.value; // 0.0～1.0の乱数を生成
-        if (attackRoll < 0.4f) // 40%で押しつぶし
+        // --- 2. 形態に応じて攻撃を分岐 ---
+        if (currentForm == BossForm.Form1)
         {
-            yield return StartCoroutine(DiveBombAttack());
+            // 第一形態の場合、「画面奥からの範囲攻撃」は使用しない
+            Debug.Log("第一形態：大技抽選 (急降下 or 天井毒液)");
+            if (Random.value < 0.55f) // 55%で急降下
+            {
+                yield return StartCoroutine(DiveBombAttack());
+            }
+            else // 45%で天井毒液
+            {
+                yield return StartCoroutine(CeilingAcidAttack());
+            }
         }
-        else if (attackRoll < 0.7f) // 30%で画面奥からの攻撃
+        else // 第二・最終形態の場合
         {
-            yield return StartCoroutine(BackgroundRangeAttack());
-        }
-        else // 残り30%で天井からの毒液攻撃
-        {
-            yield return StartCoroutine(CeilingAcidAttack());
+            // 第二・最終形態の場合、3種類の攻撃から抽選
+            Debug.Log("第二/最終形態：大技抽選 (急降下 or 画面奥 or 天井毒液)");
+            float attackRoll = Random.value; // 0.0～1.0の乱数を生成
+            if (attackRoll < 0.4f) // 40%で押しつぶし
+            {
+                yield return StartCoroutine(DiveBombAttack());
+            }
+            else if (attackRoll < 0.7f) // 30%で画面奥からの攻撃
+            {
+                yield return StartCoroutine(BackgroundRangeAttack());
+            }
+            else // 残り30%で天井からの毒液攻撃
+            {
+                yield return StartCoroutine(CeilingAcidAttack());
+            }
         }
 
         // --- 3. 次の待機位置を決定し、そこに戻る ---
@@ -688,6 +789,13 @@ public class BossController : MonoBehaviour
     // --- 攻撃: 画面奥からの範囲攻撃 ---
     IEnumerator BackgroundRangeAttack()
     {
+        // 念のため、第一形態ではこのコルーチンが呼ばれないようにガード処理を追加
+        if (currentForm == BossForm.Form1)
+        {
+            Debug.LogWarning("第一形態で BackgroundRangeAttack が誤って呼び出されたため、キャンセルします。");
+            yield break; // 攻撃を中止して即座にコルーチンを終了
+        }
+
         Debug.Log("ボス：[大技] 画面奥からの範囲攻撃");
 
         // --- 1. ボス本体（全パーツ）を非表示にする ---
