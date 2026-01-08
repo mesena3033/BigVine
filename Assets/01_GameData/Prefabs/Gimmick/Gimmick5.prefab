@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8016014899059116399}
   - component: {fileID: 8865730165671890003}
+  - component: {fileID: 4012224784209246122}
   - component: {fileID: 8370868540784676941}
   m_Layer: 11
   m_Name: Gimmick5a
@@ -52,6 +53,20 @@ MonoBehaviour:
   enemyLayer:
     serializedVersion: 2
     m_Bits: 512
+  closeDuration: 0.5
+  openDuration: 0.5
+--- !u!114 &4012224784209246122
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 833595704512294528}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: df2daa6608efa504188f523633592bcf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MagicCount
 --- !u!58 &8370868540784676941
 CircleCollider2D:
   m_ObjectHideFlags: 0
