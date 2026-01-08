@@ -247,6 +247,7 @@ GameObject:
   - component: {fileID: 8615680336172710197}
   - component: {fileID: 7939795885810123381}
   - component: {fileID: 7881341450946987778}
+  - component: {fileID: 1069749655457616003}
   m_Layer: 0
   m_Name: GameObject
   m_TagString: Untagged
@@ -320,6 +321,18 @@ MonoBehaviour:
   rockBody: {fileID: 1493364102023838774}
   destroyTarget1: {fileID: 0}
   destroyTarget2: {fileID: 0}
+--- !u!114 &1069749655457616003
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4138558090379324454}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: df2daa6608efa504188f523633592bcf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MagicCount
 --- !u!1 &4245742502692217003
 GameObject:
   m_ObjectHideFlags: 0

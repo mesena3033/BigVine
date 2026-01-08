@@ -645,6 +645,7 @@ GameObject:
   - component: {fileID: 1849182427508242218}
   - component: {fileID: 5296845650670833594}
   - component: {fileID: 8925820550880257654}
+  - component: {fileID: 6859148983307190729}
   m_Layer: 0
   m_Name: LeafGrowTrigger
   m_TagString: Untagged
@@ -720,6 +721,18 @@ MonoBehaviour:
   leaf2Normal: {fileID: 3013039373066618391}
   leaf2Grown: {fileID: 6150430651901807942}
   detectionRadius: 1.5
+--- !u!114 &6859148983307190729
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5785342588654022740}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: df2daa6608efa504188f523633592bcf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MagicCount
 --- !u!1 &5853872643382760459
 GameObject:
   m_ObjectHideFlags: 0

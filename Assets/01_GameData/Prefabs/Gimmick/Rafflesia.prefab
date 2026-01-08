@@ -191,6 +191,7 @@ GameObject:
   - component: {fileID: 2652161836147459569}
   - component: {fileID: 3666831178218635094}
   - component: {fileID: 1174949608909873642}
+  - component: {fileID: 2768887221714161658}
   - component: {fileID: 6667466896144212495}
   m_Layer: 0
   m_Name: Rafflesia
@@ -290,9 +291,24 @@ MonoBehaviour:
   seedObject: {fileID: 740342520086145898}
   bloomObject: {fileID: 8252207603752477078}
   bloomEffect: {fileID: 4643036359607426698}
+  platformLayer:
+    serializedVersion: 2
+    m_Bits: 0
   growDuration: 1.5
   shakeAmount: 0.1
   shakeSpeed: 10
+--- !u!114 &2768887221714161658
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8882615347496033007}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: df2daa6608efa504188f523633592bcf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MagicCount
 --- !u!58 &6667466896144212495
 CircleCollider2D:
   m_ObjectHideFlags: 0

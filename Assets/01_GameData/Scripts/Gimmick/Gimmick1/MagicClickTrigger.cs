@@ -24,21 +24,15 @@ public class MagicClickTrigger : MonoBehaviour
 
         if (triggerCount == 1)
         {
-            //stage3Object.SetActive(true);
             StartCoroutine(FadeOut(stage2Object));
             StartCoroutine(FadeIn(stage3Object));
-
-            //StartCoroutine(ShowAndFade(stage4Object, stage3Object, 0.5f));
-
         }
         else if (triggerCount == 2)
         {
             StartCoroutine(FadeOut(stage3Object));
             StartCoroutine(FadeIn(stage5Object));
-            //StartCoroutine(FadeOut(stage4Object));
         }
     }
-
 
     private System.Collections.IEnumerator FadeOut(GameObject obj)
     {
