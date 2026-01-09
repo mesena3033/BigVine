@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Unity.Cinemachine;
 using System.Linq;
+using UnityEngine.Events;
 
 public class BossController : MonoBehaviour
 {
@@ -22,6 +23,10 @@ public class BossController : MonoBehaviour
     [Header("ステータス")]
     [SerializeField] private int maxHp = 10;
     private int currentHp;
+
+    [Header("UI連携用イベント")]
+    // HPが変更されたときに呼び出すイベント
+    public UnityEvent<int, int> OnHPChanged;
 
     [Header("攻撃設定: 共通")]
     [SerializeField] private Transform firePoint; // 弾の発射位置
@@ -271,6 +276,12 @@ public class BossController : MonoBehaviour
         {
             Debug.LogError("シーン内にCameraPriorityControllerが見つかりません！");
         }
+
+        // ゲーム開始時にUIに初期HPを通知するためにイベントを発行
+        if (OnHPChanged != null)
+        {
+            OnHPChanged.Invoke(currentHp, maxHp);
+        }
     }
 
     void LateUpdate()
@@ -468,6 +479,12 @@ public class BossController : MonoBehaviour
         if (currentHp > maxHp)
         {
             currentHp = maxHp;
+        }
+
+        // UIにHPの変更を通知
+        if (OnHPChanged != null)
+        {
+            OnHPChanged.Invoke(currentHp, maxHp);
         }
 
         // ここに回復エフェクトやSE
@@ -1170,6 +1187,13 @@ public class BossController : MonoBehaviour
 
         currentHp -= damage;
         StartCoroutine(FlashDamageEffect());
+
+        // UIにHPの変更を通知
+        if (OnHPChanged != null)
+        {
+            OnHPChanged.Invoke(currentHp, maxHp);
+        }
+
         if (currentHp <= 0) Die();
     }
 
