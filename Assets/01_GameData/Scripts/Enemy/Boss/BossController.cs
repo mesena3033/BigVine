@@ -1000,16 +1000,8 @@ public class BossController : MonoBehaviour
         {
             if (sr != null)
             {
-                // もし処理対象のスプライトが頭(headRenderer)なら、上下反転はしない。
-                // それ以外の体のパーツは上下反転させる。
-                if (sr == headRenderer)
-                {
-                    sr.flipY = false;
-                }
-                else
-                {
-                    sr.flipY = true;
-                }
+                // 形態に関わらず、表示されている全てのパーツの画像を上下反転させる
+                sr.flipY = true;
                 sr.enabled = true;
             }
         }
@@ -1313,9 +1305,10 @@ public class BossController : MonoBehaviour
                 activeRenderers.Add(bodyForm3.GetComponent<SpriteRenderer>());
                 activeRenderers.Add(headForm3.GetComponent<SpriteRenderer>());
 
-                // 参照の更新 (インスペクターで設定済みのものをそのまま使うので、ここでは何もしない)
-                // headRenderer はインスペクターで Head_Form3 が設定されているはず
-                // bossHead はインスペクターで Head_Form3 が設定されているはず
+                // 参照の更新: インスペクターの設定に頼らず、アクティブにしたオブジェクトから明示的に取得する
+                // これにより、参照設定ミスを防ぎ、動作を確実にする
+                headRenderer = headForm3.GetComponent<SpriteRenderer>();
+                bossHead = headForm3.GetComponent<BossHead>();
                 break;
         }
 
