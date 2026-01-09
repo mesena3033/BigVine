@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Unity.Cinemachine;
+using System.Linq;
 
 public class BossController : MonoBehaviour
 {
@@ -119,6 +120,13 @@ public class BossController : MonoBehaviour
     [SerializeField] private GameObject returnParticlePrefab; // 戻る場所を示すパーティクル
     [SerializeField] private Vector2 standbyPositionOffset = new Vector2(2, 0); // 画面端からのオフセット
 
+    [Header("参照: 形態ごとのパーツ")]
+    [SerializeField] private GameObject bodyForm1;
+    [SerializeField] private GameObject bodyForm2;
+    [SerializeField] private GameObject headForm2;
+    [SerializeField] private GameObject bodyForm3;
+    [SerializeField] private GameObject headForm3;
+
     [Header("参照")]
     [SerializeField] private Rigidbody2D rb;
     [SerializeField] private SpriteRenderer[] bodyPartsRenderers;
@@ -184,6 +192,9 @@ public class BossController : MonoBehaviour
             currentForm = BossForm.Form3;
             Debug.LogWarning("GameManagerが見つからないため、ボスは最終形態で出現します。");
         }
+
+        // --- 形態に応じて見た目と参照を切り替える ---
+        InitializeBossForm();
 
         // --- 形態に応じてパラメータを調整 ---
         // 突進
@@ -1247,5 +1258,68 @@ public class BossController : MonoBehaviour
         {
             foreach (var sr in bodyPartsRenderers) sr.enabled = false;
         }
+    }
+
+    // 形態に応じてGameObjectのアクティブ状態と参照を初期化するメソッド
+    private void InitializeBossForm()
+    {
+        // 一旦すべてのパーツを非表示にする
+        bodyForm1.SetActive(false);
+        bodyForm2.SetActive(false);
+        headForm2.SetActive(false);
+        bodyForm3.SetActive(false);
+        headForm3.SetActive(false);
+
+        // 新しいパーツリストを作成
+        var activeRenderers = new List<SpriteRenderer>();
+
+        switch (currentForm)
+        {
+            case BossForm.Form1:
+                Debug.Log("第一形態の見た目を有効化");
+                // 表示するパーツを有効化
+                bodyForm1.SetActive(true);
+
+                // 有効なレンダラーをリストに追加
+                activeRenderers.Add(bodyForm1.GetComponent<SpriteRenderer>());
+
+                // 参照の更新
+                headRenderer = bodyForm1.GetComponent<SpriteRenderer>(); // 警告点滅用に体を設定
+                bossHead = null; // 頭は存在しない
+                break;
+
+            case BossForm.Form2:
+                Debug.Log("第二形態の見た目を有効化");
+                // 表示するパーツを有効化
+                bodyForm2.SetActive(true);
+                headForm2.SetActive(true);
+
+                // 有効なレンダラーをリストに追加
+                activeRenderers.Add(bodyForm2.GetComponent<SpriteRenderer>());
+                activeRenderers.Add(headForm2.GetComponent<SpriteRenderer>());
+
+                // 参照の更新
+                headRenderer = headForm2.GetComponent<SpriteRenderer>();
+                bossHead = headForm2.GetComponent<BossHead>();
+                break;
+
+            case BossForm.Form3:
+                Debug.Log("第三形態の見た目を有効化");
+                // 表示するパーツを有効化
+                bodyForm3.SetActive(true);
+                headForm3.SetActive(true);
+
+                // 有効なレンダラーをリストに追加
+                activeRenderers.Add(bodyForm3.GetComponent<SpriteRenderer>());
+                activeRenderers.Add(headForm3.GetComponent<SpriteRenderer>());
+
+                // 参照の更新 (インスペクターで設定済みのものをそのまま使うので、ここでは何もしない)
+                // headRenderer はインスペクターで Head_Form3 が設定されているはず
+                // bossHead はインスペクターで Head_Form3 が設定されているはず
+                break;
+        }
+
+        // 汎用的に使うパーツ配列を、現在アクティブなパーツで上書きする
+        bodyPartsRenderers = activeRenderers.ToArray();
     }
 }
