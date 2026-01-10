@@ -168,11 +168,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9157812855108623181, guid: 9941096420b54834e9aad5b3835bb769, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -10
+      value: -12
       objectReference: {fileID: 0}
     - target: {fileID: 9157812855108623181, guid: 9941096420b54834e9aad5b3835bb769, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -3
+      value: 28
       objectReference: {fileID: 0}
     - target: {fileID: 9157812855108623181, guid: 9941096420b54834e9aad5b3835bb769, type: 3}
       propertyPath: m_LocalPosition.z
@@ -892,6 +892,37 @@ MonoBehaviour:
   normalCamera: {fileID: 373340111}
   highAltitudeCamera: {fileID: 670261027}
   yThreshold: 12
+--- !u!1 &476760568
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 476760569}
+  m_Layer: 0
+  m_Name: PlayerFallStartPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &476760569
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 476760568}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -12, y: 28, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &670261026
 GameObject:
   m_ObjectHideFlags: 0
@@ -1256,6 +1287,17 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1443275975 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3939048263590554709, guid: 9941096420b54834e9aad5b3835bb769, type: 3}
+  m_PrefabInstance: {fileID: 142830857}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 74ddcff0452a1774a9d60bdd541e5881, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerAction
 --- !u!1 &1488819674
 GameObject:
   m_ObjectHideFlags: 0
@@ -1623,7 +1665,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9e020025183e84c47941f309f63f9cec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameManager
-  growthMagicCount: 0
+  growthMagicCount: 1
 --- !u!4 &1776799056
 Transform:
   m_ObjectHideFlags: 0
@@ -2053,10 +2095,10 @@ Canvas:
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
   m_VertexColorAlwaysGammaSpace: 0
-  m_AdditionalShaderChannelsFlag: 0
+  m_AdditionalShaderChannelsFlag: 25
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 100
   m_TargetDisplay: 0
 --- !u!224 &2034726898
 RectTransform:
@@ -2158,6 +2200,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 4736163668965967867, guid: 5efb54d2dcd68c346b4e58318ff4a8e1, type: 3}
+      propertyPath: playerAction
+      value: 
+      objectReference: {fileID: 1443275975}
+    - target: {fileID: 4736163668965967867, guid: 5efb54d2dcd68c346b4e58318ff4a8e1, type: 3}
+      propertyPath: playerFallStartPoint
+      value: 
+      objectReference: {fileID: 476760569}
     - target: {fileID: 4736163668965967867, guid: 5efb54d2dcd68c346b4e58318ff4a8e1, type: 3}
       propertyPath: cameraPriorityController
       value: 
@@ -2413,5 +2463,6 @@ SceneRoots:
   - {fileID: 293792568}
   - {fileID: 1390835354}
   - {fileID: 1776799056}
+  - {fileID: 476760569}
   - {fileID: 1106672361}
   - {fileID: 1654449860}

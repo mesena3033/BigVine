@@ -28,6 +28,21 @@ public class BossController : MonoBehaviour
     // HPが変更されたときに呼び出すイベント
     public UnityEvent<int, int> OnHPChanged;
 
+    [Header("イベント設定")]
+    [Tooltip("プレイヤーの入力スクリプト")]
+    [SerializeField] private PlayerAction playerAction;
+    [Tooltip("吹き出しUIのプレハブ")]
+    [SerializeField] private GameObject speechBubblePrefab;
+    [Tooltip("変身前の初期スプライト")]
+    [SerializeField] private Sprite initialFormSprite;
+    [Tooltip("プレイヤーが最初に落下してくる位置")]
+    [SerializeField] private Transform playerFallStartPoint;
+
+    private bool isEventRunning = true; // イベント実行中フラグ
+    private SpeechBubbleController speechBubbleInstance;
+
+    private Sprite originalBodySprite; // 元のスプライトを保存するための変数
+
     [Header("攻撃設定: 共通")]
     [SerializeField] private Transform firePoint; // 弾の発射位置
 
@@ -165,6 +180,24 @@ public class BossController : MonoBehaviour
 
     void Start()
     {
+        // プレイヤー参照の取得
+        GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
+        if (playerObj != null)
+        {
+            playerTransform = playerObj.transform;
+            // PlayerActionコンポーネントも取得
+            if (playerAction == null) playerAction = playerObj.GetComponent<PlayerAction>();
+        }
+
+        // --- イベント用セットアップ ---
+        // 吹き出しを最初に一度だけ生成し、非表示にしておく
+        if (speechBubblePrefab != null)
+        {
+            GameObject bubbleObj = Instantiate(speechBubblePrefab, transform.position, Quaternion.identity);
+            speechBubbleInstance = bubbleObj.GetComponent<SpeechBubbleController>();
+            speechBubbleInstance.Hide();
+        }
+
         // --- 形態の決定 ---
         if (GameManager.Instance != null)
         {
@@ -200,6 +233,9 @@ public class BossController : MonoBehaviour
 
         // --- 形態に応じて見た目と参照を切り替える ---
         InitializeBossForm();
+
+        // イベントシーケンスを開始する
+        StartCoroutine(StartOpeningEvent());
 
         // --- 形態に応じてパラメータを調整 ---
         // 突進
@@ -295,6 +331,9 @@ public class BossController : MonoBehaviour
 
     IEnumerator BossBehaviorLoop()
     {
+        // イベントが終了するまで待機
+        yield return new WaitUntil(() => !isEventRunning);
+
         while (!isDead)
         {
             // --- 行動選択の前に、まずプレイヤーの位置をチェック ---
@@ -358,6 +397,9 @@ public class BossController : MonoBehaviour
     // ツタ攻撃を一定間隔で独立して実行するループ
     IEnumerator VineAttackLoop()
     {
+        // イベントが終了するまで待機
+        yield return new WaitUntil(() => !isEventRunning);
+
         // 戦闘開始直後にいきなりツタが来ないように、最初は少し待つ
         yield return new WaitForSeconds(vineAttackInterval / 2f);
 
@@ -391,6 +433,9 @@ public class BossController : MonoBehaviour
     // ハエ呼び寄せ攻撃を一定間隔で独立して実行するループ
     IEnumerator FlySummonLoop()
     {
+        // イベントが終了するまで待機
+        yield return new WaitUntil(() => !isEventRunning);
+
         // 戦闘開始直後にいきなり呼ばないように、最初は少し待つ
         yield return new WaitForSeconds(flySummonInterval / 2f);
 
@@ -1172,6 +1217,204 @@ public class BossController : MonoBehaviour
 
         // 新しい待機位置を更新 (YとZは初期位置のものを流用)
         currentTargetPosition = new Vector3(targetX, initialPosition.y, initialPosition.z);
+    }
+
+    private IEnumerator StartOpeningEvent()
+    {
+        // --- ① プレイヤー落下準備 ---
+        if (playerAction != null)
+        {
+            // プレイヤーの入力を無効化
+            playerAction.SetInputActive(false);
+
+            // プレイヤーのRigidbodyを有効にし、落下開始地点へ移動
+            Rigidbody2D playerRb = playerAction.GetComponent<Rigidbody2D>();
+            if (playerRb != null && playerFallStartPoint != null)
+            {
+                playerRb.bodyType = RigidbodyType2D.Dynamic; // 物理挙動を有効に
+                playerRb.linearVelocity = Vector2.zero; // 落下前の速度をリセット 
+                playerAction.transform.position = playerFallStartPoint.position;
+            }
+        }
+
+        // ボスは初期スプライトで待機
+        if (initialFormSprite != null && bodyPartsRenderers.Length > 0 && bodyPartsRenderers[0] != null)
+        {
+            //  元のスプライトを一時的に保存
+            originalBodySprite = bodyPartsRenderers[0].sprite;
+
+            // 全てのパーツを非表示にし、ボディ(0番目)に初期スプライトを設定
+            foreach (var sr in bodyPartsRenderers) sr.enabled = false;
+            bodyPartsRenderers[0].enabled = true;
+            bodyPartsRenderers[0].sprite = initialFormSprite;
+        }
+
+        // --- ② プレイヤーの着地を待つ ---
+        Debug.Log("イベント：プレイヤーの着地を待機中...");
+        yield return new WaitUntil(() => playerAction != null && playerAction.IsGrounded());
+        Debug.Log("イベント：プレイヤー着地！");
+
+        // 着地後、プレイヤーが滑らないように速度をゼロにする
+        playerAction.GetComponent<Rigidbody2D>().linearVelocity = Vector2.zero;
+        yield return new WaitForSeconds(1.0f); // 着地後の短いタメ
+
+        // --- ③ セリフパート ---
+        Transform headForSpeech = (bossHead != null) ? bossHead.transform : transform;
+        if (speechBubbleInstance != null)
+        {
+            speechBubbleInstance.ShowMessage("よくぞここまで来たな", headForSpeech);
+            yield return new WaitForSeconds(2.0f);
+
+            speechBubbleInstance.ShowMessage("お前が魔法をたくさん使ったおかげで、ここまで成長することができた...", headForSpeech);
+            yield return new WaitForSeconds(3.0f);
+
+            speechBubbleInstance.Hide();
+        }
+
+        // --- ④ 変身パート ---
+        yield return StartCoroutine(TransformSequence());
+
+        // --- ⑤ 戦闘開始 ---
+        Debug.Log("イベント終了、戦闘開始！");
+        isEventRunning = false; // イベント終了フラグを立てる
+        if (playerAction != null)
+        {
+            playerAction.SetInputActive(true); // プレイヤーの入力を有効化
+        }
+    }
+
+    private IEnumerator TransformSequence()
+    {
+        // 最初に、イベント用に書き換えたスプライトを元に戻しておく
+        if (originalBodySprite != null && bodyPartsRenderers.Length > 0 && bodyPartsRenderers[0] != null)
+        {
+            bodyPartsRenderers[0].sprite = originalBodySprite;
+        }
+
+        // 全てのパーツを一度非表示にする
+        bodyForm1.SetActive(false);
+        bodyForm2.SetActive(false);
+        headForm2.SetActive(false);
+        bodyForm3.SetActive(false);
+        headForm3.SetActive(false);
+
+        // 最終形態までの変身を順番に実行する
+        if ((int)currentForm >= 0) // Form1以上
+        {
+            // 1. 第一形態への変身
+            // 演出対象のレンダラーをリスト化
+            var renderersToEffect = new List<SpriteRenderer> { bodyForm1.GetComponent<SpriteRenderer>() };
+            yield return StartCoroutine(PlayTransformEffect(0.8f, renderersToEffect));
+            // 見た目を確定
+            bodyForm1.SetActive(true);
+            yield return new WaitForSeconds(0.2f);
+        }
+
+        if ((int)currentForm >= 1) // Form2以上
+        {
+            // 2. 第二形態への変身
+            // 事前に第一形態を非表示に
+            bodyForm1.SetActive(false);
+            // 演出対象のレンダラーをリスト化 (体と頭)
+            var renderersToEffect = new List<SpriteRenderer> {
+            bodyForm2.GetComponent<SpriteRenderer>(),
+            headForm2.GetComponent<SpriteRenderer>()
+        };
+            yield return StartCoroutine(PlayTransformEffect(0.8f, renderersToEffect));
+            // 見た目を確定
+            bodyForm2.SetActive(true);
+            headForm2.SetActive(true);
+            yield return new WaitForSeconds(0.2f);
+        }
+
+        if ((int)currentForm >= 2) // Form3 (最終形態)
+        {
+            // 3. 第三形態への変身
+            // 事前に第二形態を非表示に
+            bodyForm2.SetActive(false);
+            headForm2.SetActive(false);
+            // 演出対象のレンダラーをリスト化 (体と頭)
+            var renderersToEffect = new List<SpriteRenderer> {
+            bodyForm3.GetComponent<SpriteRenderer>(),
+            headForm3.GetComponent<SpriteRenderer>()
+        };
+            yield return StartCoroutine(PlayTransformEffect(0.8f, renderersToEffect));
+            // 見た目を確定
+            bodyForm3.SetActive(true);
+            headForm3.SetActive(true);
+            yield return new WaitForSeconds(0.2f);
+        }
+
+        // 最後に、戦闘用の完全な状態に再初期化する
+        InitializeBossForm();
+        Debug.Log("変身完了！最終形態: " + currentForm.ToString());
+    }
+
+    // PlayTransformEffectメソッドの引数をリストに変更します
+    private IEnumerator PlayTransformEffect(float duration, List<SpriteRenderer> targetRenderers)
+    {
+        // 事前に全てのレンダラーを有効化しておく
+        foreach (var sr in targetRenderers)
+        {
+            if (sr != null) sr.gameObject.SetActive(true);
+        }
+
+        // スケールを保存
+        Dictionary<SpriteRenderer, Vector3> originalScales = new Dictionary<SpriteRenderer, Vector3>();
+        foreach (var sr in targetRenderers)
+        {
+            if (sr != null) originalScales[sr] = sr.transform.localScale;
+        }
+
+        float elapsedTime = 0f;
+        float blinkInterval = 0.1f;
+
+        while (elapsedTime < duration)
+        {
+            foreach (var sr in targetRenderers)
+            {
+                if (sr == null) continue;
+                // 点滅
+                sr.enabled = !sr.enabled;
+                // わずかに拡大・縮小
+                float scaleMultiplier = 1.0f + Mathf.Sin(elapsedTime * 20f) * 0.1f;
+                sr.transform.localScale = originalScales[sr] * scaleMultiplier;
+            }
+
+            elapsedTime += blinkInterval;
+            yield return new WaitForSeconds(blinkInterval);
+        }
+
+        // 演出後は必ず表示状態に戻し、スケールも元に戻す
+        foreach (var sr in targetRenderers)
+        {
+            if (sr == null) continue;
+            sr.enabled = true;
+            sr.transform.localScale = originalScales[sr];
+        }
+    }
+
+    private IEnumerator PlayTransformEffect(float duration, SpriteRenderer targetRenderer)
+    {
+        Vector3 originalScale = targetRenderer.transform.localScale;
+        float elapsedTime = 0f;
+        float blinkInterval = 0.1f;
+
+        while (elapsedTime < duration)
+        {
+            // 点滅
+            targetRenderer.enabled = !targetRenderer.enabled;
+            // わずかに拡大・縮小
+            float scaleMultiplier = 1.0f + Mathf.Sin(elapsedTime * 20f) * 0.1f; // サイン波でプルプルさせる
+            targetRenderer.transform.localScale = originalScale * scaleMultiplier;
+
+            elapsedTime += blinkInterval;
+            yield return new WaitForSeconds(blinkInterval);
+        }
+
+        // 演出後は必ず表示状態に戻し、スケールも元に戻す
+        targetRenderer.enabled = true;
+        targetRenderer.transform.localScale = originalScale;
     }
 
     // --- ダメージ・死亡 ---
