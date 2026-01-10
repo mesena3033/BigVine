@@ -202,14 +202,14 @@ public class BossController : MonoBehaviour
         if (GameManager.Instance != null)
         {
             int growthCount = GameManager.Instance.growthMagicCount;
-            if (growthCount <= 10)
+            if (growthCount <= 8)
             {
                 currentForm = BossForm.Form1;
                 cooldownMultiplier = 1.6f; // クールタイムが1.6倍（長くなる）
                 speedMultiplier = 0.65f;  // スピードが0.65倍（遅くなる）
                 Debug.Log("ボスは第一形態で出現します。");
             }
-            else if (growthCount <= 20)
+            else if (growthCount <= 16)
             {
                 currentForm = BossForm.Form2;
                 cooldownMultiplier = 1.3f; // クールタイムが1.3倍
