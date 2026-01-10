@@ -650,6 +650,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BossController
   maxHp: 10
+  OnHPChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  playerAction: {fileID: 0}
+  speechBubblePrefab: {fileID: 3260783268942783193, guid: e4bc89120141c9f49bc6f8c0b3d178ae, type: 3}
+  initialFormSprite: {fileID: -2598040322369544246, guid: 419653808c810af40a0857913bf7c244, type: 3}
+  playerFallStartPoint: {fileID: 0}
   firePoint: {fileID: 8974242826373296849}
   warningAreaPrefab: {fileID: 5272749377792569298, guid: 7720f3d224fe54f498f0602baabf8775, type: 3}
   chargeWarningTime: 2.5

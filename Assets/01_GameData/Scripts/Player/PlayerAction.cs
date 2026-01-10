@@ -88,6 +88,20 @@ public class PlayerAction : MonoBehaviour
     private bool _isCasting = false;//魔法詠唱中
 
     // ---------------------------- UnityMessage
+
+    // 外部から入力の有効/無効を切り替えるためのメソッド
+    public void SetInputActive(bool isActive)
+    {
+        if (isActive)
+        {
+            _act.Player.Enable();
+        }
+        else
+        {
+            _act.Player.Disable();
+        }
+    }
+
     private void Awake()
     {
         // 入力アクションの初期化
@@ -429,7 +443,7 @@ public class PlayerAction : MonoBehaviour
         _wasGrounded = groundedNow;
     }
 
-    private bool IsGrounded()
+    public bool IsGrounded()
     {
         return Physics2D.CircleCast(
             _tr.position,
