@@ -1193,7 +1193,7 @@ Transform:
   m_GameObject: {fileID: 239515026}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 7.4555707, y: 7.6760063, z: -7310}
+  m_LocalPosition: {x: 7.4555707, y: 7.6760063, z: -11060}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -2069,7 +2069,7 @@ Transform:
   m_GameObject: {fileID: 349818066}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 7.4555707, y: 7.6760063, z: -7310}
+  m_LocalPosition: {x: 7.4555707, y: 7.6760063, z: -11060}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -8512,6 +8512,18 @@ PrefabInstance:
       propertyPath: m_LocalPosition.y
       value: 6.19
       objectReference: {fileID: 0}
+    - target: {fileID: 6524973296474696585, guid: 0344378ee5d28d94ea3e498500e3d51c, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 1.3
+      objectReference: {fileID: 0}
+    - target: {fileID: 6524973296474696585, guid: 0344378ee5d28d94ea3e498500e3d51c, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -5.12
+      objectReference: {fileID: 0}
+    - target: {fileID: 6524973296474696585, guid: 0344378ee5d28d94ea3e498500e3d51c, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 6.75
+      objectReference: {fileID: 0}
     - target: {fileID: 7037520859177611208, guid: 0344378ee5d28d94ea3e498500e3d51c, type: 3}
       propertyPath: m_LocalScale.x
       value: 1
@@ -8527,6 +8539,14 @@ PrefabInstance:
     - target: {fileID: 7037520859177611208, guid: 0344378ee5d28d94ea3e498500e3d51c, type: 3}
       propertyPath: m_LocalPosition.y
       value: 6.81
+      objectReference: {fileID: 0}
+    - target: {fileID: 9186682777693222451, guid: 0344378ee5d28d94ea3e498500e3d51c, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 1.3
+      objectReference: {fileID: 0}
+    - target: {fileID: 9186682777693222451, guid: 0344378ee5d28d94ea3e498500e3d51c, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 6.39
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
