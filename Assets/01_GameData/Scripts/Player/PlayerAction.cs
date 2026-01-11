@@ -108,17 +108,17 @@ public class PlayerAction : MonoBehaviour
         _act = new DemoAction();
         _demoAct = _act.Player;
         _col = new Collider2D();
-    }
 
-    private void Start()
-    {
         // コンポーネントの取得
         _tr = transform;
         _rb = GetComponent<Rigidbody2D>();
         _col = GetComponent<Collider2D>();
         _sr = GetComponent<SpriteRenderer>();
         _playerHP = GetComponent<PlayerHP>();
+    }
 
+    private void Start()
+    {
         SetGround = GetComponent<AudioSource>();
         SetWalkSE = GetComponent<AudioSource>();
         SpriteRenderer = GetComponent<SpriteRenderer>();

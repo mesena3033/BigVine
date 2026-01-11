@@ -231,6 +231,20 @@ public class BossController : MonoBehaviour
             Debug.LogWarning("GameManagerが見つからないため、ボスは最終形態で出現します。");
         }
 
+        // --- 形態に応じてHPを設定 ---
+        switch (currentForm)
+        {
+            case BossForm.Form1:
+                maxHp = 15;
+                break;
+            case BossForm.Form2:
+                maxHp = 20;
+                break;
+            case BossForm.Form3:
+                maxHp = 30;
+                break;
+        }
+
         // --- 形態に応じて見た目と参照を切り替える ---
         InitializeBossForm();
 
@@ -1263,10 +1277,10 @@ public class BossController : MonoBehaviour
         if (speechBubbleInstance != null)
         {
             speechBubbleInstance.ShowMessage("よくぞここまで来たな", headForSpeech);
-            yield return new WaitForSeconds(2.0f);
+            yield return new WaitForSeconds(3.0f);
 
             speechBubbleInstance.ShowMessage("お前が魔法をたくさん使ったおかげで、ここまで成長することができた...", headForSpeech);
-            yield return new WaitForSeconds(3.0f);
+            yield return new WaitForSeconds(5.0f);
 
             speechBubbleInstance.Hide();
         }
