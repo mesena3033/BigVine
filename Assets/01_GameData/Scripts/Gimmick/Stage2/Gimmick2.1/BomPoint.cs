@@ -2,17 +2,20 @@ using UnityEngine;
 
 public class BomPoint : MonoBehaviour
 {
-    [SerializeField] private GameObject targetPlant;     // ★落ちる＆爆発する植物
+    [SerializeField] private GameObject targetPlant;     
     [SerializeField] private GameObject explosionPrefab; // 爆発エフェクト
+    [SerializeField] private GameObject hideObject;
     [SerializeField] private float fallTime = 1.5f;
     [SerializeField] private float fallSpeed = 5f;
     [SerializeField] private float explosionRadius = 2f;
+    [SerializeField] private Fallitem fallItem;
+
 
     private bool isFalling = false;
     private float timer = 0f;
 
-    private Vector3 plantOriginalPos; // ★元の位置を保存
-    private bool canTrigger = true;   // ★魔法を受け付けるかどうか
+    private Vector3 plantOriginalPos;
+    private bool canTrigger = true;   
 
     private void Start()
     {
@@ -27,7 +30,14 @@ public class BomPoint : MonoBehaviour
         if (!canTrigger) return;
         if (!other.CompareTag("MagicBullet")) return;
 
-        // ★魔法が当たったら落下開始
+        if (hideObject != null)
+        {
+            hideObject.SetActive(false);
+        }
+
+        if (fallItem != null)
+            fallItem.EnableFall();
+
         isFalling = true;
         timer = 0f;
         canTrigger = false;
@@ -39,7 +49,6 @@ public class BomPoint : MonoBehaviour
         {
             timer += Time.deltaTime;
 
-            // ★植物を落とす
             targetPlant.transform.position += Vector3.down * fallSpeed * Time.deltaTime;
 
             if (timer >= fallTime)
@@ -55,13 +64,11 @@ public class BomPoint : MonoBehaviour
 
         Vector3 pos = targetPlant.transform.position;
 
-        // ★爆発エフェクト
         if (explosionPrefab != null)
         {
             Instantiate(explosionPrefab, pos, Quaternion.identity);
         }
 
-        // ★爆発範囲内の足場を動かす
         Collider2D[] hits = Physics2D.OverlapCircleAll(pos, explosionRadius);
 
         foreach (var h in hits)
@@ -73,10 +80,16 @@ public class BomPoint : MonoBehaviour
             }
         }
 
-        // ★植物を元の位置に戻す
+        if (hideObject != null)
+        {
+            hideObject.SetActive(true);
+        }
+
+        if (fallItem != null)
+            fallItem.ResetFall();
+
         targetPlant.transform.position = plantOriginalPos;
 
-        // ★次の魔法を受け付ける準備
         isFalling = false;
         canTrigger = true;
     }

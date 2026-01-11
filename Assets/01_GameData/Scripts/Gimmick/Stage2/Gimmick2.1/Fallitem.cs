@@ -3,28 +3,20 @@ using UnityEngine;
 public class Fallitem : MonoBehaviour
 {
     private Rigidbody2D rb;
-    private bool used = false; // ˆê‰ñ‚¾‚¯—‚¿‚é
 
     private void Start()
     {
         rb = GetComponent<Rigidbody2D>();
-        rb.bodyType = RigidbodyType2D.Kinematic; // Å‰‚Í“®‚©‚È‚¢
+        rb.bodyType = RigidbodyType2D.Kinematic;
     }
 
-    private void OnTriggerEnter2D(Collider2D other)
+    public void EnableFall()
     {
-        if (used) return;
-
-        // šMagicBullet ‚É“–‚½‚Á‚½H
-        if (other.CompareTag("MagicBullet"))
-        {
-            Fall();
-        }
+        rb.bodyType = RigidbodyType2D.Dynamic;
     }
 
-    private void Fall()
+    public void ResetFall()
     {
-        used = true;
-        rb.bodyType = RigidbodyType2D.Dynamic; // © ‚±‚ê‚Å—‚¿‚éI
+        rb.bodyType = RigidbodyType2D.Kinematic;
     }
 }
