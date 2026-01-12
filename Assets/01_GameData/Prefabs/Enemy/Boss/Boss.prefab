@@ -653,6 +653,9 @@ MonoBehaviour:
   OnHPChanged:
     m_PersistentCalls:
       m_Calls: []
+  temporaryPlatforms:
+  - {fileID: 0}
+  - {fileID: 0}
   playerAction: {fileID: 0}
   speechBubblePrefab: {fileID: 3260783268942783193, guid: e4bc89120141c9f49bc6f8c0b3d178ae, type: 3}
   initialFormSprite: {fileID: -2598040322369544246, guid: 419653808c810af40a0857913bf7c244, type: 3}
