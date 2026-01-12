@@ -3572,7 +3572,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1596041890176831780, guid: 4c91200f7e36bb346ac89c507ea26b26, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2247455243820723561, guid: 4c91200f7e36bb346ac89c507ea26b26, type: 3}
       propertyPath: m_Name
@@ -3619,7 +3619,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::MukadeMove
   MoveHoriSpeed: 5
   DestroyYMin: -100
-  DestroyYMax: 100
+  DestroyYMax: 15
 --- !u!50 &1115349412
 Rigidbody2D:
   serializedVersion: 5
