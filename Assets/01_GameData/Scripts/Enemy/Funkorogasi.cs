@@ -31,9 +31,11 @@ public class NewMonoBehaviourScript : MonoBehaviour
     }
     void OnCollisionEnter2D(Collision2D other)
     {
+        //  当たっても消えないレイヤー設定
         if (other.gameObject.layer != LayerMask.NameToLayer("Default") &&
             other.gameObject.layer != LayerMask.NameToLayer("Enemy") &&
-            other.gameObject.layer != LayerMask.NameToLayer("Ground"))
+            other.gameObject.layer != LayerMask.NameToLayer("Ground") &&
+            other.gameObject.layer != LayerMask.NameToLayer("Mushroom"))
         {
             // 他のオブジェクトに当たったら消える
             Destroy(gameObject);
