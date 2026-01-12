@@ -4,6 +4,7 @@ using UnityEngine;
 using Unity.Cinemachine;
 using System.Linq;
 using UnityEngine.Events;
+using UnityEngine.SceneManagement;
 
 public class BossController : MonoBehaviour
 {
@@ -29,6 +30,8 @@ public class BossController : MonoBehaviour
     public UnityEvent<int, int> OnHPChanged;
 
     [Header("イベント設定")]
+    [Tooltip("イベント中に無効化する足場のコライダー")]
+    [SerializeField] private Collider2D[] temporaryPlatforms;
     [Tooltip("プレイヤーの入力スクリプト")]
     [SerializeField] private PlayerAction playerAction;
     [Tooltip("吹き出しUIのプレハブ")]
@@ -1235,6 +1238,18 @@ public class BossController : MonoBehaviour
 
     private IEnumerator StartOpeningEvent()
     {
+        // --- イベント開始時に足場を無効化 ---
+        if (temporaryPlatforms != null)
+        {
+            foreach (var platformCollider in temporaryPlatforms)
+            {
+                if (platformCollider != null)
+                {
+                    platformCollider.enabled = false;
+                }
+            }
+        }
+
         // --- ① プレイヤー落下準備 ---
         if (playerAction != null)
         {
@@ -1290,6 +1305,18 @@ public class BossController : MonoBehaviour
 
         // --- ⑤ 戦闘開始 ---
         Debug.Log("イベント終了、戦闘開始！");
+        // --- イベント終了時に足場を再有効化 ---
+        if (temporaryPlatforms != null)
+        {
+            foreach (var platformCollider in temporaryPlatforms)
+            {
+                if (platformCollider != null)
+                {
+                    platformCollider.enabled = true;
+                }
+            }
+        }
+
         isEventRunning = false; // イベント終了フラグを立てる
         if (playerAction != null)
         {
@@ -1475,7 +1502,9 @@ public class BossController : MonoBehaviour
             audioSource.PlayOneShot(deathSound);
         }
 
-        Destroy(gameObject, 0.5f);
+        //Destroy(gameObject, 0.5f);
+
+        StartCoroutine(LoadGameClearSceneAfterDelay(1.0f));
     }
 
     // --- 地面に潜る/戻るアニメーション ---
@@ -1508,7 +1537,7 @@ public class BossController : MonoBehaviour
                 Vector3 particlePos = new Vector3(currentTargetPosition.x, minY, currentTargetPosition.z);
                 Instantiate(returnParticlePrefab, particlePos, Quaternion.identity);
                 // パーティクルが少し再生されるのを待つ
-                yield return new WaitForSeconds(0.5f);
+                yield return new WaitForSeconds(1.0f);
             }
 
             // 戻り先の座標計算に、固定のinitialPositionではなくcurrentTargetPositionを使用する
@@ -1595,5 +1624,15 @@ public class BossController : MonoBehaviour
 
         // 汎用的に使うパーツ配列を、現在アクティブなパーツで上書きする
         bodyPartsRenderers = activeRenderers.ToArray();
+    }
+
+    // 指定した秒数待った後に、GameClearシーンをロードするコルーチンを追加
+    private IEnumerator LoadGameClearSceneAfterDelay(float delay)
+    {
+        // 指定された時間待機する
+        yield return new WaitForSeconds(delay);
+
+        // "GameClear" という名前のシーンをロードする
+        SceneManager.LoadScene("GameClear");
     }
 }
