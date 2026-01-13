@@ -45,7 +45,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyBulletManager
   Bullet: {fileID: 7287410929577740265, guid: 1cdd15939ec81ca499ba5e81c2b91acc, type: 3}
-  BulletInterval: 5
+  BulletInterval: 10
   ShootingControll: "\u4F4E"
   VerMove: "\u5DE6"
   HoriMove: "\u5DE6"
