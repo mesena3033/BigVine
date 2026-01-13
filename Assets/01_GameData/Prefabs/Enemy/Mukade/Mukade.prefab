@@ -112,9 +112,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 45e4ac11818fb704dab4decf8594d593, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MukadeMove
-  MoveHoriSpeed: 3
+  MoveHoriSpeed: 1
   DestroyYMin: -40
-  DestroyYMax: 12
+  DestroyYMax: 60
 --- !u!50 &5842149315232212247
 Rigidbody2D:
   serializedVersion: 5
