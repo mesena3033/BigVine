@@ -623,7 +623,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3ff4d3aacc1f79e4489ec95cebe3bbe8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::HintFlowerVeta
-  HintFlower: {fileID: 1115349408}
+  HintFlower: {fileID: 0}
 --- !u!4 &197896999 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 9214428965288839756, guid: 66390d46f28dd4a4a961e061c267a777, type: 3}
@@ -3686,11 +3686,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1117000890182982630, guid: 4c91200f7e36bb346ac89c507ea26b26, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 171.4
+      value: 190
       objectReference: {fileID: 0}
     - target: {fileID: 1117000890182982630, guid: 4c91200f7e36bb346ac89c507ea26b26, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -7.62
+      value: -4
       objectReference: {fileID: 0}
     - target: {fileID: 1117000890182982630, guid: 4c91200f7e36bb346ac89c507ea26b26, type: 3}
       propertyPath: m_LocalPosition.z
@@ -3747,60 +3747,7 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 2247455243820723561, guid: 4c91200f7e36bb346ac89c507ea26b26, type: 3}
       insertIndex: -1
       addedObject: {fileID: 153426592}
-    - targetCorrespondingSourceObject: {fileID: 1596041890176831780, guid: 4c91200f7e36bb346ac89c507ea26b26, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1115349409}
-    - targetCorrespondingSourceObject: {fileID: 1596041890176831780, guid: 4c91200f7e36bb346ac89c507ea26b26, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1115349412}
   m_SourcePrefab: {fileID: 100100000, guid: 4c91200f7e36bb346ac89c507ea26b26, type: 3}
---- !u!1 &1115349408 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 1596041890176831780, guid: 4c91200f7e36bb346ac89c507ea26b26, type: 3}
-  m_PrefabInstance: {fileID: 1115349407}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &1115349409
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1115349408}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 45e4ac11818fb704dab4decf8594d593, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::MukadeMove
-  MoveHoriSpeed: 5
-  DestroyYMin: -100
-  DestroyYMax: 15
---- !u!50 &1115349412
-Rigidbody2D:
-  serializedVersion: 5
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1115349408}
-  m_BodyType: 0
-  m_Simulated: 1
-  m_UseFullKinematicContacts: 0
-  m_UseAutoMass: 0
-  m_Mass: 1
-  m_LinearDamping: 0
-  m_AngularDamping: 0.05
-  m_GravityScale: -0.1
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_Interpolate: 0
-  m_SleepingMode: 1
-  m_CollisionDetection: 0
-  m_Constraints: 0
 --- !u!4 &1148478572 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 9214428965288839756, guid: 66390d46f28dd4a4a961e061c267a777, type: 3}
