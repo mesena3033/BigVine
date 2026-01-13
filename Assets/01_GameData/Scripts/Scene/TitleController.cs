@@ -33,6 +33,10 @@ public class TitleController : MonoBehaviour
     }
     private void OnSubmit(InputAction.CallbackContext context)
     {
+
+        // 仮
+        SceneMemory.currentStage = "Stage1";
+
         // Spaceキー or コントローラーのSouthボタンでMainSceneへ
         SceneManager.LoadScene("Stage1");
     }
