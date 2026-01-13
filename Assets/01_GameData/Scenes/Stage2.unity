@@ -4242,6 +4242,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: HPPlas
       objectReference: {fileID: 0}
+    - target: {fileID: 1827976523617593247, guid: 81f4291aa5bd8bf459e7d07b49091422, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2499832843190094334, guid: 81f4291aa5bd8bf459e7d07b49091422, type: 3}
       propertyPath: m_IsActive
       value: 0
@@ -7540,6 +7544,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: "\u56DE\u5FA9\u30B9\u30DD\u30C3\u30C8_0"
       objectReference: {fileID: 0}
+    - target: {fileID: 4430402113027083318, guid: 558c84e9317cf6e40bc5a016c2f1fd40, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -7783,6 +7791,10 @@ PrefabInstance:
     - target: {fileID: 1827976523617593247, guid: 81f4291aa5bd8bf459e7d07b49091422, type: 3}
       propertyPath: m_Name
       value: HPPlas
+      objectReference: {fileID: 0}
+    - target: {fileID: 1827976523617593247, guid: 81f4291aa5bd8bf459e7d07b49091422, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8545232503672092154, guid: 81f4291aa5bd8bf459e7d07b49091422, type: 3}
       propertyPath: m_LocalPosition.x
