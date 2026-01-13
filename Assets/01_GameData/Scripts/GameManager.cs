@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
@@ -7,6 +8,10 @@ public class GameManager : MonoBehaviour
 
     // 成長魔法を植物に当てた回数を保持する変数
     public int growthMagicCount = 0;
+
+    // ステージごとのカウント保持
+    public int stage1Count = 0;
+    public int stage2Count = 0;
 
     void Awake()
     {
@@ -25,7 +30,34 @@ public class GameManager : MonoBehaviour
     // カウントを1増やすための公開メソッド
     public void IncrementGrowthMagicCount()
     {
-        growthMagicCount++;
+        string sceneName = SceneManager.GetActiveScene().name;
+
+        if (sceneName == "Stage1")
+        {
+            stage1Count++;
+            Debug.Log("ステージ1カウント:" + stage1Count);
+        }
+        else if (sceneName == "Stage2")
+        {
+            stage2Count++;
+            Debug.Log("ステージ2カウント:" + stage2Count);
+        }
+
+        growthMagicCount = stage1Count + stage2Count;
+
+           // growthMagicCount++;
         Debug.Log("成長魔法カウント: " + growthMagicCount); // デバッグ用にログを出力
+    }
+
+    // ステージ2のカウントリセット
+    public void ResetStage2Count()
+    {
+        stage2Count = 0;
+    }
+
+    // ステージ1のカウントリセット
+    public void ResetStage1Count()
+    {
+        stage1Count = 0;
     }
 }
