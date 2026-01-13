@@ -8,6 +8,7 @@ public class RafflesiaGrow : MonoBehaviour
     [SerializeField] private ParticleSystem bloomEffect; // 開花エフェクト
 
     [SerializeField] private LayerMask platformLayer;
+    [SerializeField] private LayerMask platformLayer2;
 
     [Header("成長設定")]
     [SerializeField] private float growDuration = 1.5f;  // 大きくなる時間
@@ -82,7 +83,7 @@ public class RafflesiaGrow : MonoBehaviour
         Collider2D[] platforms = Physics2D.OverlapCircleAll(
             transform.position,
             100,                
-            platformLayer
+            platformLayer, platformLayer2
         );
 
         foreach (var p in platforms)

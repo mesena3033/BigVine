@@ -7796,6 +7796,10 @@ PrefabInstance:
       propertyPath: platformLayer.m_Bits
       value: 8192
       objectReference: {fileID: 0}
+    - target: {fileID: 1174949608909873642, guid: 478b24b2a6c203e4f86809f3c6a39af8, type: 3}
+      propertyPath: platformLayer2.m_Bits
+      value: 512
+      objectReference: {fileID: 0}
     - target: {fileID: 1657296707429357704, guid: 478b24b2a6c203e4f86809f3c6a39af8, type: 3}
       propertyPath: m_LocalScale.x
       value: 2
