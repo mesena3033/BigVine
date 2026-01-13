@@ -21,6 +21,24 @@ public class BossController : MonoBehaviour
     private float cooldownMultiplier = 1.0f; // クールタイムに乗算（値が大きいほど長くなり、簡単になる）
     private float speedMultiplier = 1.0f;    // スピードに乗算（値が小さいほど遅くなり、簡単になる）
 
+    // 攻撃の種類を定義
+    private enum BossAttackType
+    {
+        AcidSpit,       // 毒液(地上)
+        CeilingAcid,    // 毒液(天井)
+        VineHorizontal, // ツタ(横)
+        VineVertical,   // ツタ(縦)
+        Charge,         // 突進
+        DiveBomb,       // 急降下
+        FlySummon,      // ハエ呼び寄せ
+        Bite            // 噛みつき(画面奥からの範囲攻撃)
+    }
+
+    [Header("ギミック制御 (シーン上のオブジェクトを登録)")]
+    [SerializeField] private GameObject[] bombFlowers; // 爆弾花 (StickyBombLauncher)
+    [SerializeField] private GameObject[] flyTraps;    // ハエトリ (PlantTrap)
+    [SerializeField] private GameObject[] rockFalls;   // 落石 (RockFall)
+
     [Header("ステータス")]
     [SerializeField] private int maxHp = 10;
     private int currentHp;
@@ -251,6 +269,9 @@ public class BossController : MonoBehaviour
         // --- 形態に応じて見た目と参照を切り替える ---
         InitializeBossForm();
 
+        // 形態に応じてギミックの出現を制御する
+        SetupGimmicks();
+
         // イベントシーケンスを開始する
         StartCoroutine(StartOpeningEvent());
 
@@ -346,6 +367,80 @@ public class BossController : MonoBehaviour
         }
     }
 
+    // 形態ごとのギミック有効/無効設定
+    private void SetupGimmicks()
+    {
+        // 一旦すべて有効にする（または初期状態に任せる）
+
+        // 第一形態: [爆弾花、ハエトリ、落石] を無効にする
+        if (currentForm == BossForm.Form1)
+        {
+            SetObjectsActive(bombFlowers, false);
+            SetObjectsActive(flyTraps, false);
+            SetObjectsActive(rockFalls, false);
+        }
+        // 第二形態: [落石] を無効にする
+        else if (currentForm == BossForm.Form2)
+        {
+            SetObjectsActive(rockFalls, false);
+            // 爆弾花、ハエトリは有効のまま
+        }
+        // 第三形態: すべて有効 (何もしない)
+    }
+
+    // ヘルパー関数: 配列内のオブジェクトを一括でSetActive
+    private void SetObjectsActive(GameObject[] objects, bool isActive)
+    {
+        if (objects == null) return;
+        foreach (var obj in objects)
+        {
+            if (obj != null) obj.SetActive(isActive);
+        }
+    }
+
+    // 攻撃の使用可否判定ロジック
+    private bool CanUseAttack(BossAttackType type)
+    {
+        // 現在のHP率 (0.0 ～ 1.0)
+        float hpRate = (float)currentHp / maxHp;
+
+        switch (currentForm)
+        {
+            case BossForm.Form1:
+                // 第一形態の仕様
+                if (type == BossAttackType.AcidSpit) return true;
+                if (type == BossAttackType.CeilingAcid) return true; // 100%開放
+                if (type == BossAttackType.VineHorizontal) return true;
+                if (type == BossAttackType.VineVertical) return true;
+                // 突進、急降下、ハエ、噛みつきは不可
+                return false;
+
+            case BossForm.Form2:
+                // 第二形態の仕様
+                if (type == BossAttackType.AcidSpit) return true;
+                if (type == BossAttackType.CeilingAcid) return true;
+                if (type == BossAttackType.VineHorizontal) return true;
+                if (type == BossAttackType.VineVertical) return true;
+                if (type == BossAttackType.DiveBomb) return true; // 急降下
+                if (type == BossAttackType.FlySummon) return hpRate <= 0.5f; // ハエ(50%以下)
+                // 突進、噛みつきは不可
+                return false;
+
+            case BossForm.Form3:
+                // 第三形態の仕様
+                if (type == BossAttackType.AcidSpit) return true;
+                if (type == BossAttackType.CeilingAcid) return true;
+                if (type == BossAttackType.VineHorizontal) return true;
+                if (type == BossAttackType.VineVertical) return true;
+                if (type == BossAttackType.DiveBomb) return true;
+                if (type == BossAttackType.Charge) return hpRate <= 0.25f; // 突進(25%以下)
+                if (type == BossAttackType.FlySummon) return hpRate <= 0.5f; // ハエ(50%以下)
+                if (type == BossAttackType.Bite) return hpRate <= 0.75f; // 噛みつき(75%以下)
+                return false;
+        }
+        return false;
+    }
+
     IEnumerator BossBehaviorLoop()
     {
         // イベントが終了するまで待機
@@ -383,23 +478,60 @@ public class BossController : MonoBehaviour
 
             if (playerTransform != null)
             {
-                float specialAttackRoll = Random.Range(0f, 100f);
+                // 行動の抽選ロジック
 
-                // 30%の確率で大技を行う
-                if (specialAttackRoll < 30f)
+                // 1. まず「大技」を使うかどうか抽選 (30%)
+                // ただし、現在使える大技が1つもない場合は、通常攻撃へ流す
+                bool trySpecial = (Random.Range(0f, 100f) < 30f);
+                bool executedAction = false;
+
+                if (trySpecial)
                 {
-                    yield return StartCoroutine(SpecialAttackBranch());
-                }
-                else // 残り70%の場合は、通常攻撃（突進 or 溶解液）を行う
-                {
-                    // 突進と溶解液の確率:50%:50%
-                    if (Random.value < 0.5f)
+                    // 現在使用可能な大技リストを作成
+                    List<BossAttackType> availableSpecials = new List<BossAttackType>();
+
+                    if (CanUseAttack(BossAttackType.DiveBomb)) availableSpecials.Add(BossAttackType.DiveBomb);
+                    if (CanUseAttack(BossAttackType.Bite)) availableSpecials.Add(BossAttackType.Bite);
+                    if (CanUseAttack(BossAttackType.CeilingAcid)) availableSpecials.Add(BossAttackType.CeilingAcid); // 天井毒液も大技枠候補に含める
+
+                    if (availableSpecials.Count > 0)
                     {
-                        yield return StartCoroutine(ChargeAttack());
+                        // ランダムに選択して実行
+                        BossAttackType selected = availableSpecials[Random.Range(0, availableSpecials.Count)];
+                        yield return StartCoroutine(ExecuteSpecialAttack(selected));
+                        executedAction = true;
+                    }
+                }
+
+                // 大技を実行しなかった場合 (抽選漏れ or 使用可能技なし)、通常攻撃を行う
+                if (!executedAction)
+                {
+                    // 通常攻撃: 突進(Charge) か 溶解液(AcidSpit)
+                    // 使用可能なものをリストアップ
+                    List<BossAttackType> availableNormals = new List<BossAttackType>();
+
+                    if (CanUseAttack(BossAttackType.AcidSpit)) availableNormals.Add(BossAttackType.AcidSpit);
+                    if (CanUseAttack(BossAttackType.Charge)) availableNormals.Add(BossAttackType.Charge);
+
+                    if (availableNormals.Count > 0)
+                    {
+                        // ランダム選択
+                        BossAttackType selected = availableNormals[Random.Range(0, availableNormals.Count)];
+
+                        if (selected == BossAttackType.Charge)
+                        {
+                            yield return StartCoroutine(ChargeAttack());
+                        }
+                        else
+                        {
+                            yield return StartCoroutine(AcidSpitAttack());
+                        }
                     }
                     else
                     {
-                        yield return StartCoroutine(AcidSpitAttack());
+                        // 何もできない場合 (ありえないはずだが安全策)、威嚇して待機
+                        Debug.LogWarning("使用可能な攻撃がありません");
+                        yield return new WaitForSeconds(1.0f);
                     }
                 }
             }
@@ -429,10 +561,17 @@ public class BossController : MonoBehaviour
                 continue; // ループの先頭に戻る
             }
 
-            if (playerTransform != null)
+            // 攻撃可能なツタの種類をリストアップ
+            List<BossAttackType> validVines = new List<BossAttackType>();
+            if (CanUseAttack(BossAttackType.VineHorizontal)) validVines.Add(BossAttackType.VineHorizontal);
+            if (CanUseAttack(BossAttackType.VineVertical)) validVines.Add(BossAttackType.VineVertical);
+
+            if (playerTransform != null && validVines.Count > 0)
             {
-                // 横か縦かをランダムに選択して攻撃
-                if (Random.value > 0.5f)
+                // 可能なものからランダム選択
+                BossAttackType selected = validVines[Random.Range(0, validVines.Count)];
+
+                if (selected == BossAttackType.VineHorizontal)
                 {
                     yield return StartCoroutine(VineAttackHorizontal());
                 }
@@ -468,7 +607,8 @@ public class BossController : MonoBehaviour
                 yield return new WaitUntil(() => bodyPartsRenderers[0] != null && bodyPartsRenderers[0].enabled && !isDead);
             }
 
-            if (playerTransform != null)
+            // 使用許可が出ている場合のみ実行
+            if (playerTransform != null && CanUseAttack(BossAttackType.FlySummon))
             {
                 yield return StartCoroutine(SummonFlies());
             }
@@ -746,51 +886,30 @@ public class BossController : MonoBehaviour
     }
 
     // --- 攻撃分岐: 大技 ---
-    IEnumerator SpecialAttackBranch()
+    IEnumerator ExecuteSpecialAttack(BossAttackType attackType)
     {
-        Debug.Log("ボス：[大技] 準備");
+        Debug.Log($"ボス：[大技] {attackType} を開始");
 
-        // --- 1. 地中に潜って消える (アニメーション) ---
+        // 1. 地中に潜る
         yield return StartCoroutine(AnimateSubmerge(true, submergeAnimTime));
 
-        // --- 2. 形態に応じて攻撃を分岐 ---
-        if (currentForm == BossForm.Form1)
+        // 2. 選択された攻撃を実行
+        switch (attackType)
         {
-            // 第一形態の場合、「画面奥からの範囲攻撃」は使用しない
-            Debug.Log("第一形態：大技抽選 (急降下 or 天井毒液)");
-            if (Random.value < 0.55f) // 55%で急降下
-            {
+            case BossAttackType.DiveBomb:
                 yield return StartCoroutine(DiveBombAttack());
-            }
-            else // 45%で天井毒液
-            {
-                yield return StartCoroutine(CeilingAcidAttack());
-            }
-        }
-        else // 第二・最終形態の場合
-        {
-            // 第二・最終形態の場合、3種類の攻撃から抽選
-            Debug.Log("第二/最終形態：大技抽選 (急降下 or 画面奥 or 天井毒液)");
-            float attackRoll = Random.value; // 0.0～1.0の乱数を生成
-            if (attackRoll < 0.4f) // 40%で押しつぶし
-            {
-                yield return StartCoroutine(DiveBombAttack());
-            }
-            else if (attackRoll < 0.7f) // 30%で画面奥からの攻撃
-            {
+                break;
+            case BossAttackType.Bite: // 画面奥からの範囲攻撃
                 yield return StartCoroutine(BackgroundRangeAttack());
-            }
-            else // 残り30%で天井からの毒液攻撃
-            {
+                break;
+            case BossAttackType.CeilingAcid:
                 yield return StartCoroutine(CeilingAcidAttack());
-            }
+                break;
         }
 
-        // --- 3. 次の待機位置を決定し、そこに戻る ---
+        // 3. 次の待機位置に戻る
         UpdateNextStandbyPosition();
         yield return StartCoroutine(AnimateSubmerge(false, submergeAnimTime));
-
-        Debug.Log("ボス：通常パターンに復帰");
     }
 
     // --- 攻撃: 急降下爆撃 ---
