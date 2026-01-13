@@ -1294,7 +1294,8 @@ public class BossController : MonoBehaviour
             speechBubbleInstance.ShowMessage("よくぞここまで来たな", headForSpeech);
             yield return new WaitForSeconds(3.0f);
 
-            speechBubbleInstance.ShowMessage("お前が魔法をたくさん使ったおかげで、ここまで成長することができた...", headForSpeech);
+            string message = "お前が魔法をたくさん使ったおかげで、ここまで<color=red>成長</color>することができた...";
+            speechBubbleInstance.ShowMessage(message, headForSpeech);
             yield return new WaitForSeconds(5.0f);
 
             speechBubbleInstance.Hide();
