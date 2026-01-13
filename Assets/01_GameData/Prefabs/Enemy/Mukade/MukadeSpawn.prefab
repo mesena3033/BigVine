@@ -166,7 +166,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6307796055810891761, guid: 9a0bf64a70aafbf49b3f6912eadd3b45, type: 3}
       propertyPath: DestroyYMax
-      value: 50
+      value: 60
       objectReference: {fileID: 0}
     - target: {fileID: 6307796055810891761, guid: 9a0bf64a70aafbf49b3f6912eadd3b45, type: 3}
       propertyPath: MoveHoriSpeed
