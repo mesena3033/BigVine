@@ -6,7 +6,7 @@ using UnityEngine.SceneManagement;
 
 public class PlayerHP : MonoBehaviour
 {
-    public int MaxHP = 3;
+    public int MaxHP = 10;
     public int NowHP;
     public float InvincibleTime = 2f;
     private bool isInvincible = false;

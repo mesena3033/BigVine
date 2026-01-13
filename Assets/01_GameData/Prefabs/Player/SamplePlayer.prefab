@@ -207,7 +207,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 97e33075733541245944596bed262529, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerHP
-  MaxHP: 3
+  MaxHP: 10
   NowHP: 0
   InvincibleTime: 2
   HeartPrefab: {fileID: 4748280390838558472, guid: f4500920542762440bc165447baa0c00, type: 3}
