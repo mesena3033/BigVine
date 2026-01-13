@@ -72,6 +72,34 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6886363933666344394, guid: cdb1b94d486fb69429b8d4891d502905, type: 3}
+      propertyPath: m_FlipX
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6886363933666344394, guid: cdb1b94d486fb69429b8d4891d502905, type: 3}
+      propertyPath: m_FlipY
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6886363933666344394, guid: cdb1b94d486fb69429b8d4891d502905, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 2556097773736114387, guid: d0c2ef0df98e8e94db142308661c559f, type: 3}
+    - target: {fileID: 6886363933666344394, guid: cdb1b94d486fb69429b8d4891d502905, type: 3}
+      propertyPath: m_Color.a
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6886363933666344394, guid: cdb1b94d486fb69429b8d4891d502905, type: 3}
+      propertyPath: m_Color.b
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6886363933666344394, guid: cdb1b94d486fb69429b8d4891d502905, type: 3}
+      propertyPath: m_Color.g
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6886363933666344394, guid: cdb1b94d486fb69429b8d4891d502905, type: 3}
+      propertyPath: m_Color.r
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
