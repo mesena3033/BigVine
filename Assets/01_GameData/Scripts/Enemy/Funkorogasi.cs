@@ -24,20 +24,16 @@ public class NewMonoBehaviourScript : MonoBehaviour
         this.transform.Translate(BulletSpeed * Time.deltaTime, 0, 0);
     }
 
-    void OnTriggerEnter2D(Collider2D other)
-    {
-        // 他のオブジェクトに当たったら消える
-        Destroy(gameObject);
-    }
+    //void OnTriggerEnter2D(Collider2D other)
+    //{
+    //    // 他のオブジェクトに当たったら消える
+    //    Destroy(gameObject);
+    //}
     void OnCollisionEnter2D(Collision2D other)
     {
-        //  当たっても消えないレイヤー設定
-        if (other.gameObject.layer != LayerMask.NameToLayer("Default") &&
-            other.gameObject.layer != LayerMask.NameToLayer("Enemy") &&
-            other.gameObject.layer != LayerMask.NameToLayer("Ground") &&
-            other.gameObject.layer != LayerMask.NameToLayer("Mushroom"))
+        //  プレイヤーに当たったら消える
+        if (other.gameObject.layer == LayerMask.NameToLayer("Player"))
         {
-            // 他のオブジェクトに当たったら消える
             Destroy(gameObject);
         }
     }
