@@ -29,12 +29,12 @@ public class NewMonoBehaviourScript : MonoBehaviour
     //    // 他のオブジェクトに当たったら消える
     //    Destroy(gameObject);
     //}
-    void OnCollisionEnter2D(Collision2D other)
-    {
-        //  プレイヤーに当たったら消える
-        if (other.gameObject.layer == LayerMask.NameToLayer("Player"))
-        {
-            Destroy(gameObject);
-        }
-    }
+    //void OnCollisionEnter2D(Collision2D other)
+    //{
+    //    //  プレイヤーに当たったら消える
+    //    if (other.gameObject.layer == LayerMask.NameToLayer("Player"))
+    //    {
+    //        Destroy(gameObject);
+    //    }
+    //}
 }
