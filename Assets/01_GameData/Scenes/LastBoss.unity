@@ -944,6 +944,11 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &518480044 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2360635990531112698, guid: 44007b8256b75bc408d9f6f2f7701f0f, type: 3}
+  m_PrefabInstance: {fileID: 833236995}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &670261026
 GameObject:
   m_ObjectHideFlags: 0
@@ -1133,6 +1138,16 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &887806290 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8436462368418669223, guid: ebcb2a2c1b10b104b9a72e6131eb5247, type: 3}
+  m_PrefabInstance: {fileID: 7043544476496052691}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &923979924 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2360635990531112698, guid: 44007b8256b75bc408d9f6f2f7701f0f, type: 3}
+  m_PrefabInstance: {fileID: 1179931098}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &997783793
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1279,6 +1294,11 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 44007b8256b75bc408d9f6f2f7701f0f, type: 3}
+--- !u!1 &1188280153 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3090985432417452130, guid: aed72233a10ec5c4caa1cc91eaabeeee, type: 3}
+  m_PrefabInstance: {fileID: 1978306397}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1390835353
 GameObject:
   m_ObjectHideFlags: 0
@@ -1693,6 +1713,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameManager
   growthMagicCount: 12
+  stage1Count: 0
+  stage2Count: 0
 --- !u!4 &1776799056
 Transform:
   m_ObjectHideFlags: 0
@@ -2392,13 +2414,41 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1443275975}
     - target: {fileID: 4736163668965967867, guid: 5efb54d2dcd68c346b4e58318ff4a8e1, type: 3}
+      propertyPath: flyTraps.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 4736163668965967867, guid: 5efb54d2dcd68c346b4e58318ff4a8e1, type: 3}
       propertyPath: playerFallStartPoint
       value: 
       objectReference: {fileID: 476760569}
     - target: {fileID: 4736163668965967867, guid: 5efb54d2dcd68c346b4e58318ff4a8e1, type: 3}
+      propertyPath: rockFalls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4736163668965967867, guid: 5efb54d2dcd68c346b4e58318ff4a8e1, type: 3}
+      propertyPath: bombFlowers.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4736163668965967867, guid: 5efb54d2dcd68c346b4e58318ff4a8e1, type: 3}
+      propertyPath: 'flyTraps.Array.data[0]'
+      value: 
+      objectReference: {fileID: 518480044}
+    - target: {fileID: 4736163668965967867, guid: 5efb54d2dcd68c346b4e58318ff4a8e1, type: 3}
+      propertyPath: 'flyTraps.Array.data[1]'
+      value: 
+      objectReference: {fileID: 923979924}
+    - target: {fileID: 4736163668965967867, guid: 5efb54d2dcd68c346b4e58318ff4a8e1, type: 3}
+      propertyPath: 'rockFalls.Array.data[0]'
+      value: 
+      objectReference: {fileID: 1188280153}
+    - target: {fileID: 4736163668965967867, guid: 5efb54d2dcd68c346b4e58318ff4a8e1, type: 3}
       propertyPath: cameraPriorityController
       value: 
       objectReference: {fileID: 454400503}
+    - target: {fileID: 4736163668965967867, guid: 5efb54d2dcd68c346b4e58318ff4a8e1, type: 3}
+      propertyPath: 'bombFlowers.Array.data[0]'
+      value: 
+      objectReference: {fileID: 887806290}
     - target: {fileID: 4736163668965967867, guid: 5efb54d2dcd68c346b4e58318ff4a8e1, type: 3}
       propertyPath: 'temporaryPlatforms.Array.data[0]'
       value: 
