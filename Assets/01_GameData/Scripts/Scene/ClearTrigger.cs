@@ -12,6 +12,9 @@ public class ClearTrigger : MonoBehaviour
         // 触れたのが「Player」というタグがついたオブジェクトなら
         if (collision.CompareTag("Player"))
         {
+            //仮
+            SceneMemory.currentStage = nextSceneName;
+
             // シーンをロードする
             SceneManager.LoadScene(nextSceneName);
         }

@@ -23,6 +23,24 @@ public class GameOverController : MonoBehaviour
         submitAction.performed -= OnSubmit;
     }
 
+
+    //仮
+    void Start()
+    {
+        if (SceneMemory.currentStage == "Stage1")
+        {
+            Debug.Log("ステージ1から来た！");
+        }
+        else if (SceneMemory.currentStage == "Stage2")
+        {
+            Debug.Log("ステージ2から来た！");
+        }
+        else if (SceneMemory.currentStage == "LastBoss")
+        {
+            Debug.Log("ボスステージから来た");
+        }
+    }
+
     private void OnSubmit(InputAction.CallbackContext context)
     {
         // Spaceキー or コントローラーのSouthボタンでMainSceneへ
