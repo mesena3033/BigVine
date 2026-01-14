@@ -180,6 +180,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7707274004738269123, guid: 37252d3af15e5584ea848ba415e2bd41, type: 3}
+      propertyPath: m_SortingOrder
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 7993714433829216370, guid: 37252d3af15e5584ea848ba415e2bd41, type: 3}
       propertyPath: m_Name
       value: "\u30B5\u30EB\u30CE\u30B3\u30B7\u30AB\u30B1 \u5927_0"
@@ -3731,6 +3735,10 @@ PrefabInstance:
     - target: {fileID: 2247455243820723561, guid: 4c91200f7e36bb346ac89c507ea26b26, type: 3}
       propertyPath: m_Name
       value: MukadeSpawn
+      objectReference: {fileID: 0}
+    - target: {fileID: 5234680825284753374, guid: 4c91200f7e36bb346ac89c507ea26b26, type: 3}
+      propertyPath: DestroyYMax
+      value: 23
       objectReference: {fileID: 0}
     - target: {fileID: 7083272803553740219, guid: 4c91200f7e36bb346ac89c507ea26b26, type: 3}
       propertyPath: m_LocalPosition.x
