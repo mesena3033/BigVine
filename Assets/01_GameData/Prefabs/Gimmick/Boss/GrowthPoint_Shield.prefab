@@ -497,7 +497,7 @@ MonoBehaviour:
   type: 1
   damageAmount: 1
   shieldObject: {fileID: 4867862374974895439}
-  shieldDuration: 3
+  shieldDuration: 5
   bulletPrefab: {fileID: 0}
   firePoint: {fileID: 0}
   fireForce: 15

@@ -285,6 +285,37 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BossBody
   amplitude: 0.5
   frequency: 2
+--- !u!1 &3892103869936902207
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 401615866896463276}
+  m_Layer: 9
+  m_Name: SpeechBubbleAnchor
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &401615866896463276
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3892103869936902207}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.7, y: 0.7, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1079691172799973616}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &4141334245211660431
 GameObject:
   m_ObjectHideFlags: 0
@@ -458,7 +489,8 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 3, y: 3, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 401615866896463276}
   m_Father: {fileID: 5296371902689973670}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &2244607862419707536
@@ -649,6 +681,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b0e20b924458c4d459f5f25021795a08, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BossController
+  bombFlowers: []
+  flyTraps: []
+  rockFalls: []
   maxHp: 10
   OnHPChanged:
     m_PersistentCalls:
@@ -717,6 +752,7 @@ MonoBehaviour:
   returnParticlePrefab: {fileID: 8474264078067937215, guid: cdd9b7f3e7d46e148bafd19ea71315bc, type: 3}
   standbyPositionOffset: {x: 2, y: 0}
   bodyForm1: {fileID: 4549407485093969607}
+  speechBubbleAnchorForm1: {fileID: 401615866896463276}
   bodyForm2: {fileID: 5703951134387972690}
   headForm2: {fileID: 292582804575931520}
   bodyForm3: {fileID: 3164702007595126240}
