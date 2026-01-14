@@ -12,7 +12,7 @@ public class GrowthPointGimmick : MonoBehaviour
 
     [Header("ツタシールド (IvyShield) 用設定")]
     [SerializeField] private GameObject shieldObject; // 子オブジェクトのシールド(IvyShield)
-    [SerializeField] private float shieldDuration = 3.0f; // シールド展開時間
+    [SerializeField] private float shieldDuration = 7.0f; // シールド展開時間
 
     [Header("砲台 (Turret) 用設定")]
     [SerializeField] private GameObject bulletPrefab;

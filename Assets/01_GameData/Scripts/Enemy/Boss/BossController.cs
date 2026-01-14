@@ -163,6 +163,8 @@ public class BossController : MonoBehaviour
 
     [Header("参照: 形態ごとのパーツ")]
     [SerializeField] private GameObject bodyForm1;
+    [Tooltip("第一形態の吹き出しを表示する位置")]
+    [SerializeField] private Transform speechBubbleAnchorForm1;
     [SerializeField] private GameObject bodyForm2;
     [SerializeField] private GameObject headForm2;
     [SerializeField] private GameObject bodyForm3;
@@ -233,8 +235,8 @@ public class BossController : MonoBehaviour
             else if (growthCount <= 18)
             {
                 currentForm = BossForm.Form2;
-                cooldownMultiplier = 1.3f; // クールタイムが1.3倍
-                speedMultiplier = 0.8f;   // スピードが0.8倍
+                cooldownMultiplier = 1.6f; // クールタイムが1.6倍
+                speedMultiplier = 0.65f;   // スピードが0.65倍
                 Debug.Log("ボスは第二形態で出現します。");
             }
             else
@@ -290,7 +292,6 @@ public class BossController : MonoBehaviour
         flyMoveSpeed *= speedMultiplier;
 
         // 溶解液 (投擲)
-        throwForce *= speedMultiplier;
         throwInterval *= cooldownMultiplier; // 連射間隔は長いほど簡単になる
         acidWarningTime *= cooldownMultiplier;
 
@@ -1407,15 +1408,39 @@ public class BossController : MonoBehaviour
         yield return new WaitForSeconds(1.0f); // 着地後の短いタメ
 
         // --- ③ セリフパート ---
-        Transform headForSpeech = (bossHead != null) ? bossHead.transform : transform;
+        Transform speechTarget;
+        if (bossHead != null)
+        {
+            // 形態2, 3: 頭が存在する場合は、頭を追従対象にする
+            speechTarget = bossHead.transform;
+        }
+        else
+        {
+            // 形態1: 専用アンカーが設定されていればそれを使い、なければ体自体を追従する
+            speechTarget = (speechBubbleAnchorForm1 != null) ? speechBubbleAnchorForm1 : bodyForm1.transform;
+        }
+
         if (speechBubbleInstance != null)
         {
-            speechBubbleInstance.ShowMessage("よくぞここまで来たな", headForSpeech);
+            speechBubbleInstance.ShowMessage("よくぞここまで来たな", speechTarget);
             yield return new WaitForSeconds(3.0f);
 
-            string message = "お前が魔法をたくさん使ったおかげで、ここまで<color=red>成長</color>することができた...";
-            speechBubbleInstance.ShowMessage(message, headForSpeech);
-            yield return new WaitForSeconds(5.0f);
+            string formSpecificMessage = "";
+            switch (currentForm)
+            {
+                case BossForm.Form1:
+                    formSpecificMessage = "お前の魔法は心地よいな。だが...その力、あまりに微弱。我を完全な<color=red>成長</color>へと導くには程遠い。";
+                    break;
+                case BossForm.Form2:
+                    formSpecificMessage = "感謝するぞ、魔法使い。お前の愚かな行いが、我をここまで<color=red>成長</color>させてくれたのだからな！";
+                    break;
+                case BossForm.Form3:
+                    formSpecificMessage = "素晴らしい...実に素晴らしい魔法だ！ お前のおげで、我は完全な<color=red>成長</color>を遂げた。さあ、絶望の宴を始めよう。";
+                    break;
+            }
+
+            speechBubbleInstance.ShowMessage(formSpecificMessage, speechTarget);
+            yield return new WaitForSeconds(6.0f);
 
             speechBubbleInstance.Hide();
         }
