@@ -13,24 +13,41 @@ public class MukadeMove : MonoBehaviour
 
     private Rigidbody2D Rb2d;
 
+    float yPos;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         Rb2d = GetComponent<Rigidbody2D>();
+
+        yPos = transform.position.y;
     }
 
     private void FixedUpdate()
     {
-        Vector2 delta = Vector2.up * MoveHoriSpeed * Time.deltaTime;
-        Rb2d.MovePosition(Rb2d.position + delta);
+        yPos = transform.position.y;
+
+        if (yPos < DestroyYMax)
+        {
+            Vector2 delta = Vector2.up * MoveHoriSpeed * Time.fixedDeltaTime;
+            Rb2d.MovePosition(Rb2d.position + delta);
+        }
+        else
+        {
+            //Debug.Log("max‚ð’´‚¦‚½");
+        }
+
     }
 
     // Update is called once per frame
     void Update()
     {
+        //Debug.Log("UpdateŒÄ‚Î‚ê‚½");
+        //Debug.Log(yPos);
+
         //  ”ÍˆÍŠO‚Éo‚½‚çÁ‚·
         float py = transform.position.y;
-        if (py < DestroyYMin || py > DestroyYMax)
+        if (py < DestroyYMin /*|| py > DestroyYMax*/)
         {
             Destroy(gameObject);
         }

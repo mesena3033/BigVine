@@ -821,24 +821,6 @@ Transform:
   - {fileID: 1472401971}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &153426588 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 2247455243820723561, guid: 4c91200f7e36bb346ac89c507ea26b26, type: 3}
-  m_PrefabInstance: {fileID: 1115349407}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &153426592
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 153426588}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3ff4d3aacc1f79e4489ec95cebe3bbe8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::HintFlowerVeta
-  HintFlower: {fileID: 0}
 --- !u!4 &197896999 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 9214428965288839756, guid: 66390d46f28dd4a4a961e061c267a777, type: 3}
@@ -4238,8 +4220,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5234680825284753374, guid: 4c91200f7e36bb346ac89c507ea26b26, type: 3}
       propertyPath: DestroyYMax
-      value: 23
+      value: 19
       objectReference: {fileID: 0}
+    - target: {fileID: 6157604380859686947, guid: 4c91200f7e36bb346ac89c507ea26b26, type: 3}
+      propertyPath: Mukade
+      value: 
+      objectReference: {fileID: 1400799011}
     - target: {fileID: 7083272803553740219, guid: 4c91200f7e36bb346ac89c507ea26b26, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0.31
@@ -4251,10 +4237,7 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 2247455243820723561, guid: 4c91200f7e36bb346ac89c507ea26b26, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 153426592}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4c91200f7e36bb346ac89c507ea26b26, type: 3}
 --- !u!4 &1148478572 stripped
 Transform:
@@ -5001,6 +4984,11 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1400799011 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5142440347004570572, guid: 4c91200f7e36bb346ac89c507ea26b26, type: 3}
+  m_PrefabInstance: {fileID: 1115349407}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1413002645
 GameObject:
   m_ObjectHideFlags: 0

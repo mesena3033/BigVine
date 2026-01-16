@@ -151,7 +151,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2868ebdbb83f01945ac70d0d62b36c7a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MukadeSpawn
-  Mukade: {fileID: 0}
+  Mukade: {fileID: 5142440347004570572}
 --- !u!1001 &1589354020167361582
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -216,5 +216,10 @@ PrefabInstance:
 --- !u!4 &747174668309929117 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2040405962017388723, guid: 2fcaf41c413b74f4d84616a6026b90c0, type: 3}
+  m_PrefabInstance: {fileID: 1589354020167361582}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &5142440347004570572 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5860057435052584930, guid: 2fcaf41c413b74f4d84616a6026b90c0, type: 3}
   m_PrefabInstance: {fileID: 1589354020167361582}
   m_PrefabAsset: {fileID: 0}
