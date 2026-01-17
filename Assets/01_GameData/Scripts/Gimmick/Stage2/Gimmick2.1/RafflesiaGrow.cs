@@ -80,10 +80,12 @@ public class RafflesiaGrow : MonoBehaviour
 
     private void DisableAllPlatforms()
     {
+        int combinedLayerMask = platformLayer | platformLayer2;
+
         Collider2D[] platforms = Physics2D.OverlapCircleAll(
             transform.position,
-            100,                
-            platformLayer, platformLayer2
+            200f,
+            combinedLayerMask
         );
 
         foreach (var p in platforms)

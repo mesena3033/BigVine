@@ -29,7 +29,7 @@ public class ReStatButton : MonoBehaviour
         else if (SceneMemory.currentStage == "LastBoss")
         {
             Debug.Log("ボスステージから来た");
-            SceneManager.LoadScene("LastBass");
+            SceneManager.LoadScene("LastBoss");
         }
     }
 }

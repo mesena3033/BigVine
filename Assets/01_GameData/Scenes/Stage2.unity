@@ -431,7 +431,7 @@ Transform:
   m_GameObject: {fileID: 68272139}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 189.8, y: 54.2, z: 0}
+  m_LocalPosition: {x: 189.8, y: 54.79, z: 0}
   m_LocalScale: {x: 11.7, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -4942,11 +4942,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 300}
   m_Pivot: {x: 0, y: 1}
---- !u!4 &1420188333 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 2652161836147459569, guid: 478b24b2a6c203e4f86809f3c6a39af8, type: 3}
-  m_PrefabInstance: {fileID: 5348062267194201255}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &1420742872 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4209206310352089069, guid: dfef697aa970e65438910f83cdf76f0e, type: 3}
@@ -7884,11 +7879,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 37252d3af15e5584ea848ba415e2bd41, type: 3}
---- !u!4 &2025312610 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 1171422080215610369, guid: 336f5614d76a2414d9db2ec6de339f50, type: 3}
-  m_PrefabInstance: {fileID: 7763673847333676041}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &2029130262
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -8691,7 +8681,7 @@ PrefabInstance:
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 2025312610}
+    m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 1174949608909873642, guid: 478b24b2a6c203e4f86809f3c6a39af8, type: 3}
       propertyPath: platformLayer.m_Bits
@@ -8711,11 +8701,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2652161836147459569, guid: 478b24b2a6c203e4f86809f3c6a39af8, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -39
+      value: 190
       objectReference: {fileID: 0}
     - target: {fileID: 2652161836147459569, guid: 478b24b2a6c203e4f86809f3c6a39af8, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 18
+      value: 66
       objectReference: {fileID: 0}
     - target: {fileID: 2652161836147459569, guid: 478b24b2a6c203e4f86809f3c6a39af8, type: 3}
       propertyPath: m_LocalPosition.z
@@ -8723,7 +8713,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2652161836147459569, guid: 478b24b2a6c203e4f86809f3c6a39af8, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.7071068
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2652161836147459569, guid: 478b24b2a6c203e4f86809f3c6a39af8, type: 3}
       propertyPath: m_LocalRotation.x
@@ -8735,7 +8725,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2652161836147459569, guid: 478b24b2a6c203e4f86809f3c6a39af8, type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0.7071068
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 2652161836147459569, guid: 478b24b2a6c203e4f86809f3c6a39af8, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -8758,12 +8748,24 @@ PrefabInstance:
       value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 4643036359607426698, guid: 478b24b2a6c203e4f86809f3c6a39af8, type: 3}
+      propertyPath: looping
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4643036359607426698, guid: 478b24b2a6c203e4f86809f3c6a39af8, type: 3}
       propertyPath: lengthInSec
-      value: 5
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4643036359607426698, guid: 478b24b2a6c203e4f86809f3c6a39af8, type: 3}
+      propertyPath: InitialModule.size3D
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4643036359607426698, guid: 478b24b2a6c203e4f86809f3c6a39af8, type: 3}
+      propertyPath: InitialModule.startSpeed.scalar
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 4643036359607426698, guid: 478b24b2a6c203e4f86809f3c6a39af8, type: 3}
       propertyPath: InitialModule.startLifetime.scalar
-      value: 8
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 4643036359607426698, guid: 478b24b2a6c203e4f86809f3c6a39af8, type: 3}
       propertyPath: InitialModule.startColor.maxColor.b
@@ -8986,10 +8988,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
-    m_AddedGameObjects:
-    - targetCorrespondingSourceObject: {fileID: 1171422080215610369, guid: 336f5614d76a2414d9db2ec6de339f50, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1420188333}
+    m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 336f5614d76a2414d9db2ec6de339f50, type: 3}
 --- !u!1001 &9093650182860483569
@@ -9148,6 +9147,7 @@ SceneRoots:
   - {fileID: 864981602}
   - {fileID: 314147344}
   - {fileID: 9093650182860483569}
+  - {fileID: 5348062267194201255}
   - {fileID: 7763673847333676041}
   - {fileID: 477988312}
   - {fileID: 1573034505}
