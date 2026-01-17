@@ -7,7 +7,7 @@ public class GameOverController : MonoBehaviour
     private PlayerInput playerInput;
     private InputAction submitAction;
 
-    void Awake()
+    /*void Awake()
     {
         playerInput = GetComponent<PlayerInput>();
         submitAction = playerInput.actions["Submit"];
@@ -21,7 +21,7 @@ public class GameOverController : MonoBehaviour
     void OnDisable()
     {
         submitAction.performed -= OnSubmit;
-    }
+    }*/
 
 
     //仮
@@ -41,9 +41,9 @@ public class GameOverController : MonoBehaviour
         }
     }
 
-    private void OnSubmit(InputAction.CallbackContext context)
+   /* private void OnSubmit(InputAction.CallbackContext context)
     {
         // Spaceキー or コントローラーのSouthボタンでMainSceneへ
-        SceneManager.LoadScene("Stage1");
-    }
+      //  SceneManager.LoadScene("Stage1");
+    }*/
 }
