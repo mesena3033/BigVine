@@ -1435,7 +1435,7 @@ public class BossController : MonoBehaviour
                     formSpecificMessage = "感謝するぞ、魔法使い。お前の愚かな行いが、我をここまで<color=red>成長</color>させてくれたのだからな！";
                     break;
                 case BossForm.Form3:
-                    formSpecificMessage = "素晴らしい...実に素晴らしい魔法だ！ お前のおげで、我は完全な<color=red>成長</color>を遂げた。さあ、絶望の宴を始めよう。";
+                    formSpecificMessage = "素晴らしい...実に素晴らしい魔法だ！ お前のおかげで、我は完全な<color=red>成長</color>を遂げた。さあ、絶望の宴を始めよう。";
                     break;
             }
 
