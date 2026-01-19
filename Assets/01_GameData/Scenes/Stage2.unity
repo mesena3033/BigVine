@@ -7255,9 +7255,13 @@ PrefabInstance:
       propertyPath: m_LocalPosition.y
       value: 0.2
       objectReference: {fileID: 0}
+    - target: {fileID: 439754321799236118, guid: 35558338375a2884f8fb0396489ac47a, type: 3}
+      propertyPath: m_text
+      value: "\u304A\u304A\u304D\u306A\u97F3\u304C\u3057\u305F\u3051\u3069\u5927\u4E08\u592B\uFF1F"
+      objectReference: {fileID: 0}
     - target: {fileID: 821400516857959849, guid: 35558338375a2884f8fb0396489ac47a, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1903015161456684958, guid: 35558338375a2884f8fb0396489ac47a, type: 3}
       propertyPath: m_Name
@@ -7309,7 +7313,10 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 361176365131686682, guid: 35558338375a2884f8fb0396489ac47a, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1872618235}
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 2439992316710626700, guid: 35558338375a2884f8fb0396489ac47a, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 0}
   m_SourcePrefab: {fileID: 100100000, guid: 35558338375a2884f8fb0396489ac47a, type: 3}
 --- !u!4 &1920790840 stripped
 Transform:
