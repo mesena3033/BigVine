@@ -1049,6 +1049,11 @@ MonoBehaviour:
     FrequencyGain: 1
     Duration: 1
     m_NoiseOffsets: {x: 0, y: 0, z: 0}
+--- !u!1 &696253985 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6431744796477995291, guid: aed72233a10ec5c4caa1cc91eaabeeee, type: 3}
+  m_PrefabInstance: {fileID: 1978306397}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &828543836
 GameObject:
   m_ObjectHideFlags: 0
@@ -2129,6 +2134,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: RockFall
       objectReference: {fileID: 0}
+    - target: {fileID: 7791919669501689384, guid: aed72233a10ec5c4caa1cc91eaabeeee, type: 3}
+      propertyPath: blueAura
+      value: 
+      objectReference: {fileID: 696253985}
     - target: {fileID: 7791919669501689384, guid: aed72233a10ec5c4caa1cc91eaabeeee, type: 3}
       propertyPath: rockFollowCamera
       value: 
