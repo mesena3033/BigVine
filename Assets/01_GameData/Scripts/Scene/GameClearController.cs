@@ -25,7 +25,11 @@ public class GameClearController : MonoBehaviour
 
     private void OnSubmit(InputAction.CallbackContext context)
     {
+        GameManager.Instance.ResetStage1Count();
+        GameManager.Instance.ResetStage2Count();
+        GameManager.Instance.ResetStageCount();
+
         // Spaceキー or コントローラーのSouthボタンでMainSceneへ
-        SceneManager.LoadScene("Stage1");
+        SceneManager.LoadScene("Title");
     }
 }

@@ -60,4 +60,9 @@ public class GameManager : MonoBehaviour
     {
         stage1Count = 0;
     }
+
+    public void ResetStageCount()
+    {
+        growthMagicCount = 0;
+    }
 }
