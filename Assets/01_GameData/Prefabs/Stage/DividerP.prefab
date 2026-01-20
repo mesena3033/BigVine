@@ -1125,6 +1125,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FallingPlatform
   destroyDelay: 2
+  shakeDuration: 0.5
+  shakeAmount: 0.2
+  shakeSpeed: 20
 --- !u!4 &8476247678969999777 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6459867130126873027, guid: e94d389ade3c35b4c9dc080de728093a, type: 3}
@@ -1389,6 +1392,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FallingPlatform
   destroyDelay: 2
+  shakeDuration: 0.5
+  shakeAmount: 0.2
+  shakeSpeed: 20
 --- !u!1001 &7370882798745447988
 PrefabInstance:
   m_ObjectHideFlags: 0
