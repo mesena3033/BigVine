@@ -190,7 +190,7 @@ GameObject:
   m_Component:
   - component: {fileID: 841716536673932987}
   m_Layer: 0
-  m_Name: kanban
+  m_Name: kanban_down
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
