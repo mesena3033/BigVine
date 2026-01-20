@@ -1,7 +1,10 @@
+using TMPro;
 using UnityEngine;
 
 public class MukadeMove : MonoBehaviour
 {
+    [SerializeField] private LayerMask m_Layer;
+
     //  移動スピード
     [SerializeField] private float MoveHoriSpeed;
 
@@ -11,14 +14,16 @@ public class MukadeMove : MonoBehaviour
     [SerializeField] private float DestroyYMin;
     [SerializeField] private float DestroyYMax;
 
-    private Rigidbody2D Rb2d;
+    private Rigidbody2D Rb;
+    private SpriteRenderer Sr;
 
     float yPos;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        Rb2d = GetComponent<Rigidbody2D>();
+        Rb = GetComponent<Rigidbody2D>();
+        Sr = GetComponent<SpriteRenderer>();
 
         yPos = transform.position.y;
     }
@@ -30,11 +35,10 @@ public class MukadeMove : MonoBehaviour
         if (yPos < DestroyYMax)
         {
             Vector2 delta = Vector2.up * MoveHoriSpeed * Time.fixedDeltaTime;
-            Rb2d.MovePosition(Rb2d.position + delta);
+            Rb.MovePosition(Rb.position + delta);
         }
         else
         {
-            //Debug.Log("maxを超えた");
         }
 
     }
@@ -42,14 +46,20 @@ public class MukadeMove : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        //Debug.Log("Update呼ばれた");
-        //Debug.Log(yPos);
-
         //  範囲外に出たら消す
         float py = transform.position.y;
-        if (py < DestroyYMin /*|| py > DestroyYMax*/)
+        if (py < DestroyYMin)
         {
             Destroy(gameObject);
         }
     }
+
+    //private void OnTriggerEnter2D(Collider2D collision)
+    //{
+    //    if (collision.gameObject.layer == LayerMask.NameToLayer("Player"))
+    //    {
+    //        //  透明度を上げる（color.Alphaを下げる）
+    //        Sr.color = new Color32(200, 200, 200, 125);
+    //    }
+    //}
 }
