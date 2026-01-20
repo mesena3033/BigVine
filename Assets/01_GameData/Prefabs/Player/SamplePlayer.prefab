@@ -275,8 +275,8 @@ MonoBehaviour:
   _animator: {fileID: 3290019656100336504}
   _audioSource: {fileID: 261421001235292880, guid: ae8246074545bf34b831a2ed036540b4, type: 3}
   SetGround: {fileID: 1798869747967253805}
-  SetWalkA: {fileID: 0}
-  SetWalkB: {fileID: 0}
+  SetWalkA: {fileID: 8068853220760824075, guid: b1c228bbda9bb3f4ca80d3b21361671c, type: 3}
+  SetWalkB: {fileID: 4323903690636779894, guid: b1c228bbda9bb3f4ca80d3b21361671c, type: 3}
   SetWalkSE: {fileID: 1798869747967253805}
 --- !u!95 &3290019656100336504
 Animator:
@@ -371,7 +371,7 @@ AudioSource:
   m_audioClip: {fileID: 0}
   m_Resource: {fileID: 8300000, guid: 489f0b39064557647bbfeee9ac8829fd, type: 3}
   m_PlayOnAwake: 0
-  m_Volume: 0.4
+  m_Volume: 0.2
   m_Pitch: 1
   Loop: 0
   Mute: 0
@@ -468,7 +468,7 @@ AudioSource:
   m_audioClip: {fileID: 0}
   m_Resource: {fileID: 8300000, guid: 1a851aadad4e62944a502912459e534b, type: 3}
   m_PlayOnAwake: 1
-  m_Volume: 0.1
+  m_Volume: 0.05
   m_Pitch: 1
   Loop: 0
   Mute: 0
