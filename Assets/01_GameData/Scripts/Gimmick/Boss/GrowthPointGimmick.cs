@@ -23,6 +23,7 @@ public class GrowthPointGimmick : MonoBehaviour
     [Header("落石 (FallingRock) 用設定")]
     [SerializeField] private GameObject fallingRockObject;
     [SerializeField] private CinemachineCamera rockFollowCamera;
+    [SerializeField] private GameObject blueAura;
     [SerializeField] private float fallingRockCooldown = 10f;
 
     [Header("ひっつき爆弾 (StickyBombLauncher) 用設定")]
@@ -168,6 +169,13 @@ public class GrowthPointGimmick : MonoBehaviour
                 // bodyTypeをDynamicに変更して重力を有効化
                 rockRb.bodyType = RigidbodyType2D.Dynamic;
                 Debug.Log("岩のRigidbody2DをDynamicに変更し、落下を開始させます。");
+
+                //落石と同時に青のオーラを消す
+                if (blueAura != null)
+                {
+                    blueAura.SetActive(false);
+                    Debug.Log("青のオーラを非アクティブにしました。");
+                }
 
                 // 落石解放SEを再生
                 if (audioSource != null && rockReleaseSound != null)
