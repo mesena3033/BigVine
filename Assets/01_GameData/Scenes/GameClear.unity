@@ -723,7 +723,7 @@ RectTransform:
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 0}
   m_AnchoredPosition: {x: -70, y: 0}
-  m_SizeDelta: {x: 300, y: 190}
+  m_SizeDelta: {x: 500, y: 190}
   m_Pivot: {x: 1, y: 0}
 --- !u!114 &1692355891
 MonoBehaviour:
@@ -745,7 +745,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'Press  "Space"
+  m_text: 'Press  "RightButton"
 
 '
   m_isRightToLeft: 0
