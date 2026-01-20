@@ -110,6 +110,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cb6099c42b7ba0f45816c1605e202597, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SkyEnemyBoss
+  lifetime: 15
+  returnSpeed: 20
   detectionRange: 10
   rushSpeed: 15
   rushDuration: 0.8
@@ -194,7 +196,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 1
   m_Sprite: {fileID: -8339070887654168890, guid: c54a77ebf5f254d4286da4dfc71ef0dd, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 1, g: 0.2705882, b: 0, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
