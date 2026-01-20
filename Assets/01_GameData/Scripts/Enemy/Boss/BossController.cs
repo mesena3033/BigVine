@@ -1647,9 +1647,79 @@ public class BossController : MonoBehaviour
             audioSource.PlayOneShot(deathSound);
         }
 
-        //Destroy(gameObject, 0.5f);
+        // 1. 全てのコルーチン（行動AI、攻撃ループ、移動アニメーション等）を即座に停止する
+        StopAllCoroutines();
 
-        StartCoroutine(LoadGameClearSceneAfterDelay(1.0f));
+        // 2. 物理的な移動を止める
+        if (rb != null)
+        {
+            rb.linearVelocity = Vector2.zero; // その場で停止
+            rb.angularVelocity = 0f;
+            rb.bodyType = RigidbodyType2D.Kinematic; // 物理演算の影響を受けないようにする
+        }
+
+        // 3. 当たり判定を消す
+        Collider2D[] cols = GetComponentsInChildren<Collider2D>();
+        foreach (var col in cols)
+        {
+            col.enabled = false;
+        }
+
+        // 4. ゆらゆら動くアニメーション(BossBody)や頭の追従(BossHead)を止める
+        // パーツのルートにあるスクリプトを無効化する
+        BossBody[] bodyScripts = GetComponentsInChildren<BossBody>();
+        foreach (var script in bodyScripts) script.enabled = false;
+
+        BossHead[] headScripts = GetComponentsInChildren<BossHead>();
+        foreach (var script in headScripts) script.enabled = false;
+
+        // 5. 死亡演出（透明化）を開始する
+        StartCoroutine(DeathSequence());
+    }
+
+    // 死亡演出：4秒かけて徐々に透明になり、完了後にシーン遷移する
+    private IEnumerator DeathSequence()
+    {
+        float duration = 4.0f; // 4秒間
+        float elapsedTime = 0f;
+
+        // Lerpで計算
+
+        while (elapsedTime < duration)
+        {
+            // 1.0(不透明) -> 0.0(透明) へ変化
+            float alpha = Mathf.Lerp(1.0f, 0.0f, elapsedTime / duration);
+
+            // 現在アクティブな全パーツ（体、頭）の色を更新
+            foreach (var sr in bodyPartsRenderers)
+            {
+                if (sr != null)
+                {
+                    Color color = sr.color;
+                    color.a = alpha;
+                    sr.color = color;
+                }
+            }
+
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+
+        // 念のため完全に透明にする
+        foreach (var sr in bodyPartsRenderers)
+        {
+            if (sr != null)
+            {
+                Color color = sr.color;
+                color.a = 0.0f;
+                sr.color = color;
+            }
+        }
+
+        // 少し待ってからシーン遷移
+        yield return new WaitForSeconds(0.5f);
+
+        SceneManager.LoadScene("GameClear");
     }
 
     // --- 地面に潜る/戻るアニメーション ---
