@@ -30,6 +30,8 @@ public class MukadeSpawn : MonoBehaviour
 
         if (collision.CompareTag("Player"))
         {
+            IsActivated = true;
+
             if (Mukade != null)
             {
                 Mukade.SetActive(true);
