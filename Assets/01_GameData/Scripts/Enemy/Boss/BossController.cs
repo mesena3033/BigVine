@@ -1429,13 +1429,13 @@ public class BossController : MonoBehaviour
             switch (currentForm)
             {
                 case BossForm.Form1:
-                    formSpecificMessage = "お前の魔法は心地よいな。だが...その力、あまりに微弱。我を完全な<color=red>成長</color>へと導くには程遠い。";
+                    formSpecificMessage = "なぜもっと魔法を使わなかった...こんなものじゃ完全に<color=red>成長</color>しきれないじゃないか！";
                     break;
                 case BossForm.Form2:
-                    formSpecificMessage = "感謝するぞ、魔法使い。お前の愚かな行いが、我をここまで<color=red>成長</color>させてくれたのだからな！";
+                    formSpecificMessage = "お前の魔法は心地よいな。だが...その力、あまりに微弱。我を完全な<color=red>成長</color>へと導くには程遠い。";
                     break;
                 case BossForm.Form3:
-                    formSpecificMessage = "素晴らしい...実に素晴らしい魔法だ！ お前のおかげで、我は完全な<color=red>成長</color>を遂げた。さあ、絶望の宴を始めよう。";
+                    formSpecificMessage = "感謝するぞ、魔法使い。お前の魔法が、我をここまで<color=red>成長</color>させてくれたのだからな！";
                     break;
             }
 
