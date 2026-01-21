@@ -34,9 +34,9 @@ public class Bullet : MonoBehaviour
         }
 
         // 2. ínñ Ç‚ï«Ç…ìñÇΩÇ¡ÇΩÇÁè¡Ç¶ÇÈ
-        if (other.gameObject.layer == LayerMask.NameToLayer("Ground"))
-        {
-            Destroy(gameObject);
-        }
+        //if (other.gameObject.layer == LayerMask.NameToLayer("Ground"))
+        //{
+        //    Destroy(gameObject);
+        //}
     }
 }
