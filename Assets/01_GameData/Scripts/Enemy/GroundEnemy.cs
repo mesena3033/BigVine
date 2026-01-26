@@ -105,7 +105,7 @@ public class GroundEnemy : MonoBehaviour
 
         //  Ground‚ÉÕ“ËˆÚ“®•ûŒü‚ğ”½“]‚·‚é
         if ((other.gameObject.layer == LayerMask.NameToLayer("Ground")) ||
-            (other.gameObject.layer == LayerMask.NameToLayer("Enemy")))
+            (other.gameObject.layer == LayerMask.NameToLayer("PlayerOnly")))
         {
             dir *= -1;  //  •ûŒü‚ğ”½“]
 
