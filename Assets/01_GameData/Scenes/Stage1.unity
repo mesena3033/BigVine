@@ -158,7 +158,7 @@ PrefabInstance:
       objectReference: {fileID: 1255163802}
     - target: {fileID: 4681149086163433459, guid: 9941096420b54834e9aad5b3835bb769, type: 3}
       propertyPath: MaxHP
-      value: 3
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 4681149086163433459, guid: 9941096420b54834e9aad5b3835bb769, type: 3}
       propertyPath: HeartParent
@@ -1493,7 +1493,7 @@ Transform:
   m_GameObject: {fileID: 239515026}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 7.4555707, y: 7.6760063, z: -198060}
+  m_LocalPosition: {x: 7.4555707, y: 7.6760063, z: -198440}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -2349,7 +2349,7 @@ Transform:
   m_GameObject: {fileID: 349818066}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 7.4555707, y: 7.6760063, z: -198060}
+  m_LocalPosition: {x: 7.4555707, y: 7.6760063, z: -198440}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

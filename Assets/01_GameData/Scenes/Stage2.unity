@@ -8978,7 +8978,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 4681149086163433459, guid: 9941096420b54834e9aad5b3835bb769, type: 3}
       propertyPath: MaxHP
-      value: 5
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 4681149086163433459, guid: 9941096420b54834e9aad5b3835bb769, type: 3}
       propertyPath: HeartParent
