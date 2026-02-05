@@ -523,19 +523,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5800864518132472608, guid: 4ca365683f384a346b293e75e3b33248, type: 3}
       propertyPath: m_Size.x
-      value: 1.9675498
+      value: 3.4355288
       objectReference: {fileID: 0}
     - target: {fileID: 5800864518132472608, guid: 4ca365683f384a346b293e75e3b33248, type: 3}
       propertyPath: m_Size.y
-      value: 1.779414
+      value: 2.203496
       objectReference: {fileID: 0}
     - target: {fileID: 5800864518132472608, guid: 4ca365683f384a346b293e75e3b33248, type: 3}
       propertyPath: m_Offset.x
-      value: -0.02687633
+      value: -0.010565281
       objectReference: {fileID: 0}
     - target: {fileID: 5800864518132472608, guid: 4ca365683f384a346b293e75e3b33248, type: 3}
       propertyPath: m_Offset.y
-      value: 0.38970727
+      value: 0.601748
       objectReference: {fileID: 0}
     - target: {fileID: 9187082996440799644, guid: 4ca365683f384a346b293e75e3b33248, type: 3}
       propertyPath: m_Name
@@ -2067,6 +2067,7 @@ MonoBehaviour:
   growthMagicCount: 0
   stage1Count: 0
   stage2Count: 0
+  sessionUnlockedBosses: 000000
 --- !u!4 &1776799056
 Transform:
   m_ObjectHideFlags: 0
@@ -2735,19 +2736,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5800864518132472608, guid: 4ca365683f384a346b293e75e3b33248, type: 3}
       propertyPath: m_Size.x
-      value: 1.5212126
+      value: 2.2388926
       objectReference: {fileID: 0}
     - target: {fileID: 5800864518132472608, guid: 4ca365683f384a346b293e75e3b33248, type: 3}
       propertyPath: m_Size.y
-      value: 1.9590306
+      value: 3.4922528
       objectReference: {fileID: 0}
     - target: {fileID: 5800864518132472608, guid: 4ca365683f384a346b293e75e3b33248, type: 3}
       propertyPath: m_Offset.x
-      value: -0.2606063
+      value: -0.6194463
       objectReference: {fileID: 0}
     - target: {fileID: 5800864518132472608, guid: 4ca365683f384a346b293e75e3b33248, type: 3}
       propertyPath: m_Offset.y
-      value: 0.020848513
+      value: 0.004537821
       objectReference: {fileID: 0}
     - target: {fileID: 9187082996440799644, guid: 4ca365683f384a346b293e75e3b33248, type: 3}
       propertyPath: m_Name
@@ -2871,6 +2872,22 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1829815134408383334, guid: 6a355e13aa08440459a06b3c26f060fe, type: 3}
+      propertyPath: m_Size.x
+      value: 1.8892114
+      objectReference: {fileID: 0}
+    - target: {fileID: 1829815134408383334, guid: 6a355e13aa08440459a06b3c26f060fe, type: 3}
+      propertyPath: m_Size.y
+      value: 1.6091962
+      objectReference: {fileID: 0}
+    - target: {fileID: 1829815134408383334, guid: 6a355e13aa08440459a06b3c26f060fe, type: 3}
+      propertyPath: m_Offset.x
+      value: 0.091819525
+      objectReference: {fileID: 0}
+    - target: {fileID: 1829815134408383334, guid: 6a355e13aa08440459a06b3c26f060fe, type: 3}
+      propertyPath: m_Offset.y
+      value: 0.37168777
+      objectReference: {fileID: 0}
     - target: {fileID: 5161021830735478763, guid: 6a355e13aa08440459a06b3c26f060fe, type: 3}
       propertyPath: m_Name
       value: Cannon
@@ -2928,6 +2945,22 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 8350695635652529039, guid: ebcb2a2c1b10b104b9a72e6131eb5247, type: 3}
+      propertyPath: m_Size.x
+      value: 1.9984715
+      objectReference: {fileID: 0}
+    - target: {fileID: 8350695635652529039, guid: ebcb2a2c1b10b104b9a72e6131eb5247, type: 3}
+      propertyPath: m_Size.y
+      value: 1.489047
+      objectReference: {fileID: 0}
+    - target: {fileID: 8350695635652529039, guid: ebcb2a2c1b10b104b9a72e6131eb5247, type: 3}
+      propertyPath: m_Offset.x
+      value: -0.01018846
+      objectReference: {fileID: 0}
+    - target: {fileID: 8350695635652529039, guid: ebcb2a2c1b10b104b9a72e6131eb5247, type: 3}
+      propertyPath: m_Offset.y
+      value: 0.24452353
+      objectReference: {fileID: 0}
     - target: {fileID: 8436462368418669223, guid: ebcb2a2c1b10b104b9a72e6131eb5247, type: 3}
       propertyPath: m_Name
       value: StickyBombLauncher
