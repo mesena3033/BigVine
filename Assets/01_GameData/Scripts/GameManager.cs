@@ -13,6 +13,10 @@ public class GameManager : MonoBehaviour
     public int stage1Count = 0;
     public int stage2Count = 0;
 
+    //解放されたボスの形態（0:第一, 1:第二, 2:第三）
+    // false = 未解放, true = 解放済み
+    public bool[] sessionUnlockedBosses = new bool[3];
+
     void Awake()
     {
         // シングルトンパターンの実装
