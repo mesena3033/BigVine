@@ -4044,6 +4044,22 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5800864518132472608, guid: 4ca365683f384a346b293e75e3b33248, type: 3}
+      propertyPath: m_Size.x
+      value: 3.6493583
+      objectReference: {fileID: 0}
+    - target: {fileID: 5800864518132472608, guid: 4ca365683f384a346b293e75e3b33248, type: 3}
+      propertyPath: m_Size.y
+      value: 3.7069545
+      objectReference: {fileID: 0}
+    - target: {fileID: 5800864518132472608, guid: 4ca365683f384a346b293e75e3b33248, type: 3}
+      propertyPath: m_Offset.x
+      value: -0.057594717
+      objectReference: {fileID: 0}
+    - target: {fileID: 5800864518132472608, guid: 4ca365683f384a346b293e75e3b33248, type: 3}
+      propertyPath: m_Offset.y
+      value: 0.028801203
+      objectReference: {fileID: 0}
     - target: {fileID: 9187082996440799644, guid: 4ca365683f384a346b293e75e3b33248, type: 3}
       propertyPath: m_Name
       value: GrowthPoint_Shield
@@ -11240,6 +11256,18 @@ PrefabInstance:
     - target: {fileID: 3327986578539354458, guid: b60f71ee8bdc1dc4d9045ebfb38729aa, type: 3}
       propertyPath: m_SortingOrder
       value: -1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3584385987461735703, guid: b60f71ee8bdc1dc4d9045ebfb38729aa, type: 3}
+      propertyPath: m_Radius
+      value: 1.7883563
+      objectReference: {fileID: 0}
+    - target: {fileID: 3584385987461735703, guid: b60f71ee8bdc1dc4d9045ebfb38729aa, type: 3}
+      propertyPath: m_Offset.x
+      value: -0.081569195
+      objectReference: {fileID: 0}
+    - target: {fileID: 3584385987461735703, guid: b60f71ee8bdc1dc4d9045ebfb38729aa, type: 3}
+      propertyPath: m_Offset.y
+      value: -0.16310787
       objectReference: {fileID: 0}
     - target: {fileID: 4695527833700102603, guid: b60f71ee8bdc1dc4d9045ebfb38729aa, type: 3}
       propertyPath: m_LocalPosition.x
