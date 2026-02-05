@@ -8994,7 +8994,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 4681149086163433459, guid: 9941096420b54834e9aad5b3835bb769, type: 3}
       propertyPath: MaxHP
-      value: 8
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 4681149086163433459, guid: 9941096420b54834e9aad5b3835bb769, type: 3}
       propertyPath: HeartParent
@@ -9262,10 +9262,7 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 361176365131686682, guid: 35558338375a2884f8fb0396489ac47a, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1872618235}
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 2439992316710626700, guid: 35558338375a2884f8fb0396489ac47a, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 0}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 35558338375a2884f8fb0396489ac47a, type: 3}
 --- !u!4 &1920790840 stripped
 Transform:
