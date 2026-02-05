@@ -38,7 +38,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6158228055600052590, guid: 4293fb59f102f8445a791c7b22628890, type: 3}
       propertyPath: m_Offset.y
-      value: -0.3
+      value: -0.25
       objectReference: {fileID: 0}
     - target: {fileID: 7767430371628479578, guid: 4293fb59f102f8445a791c7b22628890, type: 3}
       propertyPath: m_LocalScale.x
@@ -148,4 +148,4 @@ MonoBehaviour:
     m_Bits: 128
   MoveHoriSpeed: 1
   DestroyYMin: -100
-  DestroyYMax: 60
+  DestroyYMax: 58

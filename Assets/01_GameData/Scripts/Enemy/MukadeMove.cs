@@ -1,4 +1,5 @@
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class MukadeMove : MonoBehaviour
@@ -17,7 +18,20 @@ public class MukadeMove : MonoBehaviour
     private Rigidbody2D Rb;
     private SpriteRenderer Sr;
 
+    //  ムカデのY座標
     float yPos;
+
+    //  Playerとの距離測定用
+    float distance;
+    float PlayerPosition, EnemyPosition;
+
+    //  ムカデの速度戻すよう
+    bool ReMove = false;
+    float ReSpeed;
+
+    bool Count;
+    float CountTime;
+    float LimitTime = 2.0f;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -25,6 +39,7 @@ public class MukadeMove : MonoBehaviour
         Rb = GetComponent<Rigidbody2D>();
         Sr = GetComponent<SpriteRenderer>();
 
+        //  現在の座標を取得
         yPos = transform.position.y;
     }
 
@@ -37,29 +52,61 @@ public class MukadeMove : MonoBehaviour
             Vector2 delta = Vector2.up * MoveHoriSpeed * Time.fixedDeltaTime;
             Rb.MovePosition(Rb.position + delta);
         }
-        else
-        {
-        }
-
     }
 
     // Update is called once per frame
     void Update()
     {
         //  範囲外に出たら消す
-        float py = transform.position.y;
-        if (py < DestroyYMin)
+        yPos = transform.position.y;
+        EnemyPosition = yPos;
+
+        if (yPos < DestroyYMin) //  下
         {
             Destroy(gameObject);
         }
+        else if(yPos > DestroyYMax) //  上
+        {
+            //Destroy(gameObject);
+        }
+
+        if (ReMove == true)
+        {
+            //  一定時間下降し続ける
+            if (Count == true)
+            {
+                MoveHoriSpeed = ReSpeed;
+
+                ReMove = false;
+                Count = false;
+                CountTime = 0;
+            }
+            else
+                CountTime += Time.deltaTime;
+
+            if (CountTime >= LimitTime) Count = true;
+        }
     }
 
-    //private void OnTriggerEnter2D(Collider2D collision)
-    //{
-    //    if (collision.gameObject.layer == LayerMask.NameToLayer("Player"))
-    //    {
-    //        //  透明度を上げる（color.Alphaを下げる）
-    //        Sr.color = new Color32(200, 200, 200, 125);
-    //    }
-    //}
+    //  Playerとの当たり判定
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.tag == "Player")
+        {
+            //  Playerとの距離測定
+            EnemyPosition = this.transform.position.y;
+            PlayerPosition = collision.transform.position.y;
+
+            distance = EnemyPosition - PlayerPosition;
+
+            if(distance < 0) distance = 0;
+
+            ReSpeed = MoveHoriSpeed;
+            MoveHoriSpeed = -(distance + 5.0f);
+
+            //  戻る、と時間の測定開始
+            ReMove = true;
+            Count = false;
+        }
+    }
 }
