@@ -13,8 +13,17 @@ public class FollowPlayer : MonoBehaviour
     private bool isRushing = false;
     private bool isCooldown = false;
 
+    private SpriteRenderer sr;
+    private Color OriginalColor;
+
     void Start()
     {
+        sr = GetComponentInChildren<SpriteRenderer>();
+        if (sr != null)
+        {
+            OriginalColor = sr.color;
+        }
+
         if (player == null)
         {
             GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
@@ -40,11 +49,31 @@ public class FollowPlayer : MonoBehaviour
         {
             Debug.Log("プレイヤー感知 → 突進開始");
             targetPosition = player.position;
-            StartCoroutine(Rush());
+            //StartCoroutine(Rush());
 
-            Debug.Log($"参照しているPlayer: {player.name}, 座標: {player.position}");
+            //Debug.Log($"参照しているPlayer: {player.name}, 座標: {player.position}");
+            // 突進前の点滅 → その後 Rush 開始
+            StartCoroutine(FlashBeforeRush());
         }
     }
+
+    // 突進前に一瞬だけ赤く点滅する
+    private System.Collections.IEnumerator FlashBeforeRush()
+    {
+        isRushing = true;
+
+        if (sr != null)
+        {
+            sr.color = Color.red;
+            yield return new WaitForSeconds(0.3f); // 点滅時間
+            sr.color = OriginalColor;
+        }
+
+        // 点滅後に突進開始
+        StartCoroutine(Rush());
+    }
+
+
 
     private System.Collections.IEnumerator Rush()
     {

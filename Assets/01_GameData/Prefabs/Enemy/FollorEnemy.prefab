@@ -184,7 +184,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: df33f2810cfee744b9b326f5051ace1d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FollowPlayer
-  player: {fileID: 9157812855108623181, guid: 9941096420b54834e9aad5b3835bb769, type: 3}
+  player: {fileID: 0}
   detectionRange: 10
   rushSpeed: 10
   rushDuration: 1
